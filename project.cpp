@@ -5,6 +5,7 @@ const int maxN = 100;
 int An,Am,Bn,Bm =0;
 long long A[maxN][maxN];
 long long B[maxN][maxN];
+long long int Da,Db=0;
 
 void enterA()
 {
@@ -145,6 +146,126 @@ void sum()
     }
 }
 
+bool ADivisionB()
+{
+    long long n = Bn;
+    double MM[n][2*n];
+
+    for(long long i = 0; i < n; i++)
+    {
+        for(int j = 0; j< n ; j++)
+        {
+            MM[i][j] = B[i][j];
+        }
+    }
+
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = n; j< 2*n ; j++)
+        {
+            (i+n == j)?MM[i][j] = 1: MM[i][j] = 0;
+        }
+    }
+    bool a = 1;
+    for(int i = 0; i< n && a; i++)
+    {
+        bool b = 1;
+        while(b && a)
+        {
+            double i1,i2,q = -1;
+            long long int k1= -1,k2= -1,k3 = -1;
+            for(int j=0; j<n; j++)
+            {
+                if(MM[j][i] != 0)
+                {
+                    if(k1 == -1)
+                    {
+                        k1 = j;
+                        i1 =MM[j][i];
+                    }
+                    else if(j >= i)
+                    {
+                        k2 = j;
+                        i2 =MM[j][i];
+                    }
+                    else
+                    {
+                        k3 = j;
+                    }
+                }
+                if(k2 == -1 && k1 < i)
+                {
+                    k3 = 1;
+                }
+                else
+                {
+                    k3 = -1;
+                }
+            }
+            if(k1 == -1 || (k3 != -1 && k2 == -1))
+            {
+                a = 0;
+            }
+            else if(k2 != -1 )
+            {
+                q = -i1/i2;
+
+                for(int j = 0; j < 2*n ; j++)
+                {
+                    MM[k1][j] += q * MM[k2][j];
+                }
+
+            }
+            else
+            {
+                for(int j = 0; j < 2*n ; j++)
+                {
+                    double c = -1;
+                    c = MM[k1][j];
+                    MM[k1][j] = MM[i][j];
+                    MM[i][j] = c/i1;
+                }
+                b = 0;
+            }
+        }
+    }
+    if(a)
+    {
+        for(int i = 0 ; i< n; i++)
+        {
+            for(int j = 0; j < n ; j++)
+            {
+                if(MM[i][j] == 0)MM[i][j]=0;
+                MM[i][j] = MM[i][j+n];
+            }
+        }
+
+        double C[maxN][maxN];
+        for(int i=0; i< An; i++)
+        {
+            for(int j = 0 ; j < Bm; j++)
+            {
+                double sum = 0 ;
+                for(int k = 0; k < Am ; k++)
+                {
+                    sum += A[i][k] * MM[k][j];
+                }
+                C[i][j] = sum;
+            }
+
+        }
+        Am = Bm;
+        for(int i = 0; i< An; i++)
+        {
+            for(int j = 0; j<Am; j++)
+            {
+                A[i][j] = C[i][j];
+            }
+        }
+    }
+
+    return a;
+}
 
 void Submission()
 {
@@ -171,6 +292,55 @@ void aMultipliedA()
     }
 }
 
+void determinantA()
+{
+    if(An > 1)
+    {
+        long long int plas = 0;
+        long long int negative = 0;
+        long long int plasP =1;
+        long long int negativeP=1;
+        for(long long int i = 0 ; i< An; i++ )
+        {
+            for(long long int j =0; j < Am; j++)
+            {
+                plasP *= A[(i+j)%An][j];
+                negativeP *= A[(An-j-1)%An][j];
+            }
+            plas += plasP;
+            negative += negativeP;
+            plasP =1;
+            negativeP=1;
+        }
+        Da = plas - negative;
+    }
+    else Da= A[0][0];
+}
+
+void determinantB()
+{
+    if(Bn > 1)
+    {
+        long long int plas = 0;
+        long long int negative = 0;
+        long long int plasP =1;
+        long long int negativeP=1;
+        for(long long int i = 0 ; i< Bn; i++ )
+        {
+            for(long long int j =0; j < Bm; j++)
+            {
+                plasP += B[(i+j)%Bn][j];
+                negativeP += B[(Bn-j-1)%Bn][j];
+            }
+            plas += plasP;
+            negative += negativeP;
+            plasP =1;
+            negativeP=1;
+        }
+        Db = plas - negative;
+    }
+    else Db= B[0][0];
+}
 
 void GetA()
 {
@@ -242,8 +412,6 @@ int main()
     {
         int number;
         cout << "-------------------\n";
-        cout << "| Exit    |   0   |\n";
-        cout << "-------------------\n";
         cout << "| Enter A |   1   |\n";
         cout << "-------------------\n";
         cout << "| Enter B |   2   |\n";
@@ -256,28 +424,25 @@ int main()
         cout << "-------------------\n";
         cout << "| A + B   |   6   |\n";
         cout << "-------------------\n";
-
-
+        cout << "| A / B   |   7   |\n";
+        cout << "-------------------\n";
         cout << "| A - B   |   8   |\n";
         cout << "-------------------\n";
         cout << "| a * A   |   9   |\n";
         cout << "-------------------\n";
-
-
-
-        cout << "| Get A  |   12   |\n";
+        cout << "| dA      |   10  |\n";
         cout << "-------------------\n";
-        cout << "| Get B  |   13   |\n";
+        cout << "| dB      |   11  |\n";
+        cout << "-------------------\n";
+        cout << "| Get A   |   12  |\n";
+        cout << "-------------------\n";
+        cout << "| Get B   |   13  |\n";
         cout << "-------------------\n";
         cout << "number = ";
         cin >> number;
 
-        if(number == 0)
-        {
-            cout << "Goodbye :(";
-            return 0;
-        }
-        else if(number == 1)
+        bool c = 1;
+        if(number == 1)
         {
             enterA();
             cout << "done successfully!\n";
@@ -362,7 +527,32 @@ int main()
         }
         else if(number == 7)
         {
-            //Code
+            bool yes = true;
+            if(An == 0)
+            {
+                cout << "What's A? Please enter number 1 to enter A then go back! \n";
+                yes = false;
+            }
+            if(Bn == 0)
+            {
+                cout << "What's B? Please enter number 2 to enter B then go back! \n";
+                yes = false;
+            }
+            if(Bm != Bn && yes)
+            {
+                cout << "ooh noo!!!! Can not be multiplied!! Must be Bn = Bm but Bn = "<<Bn <<" , Bm = "<< Bm<<"\n";
+                yes = false;
+            }
+            if(Am != Bn && yes)
+            {
+                cout << "ooh noo!!!! Can not be multiplied!! Must be Am = Bn but Am = "<<Am <<" , Bn = "<< Bn<<"\n";
+                yes = false;
+            }
+            if(yes)
+            {
+                ADivisionB()? cout << "done successfully!\n" :cout << "Cannot perform split operation Because B is not the inverse";
+
+            }
         }
         else if(number == 8)
         {
@@ -403,11 +593,35 @@ int main()
         }
         else if(number == 10)
         {
-            //Code
+            if(An == 0)
+            {
+                cout << "What's A? Please enter number 1 to enter A then go back! \n";
+            }
+            else if(An != Am)
+            {
+                cout << "ooh noo!!!! Can not be multiplied!! Must be An = Am but An = "<<An <<" , Am = "<< Am<<"\n";
+            }
+            else
+            {
+                determinantA();
+                cout << "determinant A is " << Da << "\n";
+            }
         }
         else if(number == 11)
         {
-            //Code
+            if(Bn == 0)
+            {
+                cout << "What's B? Please enter number 2 to enter B then go back! \n";
+            }
+            else if(Bn != Am)
+            {
+                cout << "ooh noo!!!! Can not be multiplied!! Must be Bn = Bm but Bn = "<<Bn <<" , Bm = "<< Bm<<"\n";
+            }
+            else
+            {
+                determinantB();
+                cout << "determinant B is " << Db;
+            }
         }
         else if(number == 12)
         {
@@ -428,8 +642,30 @@ int main()
             }
             else
             {
-                GetB());
+                GetB();
             }
         }
+        else
+        {
+            cout << "Error 404 :|  \n";
+            c = 0;
+        }
+
+        while(c)
+        {
+            cout << "Do you have another request?(Y/N)";
+            char C;
+            cin >> C;
+            if(C == 'N' || C == 'n')
+            {
+                cout << "Goodbye :(";
+                return 0;
+            }
+            else if(C == 'Y' || C == 'y')
+            {
+                c = 0;
+            }
+        }
+
     }
 }
