@@ -33,12 +33,23 @@ public:
 
     TableType get_table() const { return table; }
 
+    Matrix<Element> sum(const Matrix<Element> &other);
+
+    Matrix<Element> operator+(const Matrix<Element> &other);
+
+    Element at(size_t row_index,size_t col_index);
+    RowType operator[](size_t idx) const;
+
 private:
+
+    RowType &operator[](size_t idx);
 
     size_t row;
     size_t col;
     TableType table;
 };
+
+
 
 #include "Matrix-tmp.h"
 
