@@ -8,12 +8,6 @@
 
 using namespace std;
 
-template<typename Element>
-concept Elementable = requires(Element){
-	requires Multiplicationable<Element>;
-	requires Sumable<Element>;
-};
-
 template<Elementable Element>
 class Matrix {
 private:

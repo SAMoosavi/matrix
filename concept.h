@@ -32,5 +32,11 @@ concept Containerable = requires(Container c, Element e) {
     typename Element;
 };
 
+template<typename Element>
+concept Elementable = requires(Element){
+	requires Multiplicationable<Element>;
+	requires Sumable<Element>;
+};
+
 
 #endif
