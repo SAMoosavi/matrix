@@ -17,4 +17,36 @@ Matrix<Element>::Matrix(Container<Container<Element>> matrix):row(matrix.size())
 		}
 	}
 };
+
+template<Elementable Element>
+Matrix<Element> Matrix<Element>::sum(const Matrix<Element> &other) {
+	if (row != other.row && col != other.col) throw invalid_argument("Cannot sum spans of different sizes");
+	Matrix<Element> result(row, col);
+	for (size_t row_index = 0; row_index < row; ++row_index)
+		for (size_t col_index = 0; col_index < col; ++col_index)
+			result[row_index][col_index] = other[row_index][col_index] + table[row_index][col_index];
+
+	return result;
+}
+
+template<Elementable Element>
+Matrix<Element> Matrix<Element>::operator+(const Matrix<Element> &other) {
+	return sum(other);
+}
+
+template<Elementable Element>
+Matrix<Element>::RowType Matrix<Element>::operator[](size_t idx) const {
+	return table[idx];
+}
+
+template<Elementable Element>
+Matrix<Element>::RowType &Matrix<Element>::operator[](size_t idx) {
+	return table[idx];
+}
+
+template<Elementable Element>
+Element Matrix<Element>::at(size_t row_index, size_t col_index) {
+	return table[row_index][col_index];
+}
+
 #endif
