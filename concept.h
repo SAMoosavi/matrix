@@ -1,9 +1,5 @@
-//
-// Created by mahsan on 3/7/24.
-//
-
-#ifndef MATRIX_CONSEPT_H
-#define MATRIX_CONSEPT_H
+#ifndef MATRIX_CONCEPT_H
+#define MATRIX_CONCEPT_H
 
 #include <iostream>
 #include <vector>
@@ -37,4 +33,4 @@ concept Containerable = requires(Container c, Element e) {
 };
 
 
-#endif //MATRIX_CONSEPT_H
+#endif

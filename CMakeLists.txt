@@ -6,6 +6,6 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(Matrix main.cpp
         Matrix.cpp
         Matrix.h
-        Consept.h
+        concept.h
         Matrix-tmp.h
 )
