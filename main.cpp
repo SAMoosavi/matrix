@@ -93,25 +93,35 @@ private:
 template <typename T>
 void print(const T& a)
 {
-	if constexpr (ranges::range<T>)
+	if constexpr (ranges::range<T>) {
 		for (const auto& aa: a) {
 			print(aa);
-			cout << endl;
 		}
-	else
+		cout << endl;
+	} else {
 		cout << a.get() << " ";
+	}
 }
 
 int main()
 {
-	vector<vector<W>> a = {{1, 2, 3, 4, 5},
-						   {1, 2, 3, 4, 5},
-						   {1, 2, 3, 4, 5},
-						   {1, 2, 3, 4, 5}};
+	vector<vector<W>> a = {
+			{1, 2, 2, 2},
+			{3, 2, 2, 4},
+			{3, 2, 2, 4},
+	};
+	vector<vector<W>> b = {
+			{1, 2, 2, 2},
+			{3, 2, 2, 4},
+			{3, 2, 2, 4},
+			{3, 2, 2, 4},
+	};
 	Matrix<W> v1(a);
-	Matrix<W> v2 = v1;
+	Matrix<W> v2 = b;
 
-	//    Matrix<W> po = v1 + v2;
+	Matrix<W> po = v1 * v2;
+	v1 *= v2;
+	print(po.get_table());
 	print(v1.get_table());
 	//    cout << po << endl;
 	return 0;
