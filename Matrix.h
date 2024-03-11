@@ -1,10 +1,11 @@
 #ifndef MATRIX_MATRIX_H
 #define MATRIX_MATRIX_H
 
-#include "concept.h"
 #include <iostream>
 #include <ranges>
 #include <vector>
+
+#include "concept.h"
 
 using namespace std;
 
@@ -13,6 +14,7 @@ class Matrix {
 private:
 	typedef vector<Element> RowType;
 	typedef vector<RowType> TableType;
+
 public:
 	Matrix();
 
@@ -35,7 +37,6 @@ public:
 	RowType operator[](size_t idx) const;
 
 private:
-
 	RowType& operator[](size_t idx);
 
 	size_t row;

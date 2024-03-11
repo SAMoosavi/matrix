@@ -403,8 +403,7 @@ int main()
 					yes = 0;
 				}
 				if (yes) {
-					division(A, An, Am, B, Bn, Bm) ? cout << "done successfully!\n" : cout
-							<< "Cannot perform split operation Because B is not the inverse\n";
+					division(A, An, Am, B, Bn, Bm) ? cout << "done successfully!\n" : cout << "Cannot perform split operation Because B is not the inverse\n";
 				}
 
 				break;

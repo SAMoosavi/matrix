@@ -1,14 +1,15 @@
-#include "Matrix.h"
-#include "concept.h"
 #include <iostream>
 #include <ranges>
 #include <vector>
+
+#include "Matrix.h"
+#include "concept.h"
 
 using namespace std;
 
 
 template <Containerable Container, typename Element = typename Container::value_type>
-requires Multiplicationable<Element> && AssignSumable<Element>
+	requires Multiplicationable<Element> && AssignSumable<Element>
 constexpr Element multiplication(const Container& lhs, const Container& rhs)
 {
 	if (lhs.size() != rhs.size())
@@ -27,7 +28,7 @@ constexpr Element operator*(const Container& lhs, const Container& rhs)
 }
 
 template <Containerable Container, typename Element = typename Container::value_type>
-requires Sumable<Element>
+	requires Sumable<Element>
 constexpr Container sum(const Container& lhs, const Container& rhs)
 {
 	if (lhs.size() != rhs.size())
@@ -47,11 +48,13 @@ constexpr Container operator+(const Container& lhs, const Container& rhs)
 
 class W {
 public:
-	W() : num(0)
+	W()
+		: num(0)
 	{
 	}
 
-	W(int num) : num(num)
+	W(int num)
+		: num(num)
 	{
 	}
 
@@ -108,8 +111,8 @@ int main()
 	Matrix<W> v1(a);
 	Matrix<W> v2 = v1;
 
-//    Matrix<W> po = v1 + v2;
+	//    Matrix<W> po = v1 + v2;
 	print(v1.get_table());
-//    cout << po << endl;
+	//    cout << po << endl;
 	return 0;
 }
