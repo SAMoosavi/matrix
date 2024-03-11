@@ -32,6 +32,8 @@ public:
 	Matrix<Element> operator+(const Matrix<Element>& other) const;
 	void operator+=(const Matrix<Element>& other);
 
+	Matrix<Element> operator-() const;
+
 	Matrix<Element> multiple(const Matrix<Element>& other) const;
 	Matrix<Element> operator*(const Matrix<Element>& other) const;
 	void operator*=(const Matrix<Element>& other);

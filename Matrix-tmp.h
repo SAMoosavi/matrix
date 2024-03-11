@@ -82,6 +82,17 @@ void Matrix<Element>::operator*=(const Matrix<Element>& other)
 }
 
 template <Elementable Element>
+Matrix<Element> Matrix<Element>::operator-() const
+{
+	Matrix tmp(*this);
+
+	for(RowType& row_of_tmp:tmp.table)
+		for(Element& element_of_tmp:row_of_tmp)
+			element_of_tmp = -element_of_tmp;
+}
+
+
+template <Elementable Element>
 Matrix<Element>::RowType Matrix<Element>::operator[](size_t idx) const
 {
 	return table[idx];
