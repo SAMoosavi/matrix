@@ -8,7 +8,7 @@
 
 using namespace std;
 
-template<Elementable Element>
+template <Elementable Element>
 class Matrix {
 private:
 	typedef vector<Element> RowType;
@@ -18,26 +18,30 @@ public:
 
 	Matrix(size_t row, size_t col);
 
-	template<template<Containerable> typename Container>
+	template <template <Containerable> typename Container>
 	Matrix(Container<Container<Element>> matrix);
 
-	TableType get_table() const { return table; }
+	TableType get_table() const
+	{
+		return table;
+	}
 
-    Matrix<Element> sum(const Matrix<Element> &other);
+	Matrix<Element> sum(const Matrix<Element>& other);
 
-    Matrix<Element> operator+(const Matrix<Element> &other);
+	Matrix<Element> operator+(const Matrix<Element>& other);
 
-    Element at(size_t row_index,size_t col_index);
-    RowType operator[](size_t idx) const;
+	Element at(size_t row_index, size_t col_index);
+
+	RowType operator[](size_t idx) const;
 
 private:
 
-	RowType &operator[](size_t idx);
+	RowType& operator[](size_t idx);
+
 	size_t row;
 	size_t col;
 	TableType table;
 };
-
 
 
 #include "Matrix-tmp.h"
