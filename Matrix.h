@@ -35,6 +35,7 @@ public:
 	Matrix<Element> operator-() const;
 
 	Matrix<Element> submission(const Matrix<Element>& other) const;
+	Matrix<Element> operator-(const Matrix<Element>& other) const;
 
 	Matrix<Element> multiple(const Matrix<Element>& other) const;
 	Matrix<Element> operator*(const Matrix<Element>& other) const;

@@ -87,6 +87,11 @@ Matrix<Element> Matrix<Element>::submission(const Matrix<Element>& other) const
 	return sum(-other);
 }
 
+template <Elementable Element>
+Matrix<Element> Matrix<Element>::operator-(const Matrix<Element>& other) const
+{
+	return multiple(std::move(other));
+}
 
 template <Elementable Element>
 Matrix<Element> Matrix<Element>::operator-() const
