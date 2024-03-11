@@ -28,9 +28,13 @@ public:
 		return table;
 	}
 
-	Matrix<Element> sum(const Matrix<Element>& other);
+	Matrix<Element> sum(const Matrix<Element>& other) const;
+	Matrix<Element> operator+(const Matrix<Element>& other) const;
+	void operator+=(const Matrix<Element>& other);
 
-	Matrix<Element> operator+(const Matrix<Element>& other);
+	Matrix<Element> multiple(const Matrix<Element>& other) const;
+	Matrix<Element> operator*(const Matrix<Element>& other) const;
+	void operator*=(const Matrix<Element>& other);
 
 	Element at(size_t row_index, size_t col_index);
 

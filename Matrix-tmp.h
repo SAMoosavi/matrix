@@ -1,6 +1,10 @@
 #ifndef MATRIX_MATRIX_TMP_H
 #define MATRIX_MATRIX_TMP_H
 
+#include <format>
+
+#include "Matrix.h"
+
 template <Elementable Element>
 Matrix<Element>::Matrix()
 	: row(0), col(0), table({{}}){};
@@ -22,7 +26,7 @@ Matrix<Element>::Matrix(Container<Container<Element>> matrix)
 };
 
 template <Elementable Element>
-Matrix<Element> Matrix<Element>::sum(const Matrix<Element>& other)
+Matrix<Element> Matrix<Element>::sum(const Matrix<Element>& other) const
 {
 	if (row != other.row && col != other.col)
 		throw invalid_argument("Cannot sum spans of different sizes");
@@ -35,9 +39,46 @@ Matrix<Element> Matrix<Element>::sum(const Matrix<Element>& other)
 }
 
 template <Elementable Element>
-Matrix<Element> Matrix<Element>::operator+(const Matrix<Element>& other)
+Matrix<Element> Matrix<Element>::operator+(const Matrix<Element>& other) const
 {
-	return sum(other);
+	return sum(std::move(other));
+}
+
+template <Elementable Element>
+void Matrix<Element>::operator+=(const Matrix<Element>& other)
+{
+	*this = sum(other);
+}
+
+template <Elementable Element>
+Matrix<Element> Matrix<Element>::multiple(const Matrix<Element>& other) const
+{
+	if (col != other.row)
+		throw std::runtime_error(std::format("Must be number of col in first Matrix equal to row of second Matrix but {} not equal to {}", col, other.row));
+
+	Matrix<Element> result(row, col);
+
+	for (size_t i = 0; i < row; ++i) {
+		for (size_t k = 0; k < col; ++k) {
+			for (size_t j = 0; j < other.col; ++j) {
+				result[i][j] += table[i][k] * other[k][j];
+			}
+		}
+	}
+
+	return result;
+}
+
+template <Elementable Element>
+Matrix<Element> Matrix<Element>::operator*(const Matrix<Element>& other) const
+{
+	return multiple(std::move(other));
+}
+
+template <Elementable Element>
+void Matrix<Element>::operator*=(const Matrix<Element>& other)
+{
+	*this = multiple(other);
 }
 
 template <Elementable Element>
