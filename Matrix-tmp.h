@@ -94,6 +94,13 @@ Matrix<Element> Matrix<Element>::operator-(const Matrix<Element>& other) const
 }
 
 template <Elementable Element>
+void Matrix<Element>::operator-=(const Matrix<Element>& other)
+{
+	*this = submission(other);
+}
+
+
+template <Elementable Element>
 Matrix<Element> Matrix<Element>::operator-() const
 {
 	Matrix tmp(*this);
