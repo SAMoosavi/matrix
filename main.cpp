@@ -123,6 +123,7 @@ int main()
 	v1 *= v2;
 	print(po.get_table());
 	print(v1.get_table());
-	//    cout << po << endl;
+	Matrix<int> v3(vector<vector<int>>({{0,2},{1,3}}));
+	cout << v3.determinant();
 	return 0;
 }
