@@ -8,4 +8,6 @@ add_executable(Matrix main.cpp
         Matrix.h
         concept.h
         Matrix-tmp.h
+        Variable.cpp
+        Variable.h
 )
