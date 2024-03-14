@@ -123,6 +123,8 @@ int main()
 	v1 *= v2;
 	print(po.get_table());
 	print(v1.get_table());
-	//    cout << po << endl;
+	Matrix<W> v3 = 5 * v1 + v2 * 10;
+	print(v3.get_table());
+
 	return 0;
 }
