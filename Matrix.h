@@ -21,7 +21,7 @@ public:
 	Matrix(size_t row, size_t col);
 
 	template <template <Containerable> typename Container>
-	Matrix(Container<Container<Element>> matrix);
+	Matrix(const Container<Container<Element>>& matrix);
 
 	TableType get_table() const
 	{

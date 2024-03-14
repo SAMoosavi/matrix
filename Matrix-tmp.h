@@ -15,7 +15,7 @@ Matrix<Element>::Matrix(size_t row, size_t col)
 
 template <Elementable Element>
 template <template <Containerable> typename Container>
-Matrix<Element>::Matrix(Container<Container<Element>> matrix)
+Matrix<Element>::Matrix(const Container<Container<Element>>& matrix)
 	: row(matrix.size()), col(matrix[0].size()), table(row, RowType(col, 0))
 {
 	for (int row_index = 0; row_index < row; ++row_index) {
@@ -108,8 +108,8 @@ Matrix<Element> Matrix<Element>::operator-() const
 {
 	Matrix tmp(*this);
 
-	for(RowType& row_of_tmp:tmp.table)
-		for(Element& element_of_tmp:row_of_tmp)
+	for (RowType& row_of_tmp: tmp.table)
+		for (Element& element_of_tmp: row_of_tmp)
 			element_of_tmp = -element_of_tmp;
 }
 
