@@ -11,4 +11,6 @@ add_executable(Matrix main.cpp
         Expression.cpp
         Expression.h
         Expression-inl.h
+        Polynomial.h
+        Polynomial.cpp
 )
