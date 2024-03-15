@@ -10,4 +10,5 @@ add_executable(Matrix main.cpp
         Matrix-tmp.h
         Expression.cpp
         Expression.h
+        Expression-inl.h
 )
