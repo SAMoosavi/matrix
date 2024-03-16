@@ -15,7 +15,7 @@ Matrix<Element>::Matrix(size_t row, size_t col)
 
 template <Elementable Element>
 template <template <Containerable> typename Container>
-Matrix<Element>::Matrix(Container<Container<Element>> matrix)
+Matrix<Element>::Matrix(const Container<Container<Element>>& matrix)
 	: row(matrix.size()), col(matrix[0].size()), table(row, RowType(col, 0))
 {
 	for (int row_index = 0; row_index < row; ++row_index)
@@ -44,9 +44,10 @@ Matrix<Element> Matrix<Element>::operator+(const Matrix<Element>& other) const
 }
 
 template <Elementable Element>
-void Matrix<Element>::operator+=(const Matrix<Element>& other)
+Matrix<Element>& Matrix<Element>::operator+=(const Matrix<Element>& other)
 {
 	*this = sum(other);
+	return *this;
 }
 
 template <Elementable Element>
@@ -72,10 +73,42 @@ Matrix<Element> Matrix<Element>::operator*(const Matrix<Element>& other) const
 }
 
 template <Elementable Element>
-void Matrix<Element>::operator*=(const Matrix<Element>& other)
+Matrix<Element>& Matrix<Element>::operator*=(const Matrix<Element>& other)
 {
 	*this = multiple(other);
+	return *this;
 }
+
+template <Elementable Element>
+Matrix<Element> Matrix<Element>::submission(const Matrix<Element>& other) const
+{
+	return sum(-other);
+}
+
+template <Elementable Element>
+Matrix<Element> Matrix<Element>::operator-(const Matrix<Element>& other) const
+{
+	return multiple(std::move(other));
+}
+
+template <Elementable Element>
+Matrix<Element>& Matrix<Element>::operator-=(const Matrix<Element>& other)
+{
+	*this = submission(other);
+	return *this;
+}
+
+
+template <Elementable Element>
+Matrix<Element> Matrix<Element>::operator-() const
+{
+	Matrix tmp(*this);
+
+	for (RowType& row_of_tmp: tmp.table)
+		for (Element& element_of_tmp: row_of_tmp)
+			element_of_tmp = -element_of_tmp;
+}
+
 
 template <Elementable Element>
 Matrix<Element> Matrix<Element>::multiple(const auto& other) const

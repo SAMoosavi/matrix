@@ -21,7 +21,7 @@ public:
 	Matrix(size_t row, size_t col);
 
 	template <template <Containerable> typename Container>
-	Matrix(Container<Container<Element>> matrix);
+	Matrix(const Container<Container<Element>>& matrix);
 
 	TableType get_table() const
 	{
@@ -30,11 +30,17 @@ public:
 
 	Matrix<Element> sum(const Matrix<Element>& other) const;
 	Matrix<Element> operator+(const Matrix<Element>& other) const;
-	void operator+=(const Matrix<Element>& other);
+	Matrix<Element>& operator+=(const Matrix<Element>& other);
+
+	Matrix<Element> operator-() const;
+
+	Matrix<Element> submission(const Matrix<Element>& other) const;
+	Matrix<Element> operator-(const Matrix<Element>& other) const;
+	Matrix<Element>& operator-=(const Matrix<Element>& other);
 
 	Matrix<Element> multiple(const Matrix<Element>& other) const;
 	Matrix<Element> operator*(const Matrix<Element>& other) const;
-	void operator*=(const Matrix<Element>& other);
+	Matrix<Element>& operator*=(const Matrix<Element>& other);
 
 	Matrix<Element> multiple(const auto& other) const;
 	Matrix<Element> operator*(const auto& other) const;
