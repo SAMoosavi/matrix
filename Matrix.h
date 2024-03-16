@@ -36,6 +36,10 @@ public:
 	Matrix<Element> operator*(const Matrix<Element>& other) const;
 	void operator*=(const Matrix<Element>& other);
 
+	Matrix<Element> multiple(const auto& other) const;
+	Matrix<Element> operator*(const auto& other) const;
+	Matrix<Element>& operator*=(const auto& other);
+
 	Element at(size_t row_index, size_t col_index);
 
 	RowType operator[](size_t idx) const;
@@ -50,6 +54,8 @@ private:
 	TableType table;
 };
 
+template <Elementable Element>
+Matrix<Element> operator*(const auto& number, const Matrix<Element>& matrix);
 
 #include "Matrix-tmp.h"
 
