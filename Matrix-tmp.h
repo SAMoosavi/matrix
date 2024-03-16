@@ -51,6 +51,35 @@ Matrix<Element>& Matrix<Element>::operator+=(const Matrix<Element>& other)
 }
 
 template <Elementable Element>
+Matrix<Element> Matrix<Element>::operator-() const
+{
+	Matrix tmp(*this);
+
+	for (RowType& row_of_tmp: tmp.table)
+		for (Element& element_of_tmp: row_of_tmp)
+			element_of_tmp = -element_of_tmp;
+}
+
+template <Elementable Element>
+Matrix<Element> Matrix<Element>::submission(const Matrix<Element>& other) const
+{
+	return sum(-other);
+}
+
+template <Elementable Element>
+Matrix<Element> Matrix<Element>::operator-(const Matrix<Element>& other) const
+{
+	return multiple(std::move(other));
+}
+
+template <Elementable Element>
+Matrix<Element>& Matrix<Element>::operator-=(const Matrix<Element>& other)
+{
+	*this = submission(other);
+	return *this;
+}
+
+template <Elementable Element>
 Matrix<Element> Matrix<Element>::multiple(const Matrix<Element>& other) const
 {
 	if (col != other.row)
@@ -80,37 +109,6 @@ Matrix<Element>& Matrix<Element>::operator*=(const Matrix<Element>& other)
 }
 
 template <Elementable Element>
-Matrix<Element> Matrix<Element>::submission(const Matrix<Element>& other) const
-{
-	return sum(-other);
-}
-
-template <Elementable Element>
-Matrix<Element> Matrix<Element>::operator-(const Matrix<Element>& other) const
-{
-	return multiple(std::move(other));
-}
-
-template <Elementable Element>
-Matrix<Element>& Matrix<Element>::operator-=(const Matrix<Element>& other)
-{
-	*this = submission(other);
-	return *this;
-}
-
-
-template <Elementable Element>
-Matrix<Element> Matrix<Element>::operator-() const
-{
-	Matrix tmp(*this);
-
-	for (RowType& row_of_tmp: tmp.table)
-		for (Element& element_of_tmp: row_of_tmp)
-			element_of_tmp = -element_of_tmp;
-}
-
-
-template <Elementable Element>
 Matrix<Element> Matrix<Element>::multiple(const auto& other) const
 {
 	Matrix<Element> result = *this;
@@ -135,7 +133,6 @@ Matrix<Element> Matrix<Element>::operator*(const auto& other) const
 {
 	return multiple(std::move(other));
 }
-
 
 template <Elementable Element>
 Matrix<Element>& Matrix<Element>::operator*=(const auto& other)
@@ -210,6 +207,5 @@ Element Matrix<Element>::determinant() const
 	else
 		return -det;
 }
-
 
 #endif
