@@ -20,13 +20,21 @@ public:
 
     Expression(double constant);
 
-    Expression operator+=(const Expression &expression);
+    Expression& operator+=(const Expression &expression);
 
-    Expression operator-=(const Expression &expression);
+    Expression& operator-=(const Expression &expression);
 
-    Expression operator*=(const Expression &expression);
+    Expression& operator*=(const Expression &expression);
 
-    Expression operator/=(const Expression &expression);
+    Expression& operator/=(const Expression &expression);
+
+    Expression operator+(const Expression &expression) const;
+
+    Expression operator-(const Expression &expression) const;
+
+    Expression operator*(const Expression &expression) const;
+
+    Expression operator/(const Expression &expression) const;
 
     bool is_similar_terms(const Expression &expression) const;
 

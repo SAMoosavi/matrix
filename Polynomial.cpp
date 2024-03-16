@@ -79,6 +79,21 @@ Polynomial &Polynomial::operator/=(const Expression &another) {
     return *this;
 }
 
+Polynomial Polynomial::operator+(const Polynomial &another) const {
+    return Polynomial(*this)+=another;
+}
+
+Polynomial Polynomial::operator-(const Polynomial &another) const {
+    return Polynomial(*this)-=another;
+}
+
+Polynomial Polynomial::operator*(const Polynomial &another) const {
+    return Polynomial(*this)*=another;
+}
+
+Polynomial Polynomial::operator/(const Expression &another) const {
+    return Polynomial(*this)/=another;
+}
 
 
 

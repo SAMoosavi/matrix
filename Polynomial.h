@@ -19,6 +19,13 @@ public:
 
     Polynomial& operator=(const Polynomial &another) = default;
 
+    Polynomial operator+(const Polynomial &another) const;
+
+    Polynomial operator-(const Polynomial &another) const;
+
+    Polynomial operator*(const Polynomial &another) const;
+
+    Polynomial operator/(const Expression &another) const;
 
 private:
     std::vector<Expression> all_expressions;
