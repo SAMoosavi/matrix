@@ -7,21 +7,6 @@
 
 class Expression {
 public:
-    Expression(double constant, const char variable, int64_t power);
-
-    Expression(double constant, const std::string &variables);
-
-    explicit Expression(double constant);
-
-    Expression operator+(const Expression &expression);
-
-    Expression operator-(const Expression &expression);
-
-    Expression operator*(const Expression &expression);
-
-    Expression operator/(const Expression &expression);
-
-private:
     struct Variable {
         char variable;
         int64_t power;
@@ -29,9 +14,32 @@ private:
         inline bool operator==(const Variable &another) const;
     };
 
-    double constant;
-    std::vector<Variable> variables;
-    int64_t power;
+    Expression(double constant, const char variable, int64_t power);
+
+    Expression(double constant, const std::string &variables);
+
+    Expression(double constant);
+
+    Expression operator+=(const Expression &expression);
+
+    Expression operator-=(const Expression &expression);
+
+    Expression operator*=(const Expression &expression);
+
+    Expression operator/=(const Expression &expression);
+
+    bool is_similar_terms(const Expression &expression) const;
+
+    inline double constant() const;
+
+    inline const std::vector<Variable> &variables() const;
+
+    inline int64_t power() const;
+
+private:
+    double _constant;
+    std::vector<Variable> _variables;
+    int64_t _power;
 
     static std::vector<Variable> create_variables(const std::string &variables);
 
@@ -43,7 +51,7 @@ private:
 
     static constexpr int64_t find_number(size_t &index, const std::string &variables);
 
-    constexpr bool are_expressions_same(const Expression &expression) const;
+    void check_expression();
 };
 
 #include "Expression-inl.h"

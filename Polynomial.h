@@ -5,20 +5,27 @@
 
 class Polynomial {
 public:
-    Polynomial(const std::vector<Expression> expression);
-    Polynomial(const Expression expression);
+    explicit Polynomial(std::vector<Expression> expression);
 
-    Polynomial operator+(const Polynomial &expression);
+    explicit Polynomial(Expression expression);
 
-    Polynomial operator-(const Polynomial &expression);
+    Polynomial& operator+=(const Polynomial &another);
 
-    Polynomial operator*(const Polynomial &expression);
+    Polynomial& operator-=(const Polynomial &another);
 
-    Polynomial operator/(const Polynomial &expression);
+    Polynomial& operator*=(const Polynomial &another);
+
+    Polynomial& operator/=(const Expression &another);
+
+    Polynomial& operator=(const Polynomial &another) = default;
 
 
 private:
-    std::vector<Expression> polynomial;
+    std::vector<Expression> all_expressions;
+
+    static void delete_repeated_expressions(std::vector<Expression> &expression);
+
+    Expression *find_expression(const Expression &expression) const;
 };
 
 
