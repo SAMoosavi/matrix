@@ -82,6 +82,46 @@ void Matrix<Element>::operator*=(const Matrix<Element>& other)
 }
 
 template <Elementable Element>
+Matrix<Element> Matrix<Element>::multiple(const auto& other) const
+{
+	Matrix<Element> result = *this;
+	for (RowType& row_of_table: result.table) {
+		for (Element& element: row_of_table) {
+			if constexpr (MultipleAssignableDifferentType<Element, decltype(other)>) {
+				element *= other;
+			} else if constexpr (MultipleableDifferentTypeReturnFirstType<Element, decltype(other)>) {
+				element = element * other;
+			} else if constexpr (MultipleableDifferentTypeReturnSecondType<Element, decltype(other)>) {
+				element = other * element;
+			} else {
+				throw std::invalid_argument("cannot calculate multiplication");
+			}
+		}
+	}
+	return result;
+}
+
+template <Elementable Element>
+Matrix<Element> Matrix<Element>::operator*(const auto& other) const
+{
+	return multiple(std::move(other));
+}
+
+
+template <Elementable Element>
+Matrix<Element>& Matrix<Element>::operator*=(const auto& other)
+{
+	*this = multiple(std::move(other));
+	return *this;
+}
+
+template <Elementable Element>
+Matrix<Element> operator*(const auto& number, const Matrix<Element>& matrix)
+{
+	return std::move(matrix * number);
+}
+
+template <Elementable Element>
 Matrix<Element>::RowType Matrix<Element>::operator[](size_t idx) const
 {
 	return table[idx];
