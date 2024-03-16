@@ -44,6 +44,8 @@ public:
 
 	RowType operator[](size_t idx) const;
 
+	Element determinant() const;
+
 private:
 	RowType& operator[](size_t idx);
 
