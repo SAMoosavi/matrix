@@ -56,7 +56,8 @@ bool Expression::is_similar_terms(const Expression &expression) const {
         int16_t temp;
         for (const auto &var: expression._variables) {
             temp = all_alphabets['z' - var.variable];
-            if ((temp == -1) || (_variables[temp].variable != var.variable || (_variables[temp].power * this->_power) != (var.power * expression._power))) {
+            if ((temp == -1) || (_variables[temp].variable != var.variable ||
+                                 (_variables[temp].power * this->_power) != (var.power * expression._power))) {
                 result = false;
                 break;
             }
@@ -85,7 +86,7 @@ Expression::Expression(double _constant) :
         _constant(_constant),
         _power(1) {}
 
-Expression& Expression::operator+=(const Expression &expression) {
+Expression &Expression::operator+=(const Expression &expression) {
     if (is_similar_terms(expression)) {
         _constant += expression._constant;
         check_expression();
@@ -93,7 +94,7 @@ Expression& Expression::operator+=(const Expression &expression) {
         throw std::invalid_argument("two expressions should have same _variables and same _powers.");
 }
 
-Expression& Expression::operator-=(const Expression &expression) {
+Expression &Expression::operator-=(const Expression &expression) {
     if (is_similar_terms(expression)) {
         _constant -= expression._constant;
         check_expression();
@@ -101,7 +102,7 @@ Expression& Expression::operator-=(const Expression &expression) {
         throw std::invalid_argument("two expressions should have same _variables and same _powers.");
 }
 
-Expression& Expression::operator*=(const Expression &expression) {
+Expression &Expression::operator*=(const Expression &expression) {
     _constant *= expression._constant;
     std::vector<int16_t> alphas(26, -1);
     for (int16_t i = 0; i < _variables.size(); ++i) {
@@ -119,7 +120,7 @@ Expression& Expression::operator*=(const Expression &expression) {
     return *this;
 }
 
-Expression& Expression::operator/=(const Expression &expression) {
+Expression &Expression::operator/=(const Expression &expression) {
     if (expression.constant() != 0) {
         _constant /= expression._constant;
         std::vector<int16_t> alphas(26, -1);
@@ -156,17 +157,17 @@ void Expression::check_expression() {
 }
 
 Expression Expression::operator+(const Expression &expression) const {
-    return Expression(*this)+=expression;
+    return Expression(*this) += expression;
 }
 
 Expression Expression::operator-(const Expression &expression) const {
-    return Expression(*this)-=expression;
+    return Expression(*this) -= expression;
 }
 
 Expression Expression::operator*(const Expression &expression) const {
-    return Expression(*this)*=expression;
+    return Expression(*this) *= expression;
 }
 
 Expression Expression::operator/(const Expression &expression) const {
-    return Expression(*this)/=expression;
+    return Expression(*this) /= expression;
 }

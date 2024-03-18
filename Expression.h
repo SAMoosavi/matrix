@@ -20,13 +20,13 @@ public:
 
     Expression(double constant);
 
-    Expression& operator+=(const Expression &expression);
+    Expression &operator+=(const Expression &expression);
 
-    Expression& operator-=(const Expression &expression);
+    Expression &operator-=(const Expression &expression);
 
-    Expression& operator*=(const Expression &expression);
+    Expression &operator*=(const Expression &expression);
 
-    Expression& operator/=(const Expression &expression);
+    Expression &operator/=(const Expression &expression);
 
     Expression operator+(const Expression &expression) const;
 
