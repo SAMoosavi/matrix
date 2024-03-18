@@ -1,5 +1,7 @@
 #include <stdexcept>
 #include <cmath>
+#include <format>
+#include <cfloat>
 #include "Polynomial.h"
 
 void Polynomial::delete_repeated_expressions(std::vector<Expression> &expressions) {
@@ -16,19 +18,6 @@ void Polynomial::delete_repeated_expressions(std::vector<Expression> &expression
     }
 }
 
-Polynomial::PolynomailVariableMaxPower Polynomial::find_variables(const std::vector<Expression> &expressions) {
-    Polynomial::PolynomailVariableMaxPower temp;
-    std::vector<int64_t> alphabets(26, INT64_MIN);
-    for (auto &expr: expressions) {
-        temp = find_variables(expr);
-        for (const auto &var: temp) {
-            if (var.power > alphabets['z' - var.variable])
-                alphabets['z' - var.variable] = var.power;
-        }
-    }
-    return create_variables(alphabets);
-}
-
 Polynomial::PolynomailVariableMaxPower Polynomial::create_variables(const std::vector<int64_t> &alphabets) {
     Polynomial::PolynomailVariableMaxPower result;
     for (size_t i = 0; i < alphabets.size(); ++i) {
@@ -36,6 +25,11 @@ Polynomial::PolynomailVariableMaxPower Polynomial::create_variables(const std::v
             result.emplace_back('a' + i, alphabets[i]);
     }
     return result;
+}
+
+int32_t Polynomial::create_random_number(const int32_t &max_value) {
+    srand(time(0));
+    return rand() % max_value;
 }
 
 Polynomial::Polynomial(std::vector<Expression> expressions) {
@@ -124,7 +118,8 @@ bool Polynomial::check_solve_validation(const Polynomial::PolynomailVariableMaxP
     bool result = false;
     if (variableMaxPower.empty()) {
         // need to test when it completed
-        if (all_expressions.begin()->constant() == 0)fthrow std::runtime_error("this Polynomial has infinity answers.");
+        if (all_expressions.begin()->constant() == 0)
+            throw std::runtime_error("this Polynomial has infinity answers.");
         else
             throw std::runtime_error("there is no answer.");
     } else if (variableMaxPower.size() > 1)
@@ -135,11 +130,10 @@ bool Polynomial::check_solve_validation(const Polynomial::PolynomailVariableMaxP
     return result;
 }
 
-Polynomial::PolynomialRoot Polynomial::solve() const {
+Polynomial::PolynomialRoot Polynomial::solve(double guess) const {
     PolynomailVariableMaxPower variableMaxPower = find_variables_and_max_power();
-
+    PolynomialRoot roots;
     if (check_solve_validation(variableMaxPower)) {
-        PolynomialRoot roots;
         // it need to test that the polynomial save unique expressions
         if (variableMaxPower.begin()->power == 1)
             roots = solve_linear_equation();
@@ -148,13 +142,13 @@ Polynomial::PolynomialRoot Polynomial::solve() const {
         else if (variableMaxPower.begin()->power == 3)
             roots = solve_cubic_equation();
         else
-            throw std::runtime_error("it is not possible to solve polynomial with power greater than 4.");
-
-        return roots;
+            roots = solve_by_newton_technique(guess);
     }
+    return roots;
 }
 
 Polynomial::PolynomailVariableMaxPower Polynomial::find_variables_and_max_power() const {
+    // check  when there is constant only
     PolynomailVariableMaxPower result;
     std::vector<int64_t> alphabets(26, INT64_MIN);
     for (const auto &expr: all_expressions) {
@@ -263,6 +257,80 @@ Polynomial::PolynomialRoot Polynomial::find_cubic_roots(double delta, double p, 
     }
     return result;
 }
+
+Polynomial::PolynomialRoot Polynomial::solve_by_newton_technique(double guess) const {
+    Polynomial derivated = derivate(1);
+    const char variable = find_variables_and_max_power().begin()->variable;
+    long double previous_answer = LDBL_MIN_10_EXP, current_answer = guess;
+    long double polynomial_answer, derivated_answer;
+    while (!compare_with_precision(previous_answer, current_answer, 6)) {
+        previous_answer = current_answer;
+        polynomial_answer = this->set_value(std::make_pair(variable, previous_answer));
+        derivated_answer = derivated.set_value(std::make_pair(variable, previous_answer));
+        if (polynomial_answer == 0)
+            break;
+        else if (derivated_answer == 0) {
+            // bug
+            current_answer = create_random_number();
+        } else{
+            current_answer = previous_answer - (polynomial_answer / derivated_answer);
+        }
+    }
+
+    return PolynomialRoot{static_cast<double>(current_answer)};
+}
+
+Polynomial Polynomial::derivate(uint64_t degree) const {
+    // just derivate for single variables
+    if (find_variables_and_max_power().size() > 1)
+        throw std::invalid_argument("it can not calculate derivate of multi variable polynomials.");
+    else {
+        std::vector<Expression> expressions;
+        double constant;
+        Expression::Variable* temp;
+        for (auto& expr: all_expressions) {
+            temp = (Expression::Variable*) &expr.variables()[0];
+            constant = expr.constant() *
+                    caluculate_derivate_constant(expr.power() * temp->power, degree);
+            expressions.emplace_back(constant, temp->variable, expr.power() * temp->power - degree);
+        }
+        return Polynomial(expressions);
+    }
+}
+
+int64_t Polynomial::caluculate_derivate_constant(int64_t power, uint64_t degree) const {
+    int64_t result = 1;
+    while (degree > 0) {
+        result *= power;
+        --power;
+        --degree;
+    }
+    return result;
+}
+
+long double Polynomial::set_value(const std::vector<std::pair<char, double>> &values) const {
+    auto size = find_variables_and_max_power().size();
+    if (size != values.size())
+        throw std::invalid_argument(std::format("there should exist {} pair in values.", size));
+    long double result = 0;
+    for (auto & expr: all_expressions)
+        result += expr.set_value(values);
+
+    return result;
+}
+
+long double Polynomial::set_value(const std::pair<char, double> &value) const {
+    auto size = find_variables_and_max_power().size();
+    if (size > 1)
+        throw std::invalid_argument(std::format("there should exist {} pair in values.", size));
+    long double result = 0;
+    for (auto & expr: all_expressions)
+        result += expr.set_value(value);
+
+    return result;
+}
+
+
 
 
 

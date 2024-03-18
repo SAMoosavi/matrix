@@ -1,5 +1,6 @@
 #include "Expression.h"
-#include <stdexcept>
+#include <format>
+#include <cmath>
 
 
 std::vector<Expression::Variable> Expression::create_variables(const std::string &_variables) {
@@ -170,4 +171,39 @@ Expression Expression::operator*(const Expression &expression) const {
 
 Expression Expression::operator/(const Expression &expression) const {
     return Expression(*this) /= expression;
+}
+
+long double Expression::set_value(const std::vector<std::pair<char, double>> &values) const {
+    if (_variables.size() > values.size())
+        throw std::invalid_argument(std::format("there should be {} at least argument.", _variables.size()));
+    std::vector<double> alphabets(26, INT64_MIN);
+    for (const auto &pair: values)
+        alphabets['z' - pair.first] = pair.second;
+
+    long double result = 0;
+    double temp;
+    for (auto &var: _variables) {
+        temp = alphabets['a' + var.variable];
+        if (temp == INT64_MIN)
+            throw std::invalid_argument(std::format("not specified {} in values.", var.variable));
+        result += powf64x(temp, var.power);
+    }
+    result = powf64x(result, _power) * _constant;
+
+    return result;
+}
+
+long double Expression::set_value(const std::pair<char, double> &value) const {
+    if (_variables.size() > 1)
+        throw std::invalid_argument(std::format("there should be {} at least argument.", _variables.size()));
+
+    long double result = 0;
+    for (auto &var: _variables) {
+        if (var.variable != value.first)
+            throw std::invalid_argument(std::format("not specified {} in values.", var.variable));
+        result += powf64x(value.second, var.power);
+    }
+    result = powf64x(result, _power) * _constant;
+
+    return result;
 }

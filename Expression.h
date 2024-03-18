@@ -44,6 +44,10 @@ public:
 
     inline int64_t power() const;
 
+    long double set_value(const std::vector<std::pair<char, double>>& values) const;
+
+    long double set_value(const std::pair<char, double>& value) const;
+
 private:
     double _constant;
     std::vector<Variable> _variables;

@@ -30,18 +30,23 @@ public:
 
     Polynomial operator/(const Expression &another) const;
 
-    PolynomialRoot solve() const;
+    PolynomialRoot solve(double guess=0) const;
 
+    Polynomial derivate(uint64_t degree) const;
+
+    long double set_value(const std::vector<std::pair<char, double>>& values) const;
+
+    long double set_value(const std::pair<char, double>& values) const;
 private:
     std::vector<Expression> all_expressions;
 
     static void delete_repeated_expressions(std::vector<Expression> &expression);
 
-    static PolynomailVariableMaxPower find_variables(const std::vector<Expression> &expressions);
-
-    static inline PolynomailVariableMaxPower find_variables(const Expression &expression);
-
     static PolynomailVariableMaxPower create_variables(const std::vector<int64_t> &alphabets);
+
+    static bool compare_with_precision(const long double &num1, const long double &num2, const int &precision);
+
+    static int32_t create_random_number(const int32_t& max_value = INT32_MAX);
 
     Expression *find_similar_expression(const Expression &expression) const;
 
@@ -58,6 +63,11 @@ private:
     PolynomialRoot find_cubic_roots(double delta, double p, double q, double a) const;
 
     PolynomialRoot solve_cubic_equation() const;
+
+    PolynomialRoot solve_by_newton_technique(double guess) const;
+
+    int64_t caluculate_derivate_constant(int64_t power, uint64_t degree) const;
+
 };
 
 
