@@ -11,4 +11,10 @@ bool Polynomial::compare_with_precision(const long double &num1, const long doub
     return diff < epsilon;
 }
 
+std::ostream &operator<<(std::ostream &os, const Polynomial &polynomial) {
+    for (auto& expr: polynomial.all_expressions)
+        os << expr << ' ';
+    return os;
+}
+
 #endif //MATRIX_POLYNOMIAL_INL_H

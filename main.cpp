@@ -4,6 +4,7 @@
 
 #include "Matrix.h"
 #include "concept.h"
+#include "Polynomial.h"
 
 using namespace std;
 
@@ -123,6 +124,28 @@ int main()
 	v1 *= v2;
 	print(po.get_table());
 	print(v1.get_table());
+
+    Expression expr(12, 'x', 3);
+    Expression expr1(-12, 'x', 3);
+
+    std::cout << expr << '\n';
+    expr*=Expression(13, "x^5");
+    std::cout << expr << '\n';
+
+    auto temp = expr * Expression(10);
+    Polynomial polynomial(std::vector<Expression> {Expression(1, 'x', 1), Expression(-2)});
+    Polynomial polynomial1(std::vector<Expression> {Expression(1, 'x', 1), Expression(-3)});
+    Polynomial polynomial2(1, polynomial, 2);
+    Polynomial polynomial3(1, polynomial1, 2);
+    Polynomial polynomial4 = polynomial2 * polynomial3;
+    std::cout << polynomial4 << '\n';
+
+    auto result = polynomial4.solve(1000000);
+    std::cout << polynomial4.set_value(make_pair('x', 2)) << '\n';
+    for (const auto& ans: result) {
+        std::cout << ans << '\t';
+    }
+
 	//    cout << po << endl;
 	return 0;
 }

@@ -3,6 +3,7 @@
 #include <cmath>
 
 
+
 std::vector<Expression::Variable> Expression::create_variables(const std::string &_variables) {
     std::vector<Variable> result(26, Variable(' ', 0));
     size_t i = 0, temp;
@@ -14,8 +15,8 @@ std::vector<Expression::Variable> Expression::create_variables(const std::string
                 throw std::invalid_argument("_variables format should be like this:\nx^2\n");
             _power = find_number(temp, _variables);
 
-            result['z' - _variables[i]].variable = _variables[i];
-            result['z' - _variables[i]].power += _power;
+            result[_variables[i] - 'a'].variable = _variables[i];
+            result[_variables[i] - 'a'].power += _power;
 
             i = temp;
         } else
@@ -33,7 +34,7 @@ constexpr std::vector<Expression::Variable> Expression::find_variables(const std
     return result;
 }
 
-constexpr int64_t Expression::find_number(size_t &index, const std::string &_variables) {
+int64_t Expression::find_number(size_t &index, const std::string &_variables) {
     std::string result;
     if (_variables[index] == '-') {
         result += '-';
@@ -48,15 +49,15 @@ constexpr int64_t Expression::find_number(size_t &index, const std::string &_var
 
 bool Expression::is_similar_terms(const Expression &expression) const {
     bool result = true;
-    if (_constant != expression._constant || _variables.size() != expression._variables.size())
+    if (_variables.size() != expression._variables.size())
         result = false;
     else {
         std::vector<int16_t> all_alphabets(26, -1);
         for (int16_t i = 0; i < _variables.size(); ++i)
-            all_alphabets['z' - _variables[i].variable] = i;
+            all_alphabets[_variables[i].variable - 'a'] = i;
         int16_t temp;
         for (const auto &var: expression._variables) {
-            temp = all_alphabets['z' - var.variable];
+            temp = all_alphabets[var.variable - 'a'];
             if ((temp == -1) || (_variables[temp].variable != var.variable ||
                                  (_variables[temp].power * this->_power) != (var.power * expression._power))) {
                 result = false;
@@ -93,6 +94,8 @@ Expression &Expression::operator+=(const Expression &expression) {
         check_expression();
     } else
         throw std::invalid_argument("two expressions should have same _variables and same _powers.");
+
+    return *this;
 }
 
 Expression &Expression::operator-=(const Expression &expression) {
@@ -101,21 +104,22 @@ Expression &Expression::operator-=(const Expression &expression) {
         check_expression();
     } else
         throw std::invalid_argument("two expressions should have same _variables and same _powers.");
+    return *this;
 }
 
 Expression &Expression::operator*=(const Expression &expression) {
     _constant *= expression._constant;
     std::vector<int16_t> alphas(26, -1);
     for (int16_t i = 0; i < _variables.size(); ++i) {
-        alphas['z' - _variables[i].variable] = i;
+        alphas[_variables[i].variable - 'a'] = i;
         _variables[i].power *= _power;
     }
     _power = 1;
     for (const auto &var: expression._variables) {
-        if (alphas['z' - var.variable] == -1)
+        if (alphas[var.variable - 'a'] == -1)
             _variables.emplace_back(var.variable, var.power * expression._power);
         else
-            _variables[alphas['z' - var.variable]].power += var.power * expression._power;
+            _variables[alphas[var.variable - 'a']].power += var.power * expression._power;
     }
     check_expression();
     return *this;
@@ -126,15 +130,15 @@ Expression &Expression::operator/=(const Expression &expression) {
         _constant /= expression._constant;
         std::vector<int16_t> alphas(26, -1);
         for (int16_t i = 0; i < _variables.size(); ++i) {
-            alphas['z' - _variables[i].variable] = i;
+            alphas[_variables[i].variable - 'a'] = i;
             _variables[i].power *= _power;
         }
         _power = 1;
         for (const auto &var: expression._variables) {
-            if (alphas['z' - var.variable] == -1)
+            if (alphas[var.variable - 'a'] == -1)
                 _variables.emplace_back(var.variable, -1 * var.power * expression._power);
             else
-                _variables[alphas['z' - var.variable]].power -= var.power * expression._power;
+                _variables[alphas[var.variable - 'a']].power -= var.power * expression._power;
         }
         check_expression();
     }
@@ -173,12 +177,14 @@ Expression Expression::operator/(const Expression &expression) const {
     return Expression(*this) /= expression;
 }
 
+
+
 long double Expression::set_value(const std::vector<std::pair<char, double>> &values) const {
     if (_variables.size() > values.size())
         throw std::invalid_argument(std::format("there should be {} at least argument.", _variables.size()));
     std::vector<double> alphabets(26, INT64_MIN);
     for (const auto &pair: values)
-        alphabets['z' - pair.first] = pair.second;
+        alphabets[pair.first - 'a'] = pair.second;
 
     long double result = 0;
     double temp;
@@ -198,12 +204,15 @@ long double Expression::set_value(const std::pair<char, double> &value) const {
         throw std::invalid_argument(std::format("there should be {} at least argument.", _variables.size()));
 
     long double result = 0;
-    for (auto &var: _variables) {
-        if (var.variable != value.first)
-            throw std::invalid_argument(std::format("not specified {} in values.", var.variable));
-        result += powf64x(value.second, var.power);
-    }
-    result = powf64x(result, _power) * _constant;
+    if (!_variables.empty()) {
+        for (auto &var: _variables) {
+            if (var.variable != value.first)
+                throw std::invalid_argument(std::format("not specified {} in values.", var.variable));
+            result += powf64x(value.second, var.power);
+        }
+        result = powf64x(result, _power) * _constant;
+    } else
+        result = _constant;
 
     return result;
 }

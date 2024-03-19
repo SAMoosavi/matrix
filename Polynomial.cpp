@@ -40,6 +40,18 @@ Polynomial::Polynomial(std::vector<Expression> expressions) {
         throw std::invalid_argument("there should be one expression at least.");
 }
 
+Polynomial::Polynomial(double constant, const Polynomial &polynomial, const int64_t &power) :
+        all_expressions(polynomial.all_expressions) {
+    if (constant != 0 || power != 0) {
+        this->power_equal(power);
+        Expression temp(constant);
+        if (constant != 1) {
+            for (auto &expr: all_expressions)
+                expr *= temp;
+        }
+    }
+}
+
 Polynomial::Polynomial(Expression expression) :
         all_expressions(std::vector<Expression>{std::move(expression)}) {}
 
@@ -82,19 +94,41 @@ Polynomial &Polynomial::operator-=(const Polynomial &another) {
 }
 
 Polynomial &Polynomial::operator*=(const Polynomial &another) {
-    Polynomial temp = *this, first_stage = *this;
+    Polynomial result = Polynomial(Expression(0));
+    Expression temp(0);
     for (const auto &expr: another.all_expressions) {
-        for (auto &temp_expr: temp.all_expressions)
-            temp_expr *= expr;
-        *this += temp;
-        temp = first_stage;
+        for (const auto &temp_expr: all_expressions) {
+            temp = temp_expr * expr;
+            result += Polynomial(temp);
+        }
     }
+    *this = result;
     return *this;
 }
 
 Polynomial &Polynomial::operator/=(const Expression &another) {
+    Expression temp = another.power(-1);
     for (auto &expr: all_expressions)
-        expr *= another;
+        expr *= temp;
+    return *this;
+}
+
+Polynomial &Polynomial::power_equal(const int64_t &power) {
+    Polynomial another = *this;
+    size_t i = 1;
+    while (i * 2 <= std::abs(power)) {
+        *this *= *this;
+        i *= 2;
+    }
+    while (i < std::abs(power)) {
+        *this *= another;
+        ++i;
+    }
+
+    if (power < 0) {
+        for (auto &expr: all_expressions)
+            expr.power_equal(-1);
+    }
     return *this;
 }
 
@@ -112,6 +146,12 @@ Polynomial Polynomial::operator*(const Polynomial &another) const {
 
 Polynomial Polynomial::operator/(const Expression &another) const {
     return Polynomial(*this) /= another;
+}
+
+Polynomial Polynomial::power(const int64_t &power) const {
+    Polynomial another = *this;
+    another.power_equal(power);
+    return another;
 }
 
 bool Polynomial::check_solve_validation(const Polynomial::PolynomailVariableMaxPower &variableMaxPower) const {
@@ -154,11 +194,10 @@ Polynomial::PolynomailVariableMaxPower Polynomial::find_variables_and_max_power(
     for (const auto &expr: all_expressions) {
         if (expr.constant() != 0) {
             for (const auto &var: expr.variables()) {
-                if (var.power * expr.power() > alphabets['z' - var.variable])
-                    alphabets['z' - var.variable] = var.power * expr.power();
+                if (var.power * expr.power() > alphabets[var.variable - 'a'])
+                    alphabets[var.variable - 'a'] = var.power * expr.power();
             }
         }
-
     }
 
     result = create_variables(alphabets);
@@ -177,7 +216,7 @@ Expression *Polynomial::find_expression_by_power(int64_t target_power) const {
         }
     } else {
         for (auto &expr: all_expressions) {
-            if (expr.variables().begin()->power * expr.power() == target_power) {
+            if (!expr.variables().empty() && (expr.variables().begin()->power * expr.power() == target_power)) {
                 result = (Expression *) &expr;
                 break;
             }
@@ -205,7 +244,7 @@ Polynomial::PolynomialRoot Polynomial::solve_quardatic_equation() const {
 
     double delta = pow(one_power->constant(), 2) - 4 * two_power->constant() * constant->constant();
 
-    if (delta == 0) {
+    if (compare_with_precision(delta, 0, 6)) {
         result.emplace_back(-1 * one_power->constant() / 2 * two_power->constant());
     } else if (delta > 0) {
         result.emplace_back((-1 * one_power->constant() + sqrt(delta)) / 2 * two_power->constant());
@@ -240,7 +279,7 @@ Polynomial::PolynomialRoot Polynomial::find_cubic_roots(double delta, double p, 
         temp = pow((-1 * q / 2 + sqrt(delta)), 1.0 / 3) +
                pow((-1 * q / 2 - sqrt(delta)), 1.0 / 3) - a / 3;
         result.emplace_back(temp);
-    } else if (delta == 0) {
+    } else if (compare_with_precision(delta, 0, 6)) {
         temp = pow(q / 2, 1.0 / 3) - a / 3;
         result.emplace_back(temp);
         temp = -2 * pow(q / 2, 1.0 / 3) - a / 3;
@@ -272,7 +311,7 @@ Polynomial::PolynomialRoot Polynomial::solve_by_newton_technique(double guess) c
         else if (derivated_answer == 0) {
             // bug
             current_answer = create_random_number();
-        } else{
+        } else {
             current_answer = previous_answer - (polynomial_answer / derivated_answer);
         }
     }
@@ -287,18 +326,20 @@ Polynomial Polynomial::derivate(uint64_t degree) const {
     else {
         std::vector<Expression> expressions;
         double constant;
-        Expression::Variable* temp;
-        for (auto& expr: all_expressions) {
-            temp = (Expression::Variable*) &expr.variables()[0];
-            constant = expr.constant() *
-                    caluculate_derivate_constant(expr.power() * temp->power, degree);
-            expressions.emplace_back(constant, temp->variable, expr.power() * temp->power - degree);
+        Expression::Variable *temp;
+        for (auto &expr: all_expressions) {
+            temp = (Expression::Variable *) &expr.variables()[0];
+            if (temp != nullptr) {
+                constant = expr.constant() *
+                           calculate_constant_of_derivated(expr.power() * temp->power, degree);
+                expressions.emplace_back(constant, temp->variable, expr.power() * temp->power - degree);
+            }
         }
         return Polynomial(expressions);
     }
 }
 
-int64_t Polynomial::caluculate_derivate_constant(int64_t power, uint64_t degree) const {
+int64_t Polynomial::calculate_constant_of_derivated(int64_t power, uint64_t degree) const {
     int64_t result = 1;
     while (degree > 0) {
         result *= power;
@@ -313,7 +354,7 @@ long double Polynomial::set_value(const std::vector<std::pair<char, double>> &va
     if (size != values.size())
         throw std::invalid_argument(std::format("there should exist {} pair in values.", size));
     long double result = 0;
-    for (auto & expr: all_expressions)
+    for (auto &expr: all_expressions)
         result += expr.set_value(values);
 
     return result;
@@ -324,13 +365,10 @@ long double Polynomial::set_value(const std::pair<char, double> &value) const {
     if (size > 1)
         throw std::invalid_argument(std::format("there should exist {} pair in values.", size));
     long double result = 0;
-    for (auto & expr: all_expressions)
+    for (auto &expr: all_expressions)
         result += expr.set_value(value);
 
     return result;
 }
-
-
-
 
 
