@@ -125,6 +125,12 @@ int main()
 	print(po.get_table());
 	print(v1.get_table());
 
+	//    cout << po << endl;
+	Matrix<int> v4(vector<vector<int>>({{0,2},{1,3}}));
+	cout << v4.determinant();
+	Matrix<W> v3 = 5 * v1 + v2 * 10;
+	print(v3.get_table());
+
     Expression expr(12, 'x', 3);
     Expression expr1(-12, 'x', 3);
 
@@ -146,6 +152,5 @@ int main()
         std::cout << ans << '\t';
     }
 
-	//    cout << po << endl;
-	return 0;
+  return 0;
 }
