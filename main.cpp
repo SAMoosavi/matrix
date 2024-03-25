@@ -141,9 +141,7 @@ int main()
 	v1 *= v2;
 	print(po.get_table());
 	print(v1.get_table());
-	Matrix<int> v4(vector<vector<int>>({{0,2},{1,3}}));
-	cout << v4.determinant();
-	Matrix<W> v3 = 5 * v1 + v2 * 10;
+	Matrix<W> v3 = v2 * 10;
 	print(v3.get_table());
 	Matrix<int> v4(vector<vector<int>>({
 			{1, 2, 2, 2},
@@ -154,6 +152,10 @@ int main()
 	cout << v4.determinant() << endl;
 	Matrix<W> v5 = v2 + v4;
 	print(v5.get_table());
+	Matrix<W> v6 = v2 * v4;
+	print(v6.get_table());
+	Matrix<W> v7 = 10 * v2;
+	print(v7.get_table());
 
 	return 0;
 }
