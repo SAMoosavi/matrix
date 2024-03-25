@@ -44,13 +44,16 @@ public:
 	template <typename OtherElement>
 	Matrix<Element>& operator-=(const Matrix<OtherElement>& other);
 
-	Matrix<Element> multiple(const Matrix<Element>& other) const;
-	Matrix<Element> operator*(const Matrix<Element>& other) const;
-	Matrix<Element>& operator*=(const Matrix<Element>& other);
-
-	Matrix<Element> multiple(const auto& other) const;
-	Matrix<Element> operator*(const auto& other) const;
-	Matrix<Element>& operator*=(const auto& other);
+	template <typename OtherElement>
+		requires MultipleableDifferentTypeReturnFirstType<Element, OtherElement>
+	Matrix<Element> multiple(const Matrix<OtherElement>& other) const;
+	template <typename OtherElement>
+		requires(not IsMatrixable<OtherElement>) and MultipleableDifferentType<Element, OtherElement>
+	Matrix<Element> multiple(const OtherElement& other) const;
+	template <typename OtherElement>
+	Matrix<Element> operator*(const OtherElement& other) const;
+	template <typename OtherElement>
+	Matrix<Element>& operator*=(const OtherElement& other);
 
 	Element at(size_t row_index, size_t col_index);
 
@@ -66,8 +69,10 @@ private:
 	TableType table;
 };
 
-template <Elementable Element>
-Matrix<Element> operator*(const auto& number, const Matrix<Element>& matrix);
+
+template <typename Element, typename OtherElement>
+	requires(not IsMatrixable<Element>) and (not IsMatrixable<OtherElement>) and MultipleableDifferentType<Element, OtherElement>
+Matrix<Element> operator*(const OtherElement& number, const Matrix<Element>& matrix);
 
 #include "Matrix-tmp.h"
 

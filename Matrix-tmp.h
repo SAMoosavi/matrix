@@ -87,69 +87,60 @@ Matrix<Element>& Matrix<Element>::operator-=(const Matrix<OtherElement>& other)
 }
 
 template <Elementable Element>
-Matrix<Element> Matrix<Element>::multiple(const Matrix<Element>& other) const
+template <typename OtherElement>
+	requires MultipleableDifferentTypeReturnFirstType<Element, OtherElement>
+Matrix<Element> Matrix<Element>::multiple(const Matrix<OtherElement>& other) const
 {
-	if (col != other.row)
-		throw std::runtime_error(std::format("Must be number of col in first Matrix equal to row of second Matrix but {} not equal to {}", col, other.row));
+	if (col != other.get_row())
+		throw std::runtime_error(std::format("Must be number of col in first Matrix equal to row of second Matrix but {} not equal to {}", col, other.get_row()));
 
 	Matrix<Element> result(row, col);
 
 	for (size_t i = 0; i < row; ++i)
 		for (size_t k = 0; k < col; ++k)
-			for (size_t j = 0; j < other.col; ++j)
+			for (size_t j = 0; j < other.get_col(); ++j)
 				result[i][j] += table[i][k] * other[k][j];
 
 	return result;
 }
 
 template <Elementable Element>
-Matrix<Element> Matrix<Element>::operator*(const Matrix<Element>& other) const
-{
-	return multiple(std::move(other));
-}
-
-template <Elementable Element>
-Matrix<Element>& Matrix<Element>::operator*=(const Matrix<Element>& other)
-{
-	*this = multiple(other);
-	return *this;
-}
-
-template <Elementable Element>
-Matrix<Element> Matrix<Element>::multiple(const auto& other) const
+template <typename OtherElement>
+	requires(not IsMatrixable<OtherElement>) and MultipleableDifferentType<Element, OtherElement>
+Matrix<Element> Matrix<Element>::multiple(const OtherElement& other) const
 {
 	Matrix<Element> result = *this;
 	for (RowType& row_of_table: result.table) {
 		for (Element& element: row_of_table) {
-			if constexpr (MultipleAssignableDifferentType<Element, decltype(other)>) {
+			if constexpr (MultipleAssignableDifferentType<Element, OtherElement>)
 				element *= other;
-			} else if constexpr (MultipleableDifferentTypeReturnFirstType<Element, decltype(other)>) {
+			else if constexpr (MultipleableDifferentTypeReturnFirstType<Element, OtherElement>)
 				element = element * other;
-			} else if constexpr (MultipleableDifferentTypeReturnSecondType<Element, decltype(other)>) {
+			else if constexpr (MultipleableDifferentTypeReturnSecondType<Element, OtherElement>)
 				element = other * element;
-			} else {
-				throw std::invalid_argument("cannot calculate multiplication");
-			}
 		}
 	}
 	return result;
 }
 
 template <Elementable Element>
-Matrix<Element> Matrix<Element>::operator*(const auto& other) const
+template <typename OtherElement>
+Matrix<Element> Matrix<Element>::operator*(const OtherElement& other) const
 {
 	return multiple(std::move(other));
 }
 
 template <Elementable Element>
-Matrix<Element>& Matrix<Element>::operator*=(const auto& other)
+template <typename OtherElement>
+Matrix<Element>& Matrix<Element>::operator*=(const OtherElement& other)
 {
-	*this = multiple(std::move(other));
+	*this = multiple(other);
 	return *this;
 }
 
-template <Elementable Element>
-Matrix<Element> operator*(const auto& number, const Matrix<Element>& matrix)
+template <typename Element, typename OtherElement>
+	requires(not IsMatrixable<Element>) and (not IsMatrixable<OtherElement>) and MultipleableDifferentType<Element, OtherElement>
+Matrix<Element> operator*(const OtherElement& number, const Matrix<Element>& matrix)
 {
 	return std::move(matrix * number);
 }
