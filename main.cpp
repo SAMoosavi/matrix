@@ -63,6 +63,19 @@ public:
 		return W{num * other.num};
 	}
 
+	template <typename T>
+	W operator*(const T& other) const
+	{
+		return W{num * other};
+	}
+
+
+	template <typename T>
+	W operator+(const T& other) const
+	{
+		return W{num + other};
+	}
+
 	W operator+(const W& other) const
 	{
 		return W{num + other.num};
@@ -83,6 +96,11 @@ public:
 	[[nodiscard]] int get() const
 	{
 		return num;
+	}
+
+	bool operator==(const int& other) const
+	{
+		return num == other;
 	}
 
 private:
