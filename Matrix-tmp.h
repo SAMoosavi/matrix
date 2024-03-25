@@ -208,4 +208,22 @@ Element Matrix<Element>::determinant() const
 		return -det;
 }
 
+template <Elementable Element>
+auto Matrix<Element>::get_table() const -> TableType
+{
+	return table;
+}
+
+template <Elementable Element>
+size_t Matrix<Element>::get_row() const
+{
+	return row;
+}
+
+template <Elementable Element>
+size_t Matrix<Element>::get_col() const
+{
+	return col;
+}
+
 #endif

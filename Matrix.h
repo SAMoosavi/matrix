@@ -23,10 +23,9 @@ public:
 	template <template <Containerable> typename Container>
 	Matrix(const Container<Container<Element>>& matrix);
 
-	TableType get_table() const
-	{
-		return table;
-	}
+	TableType get_table() const;
+	size_t get_row() const;
+	size_t get_col() const;
 
 	Matrix<Element> sum(const Matrix<Element>& other) const;
 	Matrix<Element> operator+(const Matrix<Element>& other) const;
