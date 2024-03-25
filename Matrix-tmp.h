@@ -174,7 +174,8 @@ Element Matrix<Element>::determinant() const
 	for (size_t col_index = 0; col_index < col; col_index++) {
 		size_t swap_row_index = col_index;
 		Element base_of_column = tmp_table[swap_row_index][col_index];
-		while (base_of_column == 0 && swap_row_index < row) {
+//		TODO: create concept for check exit Element == 0
+		while (base_of_column == 0 and swap_row_index < row) {
 			base_of_column = tmp_table[swap_row_index][col_index];
 			++swap_row_index;
 		}
