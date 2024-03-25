@@ -27,15 +27,22 @@ public:
 	size_t get_row() const;
 	size_t get_col() const;
 
-	Matrix<Element> sum(const Matrix<Element>& other) const;
-	Matrix<Element> operator+(const Matrix<Element>& other) const;
-	Matrix<Element>& operator+=(const Matrix<Element>& other);
+	template <typename OtherElement>
+		requires SamableDifferentType<Element, OtherElement>
+	Matrix<Element> sum(const Matrix<OtherElement>& other) const;
+	template <typename OtherElement>
+	Matrix<Element> operator+(const Matrix<OtherElement>& other) const;
+	template <typename OtherElement>
+	Matrix<Element>& operator+=(const Matrix<OtherElement>& other);
 
 	Matrix<Element> operator-() const;
 
-	Matrix<Element> submission(const Matrix<Element>& other) const;
-	Matrix<Element> operator-(const Matrix<Element>& other) const;
-	Matrix<Element>& operator-=(const Matrix<Element>& other);
+	template <typename OtherElement>
+	Matrix<Element> submission(const Matrix<OtherElement>& other) const;
+	template <typename OtherElement>
+	Matrix<Element> operator-(const Matrix<OtherElement>& other) const;
+	template <typename OtherElement>
+	Matrix<Element>& operator-=(const Matrix<OtherElement>& other);
 
 	Matrix<Element> multiple(const Matrix<Element>& other) const;
 	Matrix<Element> operator*(const Matrix<Element>& other) const;

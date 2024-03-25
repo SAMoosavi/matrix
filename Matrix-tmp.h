@@ -24,27 +24,31 @@ Matrix<Element>::Matrix(const Container<Container<Element>>& matrix)
 };
 
 template <Elementable Element>
-Matrix<Element> Matrix<Element>::sum(const Matrix<Element>& other) const
+template <typename OtherElement>
+	requires SamableDifferentType<Element, OtherElement>
+Matrix<Element> Matrix<Element>::sum(const Matrix<OtherElement>& other) const
 {
-	if (row != other.row && col != other.col)
+	if ((row != other.get_row()) and (col != other.get_col()))
 		throw invalid_argument("Cannot sum spans of different sizes");
 
 	Matrix<Element> result(row, col);
 	for (size_t row_index = 0; row_index < row; ++row_index)
 		for (size_t col_index = 0; col_index < col; ++col_index)
-			result[row_index][col_index] = other[row_index][col_index] + table[row_index][col_index];
+			result[row_index][col_index] = table[row_index][col_index] + other[row_index][col_index];
 
 	return result;
 }
 
 template <Elementable Element>
-Matrix<Element> Matrix<Element>::operator+(const Matrix<Element>& other) const
+template <typename OtherElement>
+Matrix<Element> Matrix<Element>::operator+(const Matrix<OtherElement>& other) const
 {
 	return sum(std::move(other));
 }
 
 template <Elementable Element>
-Matrix<Element>& Matrix<Element>::operator+=(const Matrix<Element>& other)
+template <typename OtherElement>
+Matrix<Element>& Matrix<Element>::operator+=(const Matrix<OtherElement>& other)
 {
 	*this = sum(other);
 	return *this;
@@ -61,19 +65,22 @@ Matrix<Element> Matrix<Element>::operator-() const
 }
 
 template <Elementable Element>
-Matrix<Element> Matrix<Element>::submission(const Matrix<Element>& other) const
+template <typename OtherElement>
+Matrix<Element> Matrix<Element>::submission(const Matrix<OtherElement>& other) const
 {
 	return sum(-other);
 }
 
 template <Elementable Element>
-Matrix<Element> Matrix<Element>::operator-(const Matrix<Element>& other) const
+template <typename OtherElement>
+Matrix<Element> Matrix<Element>::operator-(const Matrix<OtherElement>& other) const
 {
 	return multiple(std::move(other));
 }
 
 template <Elementable Element>
-Matrix<Element>& Matrix<Element>::operator-=(const Matrix<Element>& other)
+template <typename OtherElement>
+Matrix<Element>& Matrix<Element>::operator-=(const Matrix<OtherElement>& other)
 {
 	*this = submission(other);
 	return *this;
