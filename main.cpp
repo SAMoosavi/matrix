@@ -127,6 +127,15 @@ int main()
 	cout << v4.determinant();
 	Matrix<W> v3 = 5 * v1 + v2 * 10;
 	print(v3.get_table());
+	Matrix<int> v4(vector<vector<int>>({
+			{1, 2, 2, 2},
+			{3, 2, 2, 4},
+			{3, 2, 2, 4},
+			{3, 2, 2, 4},
+	}));
+	cout << v4.determinant() << endl;
+	Matrix<W> v5 = v2 + v4;
+	print(v5.get_table());
 
-  return 0;
+	return 0;
 }
