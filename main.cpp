@@ -131,23 +131,20 @@ int main()
 	Matrix<W> v3 = 5 * v1 + v2 * 10;
 	print(v3.get_table());
 
-    Expression expr(12, 'x', 3);
-    Expression expr1(-12, 'x', 3);
+    Polynomial::Monomial two(2);
+    Polynomial::Monomial three(3);
+    Polynomial::Monomial x(1, std::vector<Polynomial::Variable> {Polynomial::Variable('x')});
 
-    std::cout << expr << '\n';
-    expr*=Expression(13, "x^5");
-    std::cout << expr << '\n';
-
-    auto temp = expr * Expression(10);
-    Polynomial polynomial(std::vector<Expression> {Expression(1, 'x', 1), Expression(-2)});
-    Polynomial polynomial1(std::vector<Expression> {Expression(1, 'x', 1), Expression(-3)});
+    Polynomial polynomial(std::vector<Polynomial::Monomial> {x, two});
+    Polynomial polynomial1(std::vector<Polynomial::Monomial> {x, three});
     Polynomial polynomial2(1, polynomial, 2);
     Polynomial polynomial3(1, polynomial1, 2);
-    Polynomial polynomial4 = polynomial2 * polynomial3;
+    Polynomial polynomial4(1, polynomial2 * polynomial3);
+
     std::cout << polynomial4 << '\n';
 
     auto result = polynomial4.solve(1000000);
-    std::cout << polynomial4.set_value(make_pair('x', 2)) << '\n';
+    std::cout << polynomial4.set_value(make_pair('x', -3)) << '\n';
     for (const auto& ans: result) {
         std::cout << ans << '\t';
     }

@@ -8,9 +8,6 @@ add_executable(Matrix main.cpp
         Matrix.h
         concept.h
         Matrix-tmp.h
-        Expression.cpp
-        Expression.h
-        Expression-inl.h
         Polynomial.h
         Polynomial.cpp
         Polynomial-inl.h

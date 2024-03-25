@@ -4,6 +4,182 @@
 #include <cfloat>
 #include "Polynomial.h"
 
+// Expression
+int64_t Polynomial::Expression::find_number(size_t &index, const std::string &variables) {
+    std::string result;
+    if (variables[index] == '-') {
+        result += '-';
+        ++index;
+    }
+    while (index < variables.size() && is_number(variables[index])) {
+        result += variables[index];
+        ++index;
+    }
+    return std::stoi(result);
+}
+
+bool Polynomial::Expression::is_similar_terms(const Expression &expression) const {
+    bool result = true;
+    if (variables.size() != expression.variables.size())
+        result = false;
+    else {
+        std::vector<int16_t> all_alphabets(26, -1);
+        for (int16_t i = 0; i < variables.size(); ++i)
+            all_alphabets[variables[i].variable - 'a'] = i;
+        int16_t temp;
+        for (const auto &var: expression.variables) {
+            temp = all_alphabets[var.variable - 'a'];
+            if ((temp == -1) || (variables[temp].variable != var.variable ||
+                                 (variables[temp].power) != (var.power))) {
+                result = false;
+                break;
+            }
+        }
+    }
+
+    return result;
+}
+
+
+Polynomial::Expression::Expression(double constant, const char variable, int64_t power) :
+        constant(constant) {
+    if (constant != 0 && power != 0)
+        variables.emplace_back(variable, power);
+}
+
+Polynomial::Expression::Expression(double constant, std::vector<Variable> variables) :
+        constant(constant) {
+    if (constant != 0)
+        this->variables = std::move(variables);
+}
+
+Polynomial::Expression::Expression(double constant) :
+        constant(constant) {}
+
+Polynomial::Expression &Polynomial::Expression::operator+=(const Expression &expression) {
+    if (is_similar_terms(expression)) {
+        constant += expression.constant;
+        check_expression();
+    } else
+        throw std::invalid_argument("two expressions should have same variables and same powers.");
+
+    return *this;
+}
+
+Polynomial::Expression &Polynomial::Expression::operator-=(const Expression &expression) {
+    if (is_similar_terms(expression)) {
+        constant -= expression.constant;
+        check_expression();
+    } else
+        throw std::invalid_argument("two expressions should have same variables and same powers.");
+    return *this;
+}
+
+Polynomial::Expression &Polynomial::Expression::operator*=(const Expression &expression) {
+    constant *= expression.constant;
+    std::vector<int16_t> alphas(26, -1);
+    for (int16_t i = 0; i < variables.size(); ++i)
+        alphas[variables[i].variable - 'a'] = i;
+
+    for (const auto &var: expression.variables) {
+        if (alphas[var.variable - 'a'] == -1)
+            variables.emplace_back(var.variable, var.power);
+        else
+            variables[alphas[var.variable - 'a']].power += var.power;
+    }
+    check_expression();
+    return *this;
+}
+
+Polynomial::Expression &Polynomial::Expression::operator/=(const Expression &expression) {
+    if (expression.get_constant() != 0) {
+        constant /= expression.constant;
+        std::vector<int16_t> alphas(26, -1);
+        for (int16_t i = 0; i < variables.size(); ++i)
+            alphas[variables[i].variable - 'a'] = i;
+        for (const auto &var: expression.variables) {
+            if (alphas[var.variable - 'a'] == -1)
+                variables.emplace_back(var.variable, -1 * var.power);
+            else
+                variables[alphas[var.variable - 'a']].power -= var.power;
+        }
+        check_expression();
+    }
+    return *this;
+}
+
+void Polynomial::Expression::check_expression() {
+    if (constant == 0)
+        variables.clear();
+    else {
+        size_t i = 0;
+        while (i < variables.size()) {
+            if (variables[i].power == 0) {
+                std::swap(variables[i], variables.back());
+                variables.pop_back();
+            } else
+                ++i;
+        }
+    }
+}
+
+Polynomial::Expression Polynomial::Expression::operator+(const Expression &expression) const {
+    return Expression(*this) += expression;
+}
+
+Polynomial::Expression Polynomial::Expression::operator-(const Expression &expression) const {
+    return Expression(*this) -= expression;
+}
+
+Polynomial::Expression Polynomial::Expression::operator*(const Expression &expression) const {
+    return Expression(*this) *= expression;
+}
+
+Polynomial::Expression Polynomial::Expression::operator/(const Expression &expression) const {
+    return Expression(*this) /= expression;
+}
+
+
+long double Polynomial::Expression::set_value(const std::vector<std::pair<char, double>> &values) const {
+    if (variables.size() > values.size())
+        throw std::invalid_argument(std::format("there should be {} at least argument.", variables.size()));
+    std::vector<double> alphabets(26, INT64_MIN);
+    for (const auto &pair: values)
+        alphabets[pair.first - 'a'] = pair.second;
+
+    long double result = 0;
+    double temp;
+    for (auto &var: variables) {
+        temp = alphabets['a' + var.variable];
+        if (temp == INT64_MIN)
+            throw std::invalid_argument(std::format("not specified {} in values.", var.variable));
+        result += powf64x(temp, var.power);
+    }
+    result *= constant;
+
+    return result;
+}
+
+long double Polynomial::Expression::set_value(const std::pair<char, double> &value) const {
+    if (variables.size() > 1)
+        throw std::invalid_argument(std::format("there should be {} at least argument.", variables.size()));
+
+    long double result = 0;
+    if (!variables.empty()) {
+        for (auto &var: variables) {
+            if (var.variable != value.first)
+                throw std::invalid_argument(std::format("not specified {} in values.", var.variable));
+            result += powf64x(value.second, var.power);
+        }
+        result *= constant;
+    } else
+        result = constant;
+
+    return result;
+}
+
+
+// Polynomial
 void Polynomial::delete_repeated_expressions(std::vector<Expression> &expressions) {
     for (size_t i = 0; i < expressions.size(); ++i) {
         size_t j = i + 1;
@@ -18,8 +194,8 @@ void Polynomial::delete_repeated_expressions(std::vector<Expression> &expression
     }
 }
 
-Polynomial::PolynomailVariableMaxPower Polynomial::create_variables(const std::vector<int64_t> &alphabets) {
-    Polynomial::PolynomailVariableMaxPower result;
+Polynomial::PolynomialVariableMaxPower Polynomial::createvariables(const std::vector<int64_t> &alphabets) {
+    Polynomial::PolynomialVariableMaxPower result;
     for (size_t i = 0; i < alphabets.size(); ++i) {
         if (alphabets[i] != INT64_MIN)
             result.emplace_back('a' + i, alphabets[i]);
@@ -30,14 +206,6 @@ Polynomial::PolynomailVariableMaxPower Polynomial::create_variables(const std::v
 int32_t Polynomial::create_random_number(const int32_t &max_value) {
     srand(time(0));
     return rand() % max_value;
-}
-
-Polynomial::Polynomial(std::vector<Expression> expressions) {
-    if (!expressions.empty()) {
-        delete_repeated_expressions(expressions);
-        all_expressions = std::move(expressions);
-    } else
-        throw std::invalid_argument("there should be one expression at least.");
 }
 
 Polynomial::Polynomial(double constant, const Polynomial &polynomial, const int64_t &power) :
@@ -52,10 +220,31 @@ Polynomial::Polynomial(double constant, const Polynomial &polynomial, const int6
     }
 }
 
-Polynomial::Polynomial(Expression expression) :
-        all_expressions(std::vector<Expression>{std::move(expression)}) {}
+Polynomial::Polynomial(double constant, const char variable, int64_t power) :
+        all_expressions(std::vector<Polynomial::Expression>{{constant, variable, power}}) {}
 
-Expression *Polynomial::find_similar_expression(const Expression &expression) const {
+Polynomial::Polynomial(double constant):
+        all_expressions(std::vector<Expression>{Expression(constant)}) {}
+
+Polynomial::Polynomial(Polynomial::Expression expression):
+        all_expressions(std::vector<Expression>{std::move(expression)}) {};
+
+Polynomial::Polynomial(std::vector<Expression> expressions) :
+        all_expressions(std::move(expressions)) {}
+
+Polynomial::Polynomial(Polynomial::Monomial monomial) {
+    if (monomial.constant != 0)
+        all_expressions.emplace_back(monomial.constant, std::move(monomial.variables));
+}
+
+Polynomial::Polynomial(std::vector<Monomial> polynomial) {
+    for (auto & monomial: polynomial) {
+        if (monomial.constant != 0)
+            all_expressions.emplace_back(monomial.constant, std::move(monomial.variables));
+    }
+}
+
+Polynomial::Expression *Polynomial::find_similar_expression(const Expression &expression) const {
     Expression *result = nullptr;
     for (auto &expr: all_expressions) {
         if (expr.is_similar_terms(expression)) {
@@ -94,22 +283,28 @@ Polynomial &Polynomial::operator-=(const Polynomial &another) {
 }
 
 Polynomial &Polynomial::operator*=(const Polynomial &another) {
-    Polynomial result = Polynomial(Expression(0));
+    Polynomial result = Polynomial(0);
     Expression temp(0);
     for (const auto &expr: another.all_expressions) {
         for (const auto &temp_expr: all_expressions) {
             temp = temp_expr * expr;
-            result += Polynomial(temp);
+            result += Polynomial(std::move(temp));
         }
     }
     *this = result;
     return *this;
 }
 
-Polynomial &Polynomial::operator/=(const Expression &another) {
-    Expression temp = another.power(-1);
-    for (auto &expr: all_expressions)
-        expr *= temp;
+Polynomial &Polynomial::operator/=(const Polynomial &another) {
+    Polynomial result = Polynomial(0);
+    Expression temp(0);
+    for (const auto &expr: another.all_expressions) {
+        for (const auto &temp_expr: all_expressions) {
+            temp = temp_expr / expr;
+            result += Polynomial(std::move(temp));
+        }
+    }
+    *this = result;
     return *this;
 }
 
@@ -144,7 +339,7 @@ Polynomial Polynomial::operator*(const Polynomial &another) const {
     return Polynomial(*this) *= another;
 }
 
-Polynomial Polynomial::operator/(const Expression &another) const {
+Polynomial Polynomial::operator/(const Polynomial &another) const {
     return Polynomial(*this) /= another;
 }
 
@@ -154,11 +349,11 @@ Polynomial Polynomial::power(const int64_t &power) const {
     return another;
 }
 
-bool Polynomial::check_solve_validation(const Polynomial::PolynomailVariableMaxPower &variableMaxPower) const {
+bool Polynomial::check_solve_validation(const Polynomial::PolynomialVariableMaxPower &variableMaxPower) const {
     bool result = false;
     if (variableMaxPower.empty()) {
         // need to test when it completed
-        if (all_expressions.begin()->constant() == 0)
+        if (all_expressions.begin()->get_constant() == 0)
             throw std::runtime_error("this Polynomial has infinity answers.");
         else
             throw std::runtime_error("there is no answer.");
@@ -171,7 +366,7 @@ bool Polynomial::check_solve_validation(const Polynomial::PolynomailVariableMaxP
 }
 
 Polynomial::PolynomialRoot Polynomial::solve(double guess) const {
-    PolynomailVariableMaxPower variableMaxPower = find_variables_and_max_power();
+    PolynomialVariableMaxPower variableMaxPower = find_variables_and_max_power();
     PolynomialRoot roots;
     if (check_solve_validation(variableMaxPower)) {
         // it need to test that the polynomial save unique expressions
@@ -187,36 +382,36 @@ Polynomial::PolynomialRoot Polynomial::solve(double guess) const {
     return roots;
 }
 
-Polynomial::PolynomailVariableMaxPower Polynomial::find_variables_and_max_power() const {
+Polynomial::PolynomialVariableMaxPower Polynomial::find_variables_and_max_power() const {
     // check  when there is constant only
-    PolynomailVariableMaxPower result;
+    PolynomialVariableMaxPower result;
     std::vector<int64_t> alphabets(26, INT64_MIN);
     for (const auto &expr: all_expressions) {
-        if (expr.constant() != 0) {
-            for (const auto &var: expr.variables()) {
-                if (var.power * expr.power() > alphabets[var.variable - 'a'])
-                    alphabets[var.variable - 'a'] = var.power * expr.power();
+        if (expr.get_constant() != 0) {
+            for (const auto &var: expr.get_variables()) {
+                if (var.power > alphabets[var.variable - 'a'])
+                    alphabets[var.variable - 'a'] = var.power;
             }
         }
     }
 
-    result = create_variables(alphabets);
+    result = createvariables(alphabets);
 
     return result;
 }
 
-Expression *Polynomial::find_expression_by_power(int64_t target_power) const {
+Polynomial::Expression *Polynomial::find_expression_bypower(int64_t target_power) const {
     Expression *result = nullptr;
     if (target_power == 0) {
         for (auto &expr: all_expressions) {
-            if (expr.variables().empty() || (expr.variables().begin()->power * expr.power() == target_power)) {
+            if (expr.get_variables().empty() || (expr.get_variables().begin()->power == target_power)) {
                 result = (Expression *) &expr;
                 break;
             }
         }
     } else {
         for (auto &expr: all_expressions) {
-            if (!expr.variables().empty() && (expr.variables().begin()->power * expr.power() == target_power)) {
+            if (!expr.get_variables().empty() && (expr.get_variables().begin()->power == target_power)) {
                 result = (Expression *) &expr;
                 break;
             }
@@ -228,41 +423,41 @@ Expression *Polynomial::find_expression_by_power(int64_t target_power) const {
 Polynomial::PolynomialRoot Polynomial::solve_linear_equation() const {
     // expressions need to be simplified
     PolynomialRoot result(1);
-    Expression *constant = find_expression_by_power(0);
-    Expression *one_power = find_expression_by_power(1);
+    Expression *constant = find_expression_bypower(0);
+    Expression *onepower = find_expression_bypower(1);
 
-    result[0] = -1 * constant->constant() / one_power->constant();
+    result[0] = -1 * constant->get_constant() / onepower->get_constant();
 
     return result;
 }
 
 Polynomial::PolynomialRoot Polynomial::solve_quardatic_equation() const {
     PolynomialRoot result;
-    Expression *constant = find_expression_by_power(0);
-    Expression *one_power = find_expression_by_power(1);
-    Expression *two_power = find_expression_by_power(2);
+    Expression *constant = find_expression_bypower(0);
+    Expression *onepower = find_expression_bypower(1);
+    Expression *twopower = find_expression_bypower(2);
 
-    double delta = pow(one_power->constant(), 2) - 4 * two_power->constant() * constant->constant();
+    double delta = pow(onepower->get_constant(), 2) - 4 * twopower->get_constant() * constant->get_constant();
 
     if (compare_with_precision(delta, 0, 6)) {
-        result.emplace_back(-1 * one_power->constant() / 2 * two_power->constant());
+        result.emplace_back(-1 * onepower->get_constant() / 2 * twopower->get_constant());
     } else if (delta > 0) {
-        result.emplace_back((-1 * one_power->constant() + sqrt(delta)) / 2 * two_power->constant());
-        result.emplace_back((-1 * one_power->constant() - sqrt(delta)) / 2 * two_power->constant());
+        result.emplace_back((-1 * onepower->get_constant() + sqrt(delta)) / 2 * twopower->get_constant());
+        result.emplace_back((-1 * onepower->get_constant() - sqrt(delta)) / 2 * twopower->get_constant());
     }
 
     return result;
 }
 
 Polynomial::PolynomialRoot Polynomial::solve_cubic_equation() const {
-    Expression *constant = find_expression_by_power(0);
-    Expression *one_power = find_expression_by_power(1);
-    Expression *two_power = find_expression_by_power(2);
-    Expression *three_power = find_expression_by_power(3);
+    Expression *constant = find_expression_bypower(0);
+    Expression *onepower = find_expression_bypower(1);
+    Expression *twopower = find_expression_bypower(2);
+    Expression *threepower = find_expression_bypower(3);
 
-    double a = two_power->constant() / three_power->constant();
-    double b = one_power->constant() / three_power->constant();
-    double c = constant->constant() / three_power->constant();
+    double a = twopower->get_constant() / threepower->get_constant();
+    double b = onepower->get_constant() / threepower->get_constant();
+    double c = constant->get_constant() / threepower->get_constant();
 
     double p = b - pow(a, 2) / 3;
     double q = 2 * pow(a, 3) / 27 - a * b / 3 + c;
@@ -324,18 +519,19 @@ Polynomial Polynomial::derivate(uint64_t degree) const {
     if (find_variables_and_max_power().size() > 1)
         throw std::invalid_argument("it can not calculate derivate of multi variable polynomials.");
     else {
+        // need to check that a positive power can not be a negative power after derivation
         std::vector<Expression> expressions;
         double constant;
-        Expression::Variable *temp;
+        Variable *temp;
         for (auto &expr: all_expressions) {
-            temp = (Expression::Variable *) &expr.variables()[0];
+            temp = (Variable *) &expr.get_variables()[0];
             if (temp != nullptr) {
-                constant = expr.constant() *
-                           calculate_constant_of_derivated(expr.power() * temp->power, degree);
-                expressions.emplace_back(constant, temp->variable, expr.power() * temp->power - degree);
+                constant = expr.get_constant() *
+                           calculate_constant_of_derivated(temp->power, degree);
+                expressions.emplace_back(constant, temp->variable, temp->power - degree);
             }
         }
-        return Polynomial(expressions);
+        return Polynomial(std::move(expressions));
     }
 }
 
@@ -370,5 +566,4 @@ long double Polynomial::set_value(const std::pair<char, double> &value) const {
 
     return result;
 }
-
 
