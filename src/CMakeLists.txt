@@ -1,7 +1,6 @@
 # List all the source files
 set(SOURCES
         main.cpp
-        Matrix.cpp
 )
 
 # List all the header files
