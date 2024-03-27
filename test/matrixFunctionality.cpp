@@ -2,12 +2,13 @@
 
 #include "matrix.h"
 
-// Define your test cases here
-TEST(TestCaseName, TestName)
+TEST(MatrixFunctionality, default_values_of_table_in_matrix_shuld_be_zero)
 {
-	// Your test code goes here
-	ASSERT_EQ(1, 1);
-	Matrix<int> a(5, 5);
-
-	ASSERT_EQ(a.at(2, 3), 0);
+	Matrix<int> matrix(3, 3);
+	auto table = matrix.get_table();
+	for (const auto& row: table) {
+		EXPECT_EQ(row.size(), 3);
+		for (const auto& cell: row)
+			EXPECT_EQ(cell, 0);
+	}
 }
