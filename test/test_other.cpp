@@ -1,6 +1,6 @@
-#include <gtest/gtest.h>
+#include "matrix.h"
 #include <gmock/gmock.h>
-#include "Matrix.h"
+#include <gtest/gtest.h>
 
 // Define your test cases here
 TEST(TestCaseName, TestName) {

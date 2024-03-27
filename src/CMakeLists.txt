@@ -6,7 +6,7 @@ set(SOURCES
 # List all the header files
 set(HEADERS
         concept.h
-        Matrix.h
+        matrix.h
 )
 
 # List all the inline header files
@@ -15,7 +15,7 @@ set(INLINE_HEADERS
 
 # List all the temporary header files
 set(TEMP_HEADERS
-        Matrix-tmp.h
+        matrix-tmp.h
 )
 
 # Add the executable

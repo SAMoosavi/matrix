@@ -1,5 +1,5 @@
+#include "matrix.h"
 #include <gtest/gtest.h>
-#include "Matrix.h"
 
 // Define your test cases here
 TEST(TestCaseName, TestName) {
