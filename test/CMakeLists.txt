@@ -6,8 +6,7 @@ include_directories(../src)
 
 # List all test source files
 set(TEST_FILES
-        test_main.cpp
-        test_other.cpp
+        matrixFunctionality.cpp
 )
 
 # Create an executable target for each test file
