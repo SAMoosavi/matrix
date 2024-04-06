@@ -45,9 +45,9 @@ public:
 
     Polynomial &operator*=(const Polynomial &another);
 
-    Polynomial &operator/=(const Polynomial &another);
+    Polynomial &operator/=(const Monomial &another);
 
-    Polynomial &power_equal(const int64_t &power);
+    Polynomial &power_equal(const uint64_t &power);
 
     Polynomial &operator=(const Polynomial &another) = default;
 
@@ -57,9 +57,9 @@ public:
 
     Polynomial operator*(const Polynomial &another) const;
 
-    Polynomial operator/(const Polynomial &another) const;
+    Polynomial operator/(const Monomial &another) const;
 
-    Polynomial power(const int64_t &power) const;
+    Polynomial power(const uint64_t &power) const;
 
     PolynomialRoot solve(double guess = 0) const;
 

@@ -223,10 +223,10 @@ Polynomial::Polynomial(double constant, const Polynomial &polynomial, const int6
 Polynomial::Polynomial(double constant, const char variable, int64_t power) :
         all_expressions(std::vector<Polynomial::Expression>{{constant, variable, power}}) {}
 
-Polynomial::Polynomial(double constant):
+Polynomial::Polynomial(double constant) :
         all_expressions(std::vector<Expression>{Expression(constant)}) {}
 
-Polynomial::Polynomial(Polynomial::Expression expression):
+Polynomial::Polynomial(Polynomial::Expression expression) :
         all_expressions(std::vector<Expression>{std::move(expression)}) {};
 
 Polynomial::Polynomial(std::vector<Expression> expressions) :
@@ -238,7 +238,7 @@ Polynomial::Polynomial(Polynomial::Monomial monomial) {
 }
 
 Polynomial::Polynomial(std::vector<Monomial> polynomial) {
-    for (auto & monomial: polynomial) {
+    for (auto &monomial: polynomial) {
         if (monomial.constant != 0)
             all_expressions.emplace_back(monomial.constant, std::move(monomial.variables));
     }
@@ -295,27 +295,22 @@ Polynomial &Polynomial::operator*=(const Polynomial &another) {
     return *this;
 }
 
-Polynomial &Polynomial::operator/=(const Polynomial &another) {
-    Polynomial result = Polynomial(0);
-    Expression temp(0);
-    for (const auto &expr: another.all_expressions) {
-        for (const auto &temp_expr: all_expressions) {
-            temp = temp_expr / expr;
-            result += Polynomial(std::move(temp));
-        }
-    }
-    *this = result;
+Polynomial &Polynomial::operator/=(const Monomial &another) {
+//    it is temporary
+    Expression temp(another.constant, another.variables);
+    for (auto &temp_expr: all_expressions)
+        temp_expr /= temp;
     return *this;
 }
 
-Polynomial &Polynomial::power_equal(const int64_t &power) {
+Polynomial &Polynomial::power_equal(const uint64_t &power) {
     Polynomial another = *this;
     size_t i = 1;
-    while (i * 2 <= std::abs(power)) {
+    while (i * 2 <= power) {
         *this *= *this;
         i *= 2;
     }
-    while (i < std::abs(power)) {
+    while (i < power) {
         *this *= another;
         ++i;
     }
@@ -339,11 +334,11 @@ Polynomial Polynomial::operator*(const Polynomial &another) const {
     return Polynomial(*this) *= another;
 }
 
-Polynomial Polynomial::operator/(const Polynomial &another) const {
+Polynomial Polynomial::operator/(const Monomial &another) const {
     return Polynomial(*this) /= another;
 }
 
-Polynomial Polynomial::power(const int64_t &power) const {
+Polynomial Polynomial::power(const uint64_t &power) const {
     Polynomial another = *this;
     another.power_equal(power);
     return another;
