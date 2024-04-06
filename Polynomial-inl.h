@@ -48,6 +48,16 @@ void Polynomial::Expression::set_constant(double constant) {
     this->constant = constant;
 }
 
+void Polynomial::Expression::increase_power() {
+    for (auto & var: variables)
+        ++var.power;
+}
+
+void Polynomial::Expression::decrease_power() {
+    for (auto & var: variables)
+        --var.power;
+}
+
 bool Polynomial::Variable::operator==(const Polynomial::Variable &another) const {
     return (this->variable == another.variable) && (this->power == another.power);
 }

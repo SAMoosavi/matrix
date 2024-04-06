@@ -222,10 +222,12 @@ bool Polynomial::Expression::compare_expressions_by_power(const Polynomial::Expr
 void Polynomial::calculate_quotient(std::vector<Expression> &expressions,
                                                                    const double& root) {
     std::sort(expressions.begin(), expressions.end(), Expression::compare_expressions_by_power);
-    double temp;
+    double temp = expressions.begin()->get_constant();
+    expressions.begin()->decrease_power();
     for (size_t i = 1; i < expressions.size() - 1; ++i) {
-        temp = expressions[i - 1].get_constant() * root + expressions[i].get_constant();
+        temp = temp * root + expressions[i].get_constant();
         expressions[i].set_constant(temp);
+        expressions[i].decrease_power();
     }
     expressions.pop_back();
 }
@@ -391,10 +393,8 @@ Polynomial::PolynomialRoot Polynomial::solve(double guess) const {
             roots = solve_linear_equation();
         else if (variableMaxPower.begin()->power == 2)
             roots = solve_quardatic_equation();
-        else if (variableMaxPower.begin()->power == 3)
-            roots = solve_cubic_equation();
-        else
-            roots = solve_by_newton_technique(guess);
+        else    // does not answer when you have many same roots
+            roots = solve_greater_power(guess);
     }
     return roots;
 }
@@ -466,59 +466,17 @@ Polynomial::PolynomialRoot Polynomial::solve_quardatic_equation() const {
     return result;
 }
 
-Polynomial::PolynomialRoot Polynomial::solve_cubic_equation() const {
-    Expression *constant = find_expression_bypower(0);
-    Expression *onepower = find_expression_bypower(1);
-    Expression *twopower = find_expression_bypower(2);
-    Expression *threepower = find_expression_bypower(3);
-
-    double a = twopower->get_constant() / threepower->get_constant();
-    double b = onepower->get_constant() / threepower->get_constant();
-    double c = constant->get_constant() / threepower->get_constant();
-
-    double p = b - pow(a, 2) / 3;
-    double q = 2 * pow(a, 3) / 27 - a * b / 3 + c;
-    double delta = pow(q, 2) / 4 + pow(p, 3) / 27;
-
-    return find_cubic_roots(delta, p, q, a);
-}
-
-Polynomial::PolynomialRoot Polynomial::find_cubic_roots(double delta, double p, double q, double a) const {
-    PolynomialRoot result;
-    double temp;
-    // right now i just find Real answers not complexes
-    if (delta > 0) {
-        temp = pow((-1 * q / 2 + sqrt(delta)), 1.0 / 3) +
-               pow((-1 * q / 2 - sqrt(delta)), 1.0 / 3) - a / 3;
-        result.emplace_back(temp);
-    } else if (compare_with_precision(delta, 0, 6)) {
-        temp = pow(q / 2, 1.0 / 3) - a / 3;
-        result.emplace_back(temp);
-        temp = -2 * pow(q / 2, 1.0 / 3) - a / 3;
-        result.emplace_back(temp);
-    } else {
-        double temp1 = 2.0 / sqrt(3) * sqrt(-1 * p);
-        double temp2 = (1.0 / 3) * asin((3 * sqrt(3) * q / (2 * pow(-1 * p, 3.0 / 2))));
-        temp = temp1 * sin(temp2) - a / 3;
-        result.emplace_back(temp);
-        temp = -1 * temp1 * sin(temp2 + M_PI / 3) - a / 3;
-        result.emplace_back(temp);
-        temp = temp1 * cos(temp2 + M_PI / 6) - a / 3;
-        result.emplace_back(temp);
-    }
-    return result;
-}
-
-long double Polynomial::solve_by_newton_technique(double guess) const {
-    Polynomial derivated = derivate(1);
-    const char variable = find_variables_and_max_power().begin()->variable;
+double Polynomial::solve_by_newton_technique(const std::vector<Expression>& expressions, double guess) const {
+    Polynomial temp(expressions);
+    Polynomial derivated = temp.derivate(1);
+    const char variable = temp.find_variables_and_max_power().begin()->variable;
     long double previous_answer = LDBL_MIN_10_EXP, current_answer = guess;
     long double polynomial_answer, derivated_answer;
     while (!compare_with_precision(previous_answer, current_answer, 6)) {
         previous_answer = current_answer;
-        polynomial_answer = this->set_value(std::make_pair(variable, previous_answer));
+        polynomial_answer = temp.set_value(std::make_pair(variable, previous_answer));
         derivated_answer = derivated.set_value(std::make_pair(variable, previous_answer));
-        if (polynomial_answer == 0)
+        if (compare_with_precision(polynomial_answer, 0.0, 6))
             break;
         else if (derivated_answer == 0) {
             // bug
@@ -528,7 +486,7 @@ long double Polynomial::solve_by_newton_technique(double guess) const {
         }
     }
 
-    return current_answer;
+    return static_cast<double>(current_answer);
 }
 
 Polynomial Polynomial::derivate(uint64_t degree) const {
@@ -586,7 +544,15 @@ long double Polynomial::set_value(const std::pair<char, double> &value) const {
 
 Polynomial::PolynomialRoot Polynomial::solve_greater_power(double guess) const {
     PolynomialRoot result;
-
+    std::vector<Expression> temp = all_expressions;
+    double root;
+    while (temp.size() > 1) {
+        root = solve_by_newton_technique(temp, guess);
+        result.emplace_back(root);
+        calculate_quotient(temp, root);
+        guess = 0;
+    }
+    return result;
 }
 
 

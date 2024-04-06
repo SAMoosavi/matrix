@@ -107,6 +107,10 @@ private:
 //        it needs to added set_variables
         inline void set_constant(double constant);
 
+        inline void increase_power();
+
+        inline void decrease_power();
+
         inline const std::vector<Variable> &get_variables() const;
 
         long double set_value(const std::vector<std::pair<char, double>> &values) const;
@@ -160,13 +164,9 @@ private:
 
     PolynomialRoot solve_quardatic_equation() const;
 
-    PolynomialRoot find_cubic_roots(double delta, double p, double q, double a) const;
-
-    PolynomialRoot solve_cubic_equation() const;
-
     PolynomialRoot solve_greater_power(double guess) const;
 
-    long double solve_by_newton_technique(double guess) const;
+    double solve_by_newton_technique(const std::vector<Expression>& expressions, double guess) const;
 
     int64_t calculate_constant_of_derivated(int64_t power, uint64_t degree) const;
 
