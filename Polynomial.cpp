@@ -2,6 +2,7 @@
 #include <cmath>
 #include <format>
 #include <cfloat>
+#include <algorithm>
 #include "Polynomial.h"
 
 // Expression
@@ -206,6 +207,27 @@ Polynomial::PolynomialVariableMaxPower Polynomial::createvariables(const std::ve
 int32_t Polynomial::create_random_number(const int32_t &max_value) {
     srand(time(0));
     return rand() % max_value;
+}
+
+bool Polynomial::Expression::compare_expressions_by_power(const Polynomial::Expression &first,
+                                              const Polynomial::Expression &second) {
+    int64_t power1 = 0, power2 = 0;
+    for (const auto& var: first.get_variables())
+        power1 += var.power;
+    for (const auto& var: second.get_variables())
+        power2 += var.power;
+    return power1 > power2;
+}
+
+void Polynomial::calculate_quotient(std::vector<Expression> &expressions,
+                                                                   const double& root) {
+    std::sort(expressions.begin(), expressions.end(), Expression::compare_expressions_by_power);
+    double temp;
+    for (size_t i = 1; i < expressions.size() - 1; ++i) {
+        temp = expressions[i - 1].get_constant() * root + expressions[i].get_constant();
+        expressions[i].set_constant(temp);
+    }
+    expressions.pop_back();
 }
 
 Polynomial::Polynomial(double constant, const Polynomial &polynomial, const int64_t &power) :
@@ -487,7 +509,7 @@ Polynomial::PolynomialRoot Polynomial::find_cubic_roots(double delta, double p, 
     return result;
 }
 
-Polynomial::PolynomialRoot Polynomial::solve_by_newton_technique(double guess) const {
+long double Polynomial::solve_by_newton_technique(double guess) const {
     Polynomial derivated = derivate(1);
     const char variable = find_variables_and_max_power().begin()->variable;
     long double previous_answer = LDBL_MIN_10_EXP, current_answer = guess;
@@ -506,7 +528,7 @@ Polynomial::PolynomialRoot Polynomial::solve_by_newton_technique(double guess) c
         }
     }
 
-    return PolynomialRoot{static_cast<double>(current_answer)};
+    return current_answer;
 }
 
 Polynomial Polynomial::derivate(uint64_t degree) const {
@@ -561,4 +583,10 @@ long double Polynomial::set_value(const std::pair<char, double> &value) const {
 
     return result;
 }
+
+Polynomial::PolynomialRoot Polynomial::solve_greater_power(double guess) const {
+    PolynomialRoot result;
+
+}
+
 

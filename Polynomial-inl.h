@@ -44,6 +44,9 @@ Polynomial::Expression Polynomial::Expression::power(const int64_t &pow) const {
     return another;
 }
 
+void Polynomial::Expression::set_constant(double constant) {
+    this->constant = constant;
+}
 
 bool Polynomial::Variable::operator==(const Polynomial::Variable &another) const {
     return (this->variable == another.variable) && (this->power == another.power);
