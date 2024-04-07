@@ -71,6 +71,12 @@ bool Polynomial::compare_with_precision(const long double &num1, const long doub
     return diff < epsilon;
 }
 
+template<typename T>
+T Polynomial::round(const T &number, const uint16_t &precision) {
+    double precision_number = std::pow(10.0, precision);
+    return std::round(number * precision_number) / precision_number;
+}
+
 std::ostream &operator<<(std::ostream &os, const Polynomial &polynomial) {
     bool flag = false;
     for (auto& expr: polynomial.all_expressions){

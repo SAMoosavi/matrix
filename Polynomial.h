@@ -7,7 +7,7 @@
 
 class Polynomial {
 public:
-    typedef std::vector<double> PolynomialRoot;
+    typedef std::vector<long double> PolynomialRoot;
 
     struct Variable {
         char variable;
@@ -61,7 +61,8 @@ public:
 
     Polynomial power(const uint64_t &power) const;
 
-    PolynomialRoot solve(double guess = 0) const;
+    PolynomialRoot
+    solve(long double guess = 0, const uint16_t &max_iteration = 100, const uint16_t &precision = 6) const;
 
     Polynomial derivate(uint64_t degree) const;
 
@@ -119,7 +120,7 @@ private:
 
         inline bool operator==(const Expression &expression) const;
 
-        static bool compare_expressions_by_power(const Expression& first, const Expression& second);
+        static bool compare_expressions_by_power(const Expression &first, const Expression &second);
 
     private:
         double constant;
@@ -150,13 +151,17 @@ private:
 
     static int32_t create_random_number(const int32_t &max_value = INT32_MAX);
 
-    static void calculate_quotient(std::vector<Expression>& expressions, const double& root);
+    static void calculate_quotient(std::vector<Expression> &expressions, const double &root);
 
-    static const Expression& find_expression(const std::vector<Expression>& expressions, const char& variable,
-                                             const int64_t& power=INT64_MIN);
+    static const Expression &find_expression(const std::vector<Expression> &expressions, const char &variable,
+                                             const int64_t &power = INT64_MIN);
 
-    static size_t find_index(const std::vector<Expression>& expressions,const char& variable,
-                             const int64_t& power=INT64_MIN);
+    static size_t find_index(const std::vector<Expression> &expressions, const char &variable,
+                             const int64_t &power = INT64_MIN);
+
+    // it needs to have an enable_if
+    template<typename T>
+    static inline T round(const T &number, const uint16_t &precision);
 
     Expression *find_similar_expression(const Expression &expression) const;
 
@@ -164,17 +169,20 @@ private:
 
     PolynomialVariableMaxPower find_variables_and_max_power() const;
 
-    Expression *find_expression_bypower(int64_t target_power) const;
+    Expression *find_expression_by_power(int64_t target_power) const;
 
-    PolynomialRoot solve_linear_equation() const;
+    PolynomialRoot solve_linear_equation(const uint16_t &precision) const;
 
-    PolynomialRoot solve_quardatic_equation() const;
+    PolynomialRoot solve_quardatic_equation(const uint16_t &precision) const;
 
     PolynomialRoot solve_greater_power(double guess) const;
 
-    double solve_by_newton_technique(const std::vector<Expression>& expressions, double guess) const;
+    long double solve_by_newton_technique(const std::vector<Expression> &expressions, double guess,
+                                          const uint16_t &max_iteration = 100, const uint16_t &precision = 6) const;
 
-    double solve_by_fixed_point_technique(const std::vector<Expression>& expressions, double guess) const;
+    long double solve_by_fixed_point_technique(const std::vector<Expression> &expressions, double guess,
+                                               const uint16_t &max_iteration = 100,
+                                               const uint16_t &precision = 6) const;
 
     int64_t calculate_constant_of_derivated(int64_t power, uint64_t degree) const;
 
