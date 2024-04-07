@@ -152,6 +152,12 @@ private:
 
     static void calculate_quotient(std::vector<Expression>& expressions, const double& root);
 
+    static const Expression& find_expression(const std::vector<Expression>& expressions, const char& variable,
+                                             const int64_t& power=INT64_MIN);
+
+    static size_t find_index(const std::vector<Expression>& expressions,const char& variable,
+                             const int64_t& power=INT64_MIN);
+
     Expression *find_similar_expression(const Expression &expression) const;
 
     bool check_solve_validation(const PolynomialVariableMaxPower &variableMaxPower) const;
@@ -168,7 +174,11 @@ private:
 
     double solve_by_newton_technique(const std::vector<Expression>& expressions, double guess) const;
 
+    double solve_by_fixed_point_technique(const std::vector<Expression>& expressions, double guess) const;
+
     int64_t calculate_constant_of_derivated(int64_t power, uint64_t degree) const;
+
+    Polynomial create_g_function(std::vector<Expression> expressions) const;
 
 };
 

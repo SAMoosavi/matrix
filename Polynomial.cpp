@@ -547,12 +547,68 @@ Polynomial::PolynomialRoot Polynomial::solve_greater_power(double guess) const {
     std::vector<Expression> temp = all_expressions;
     double root;
     while (temp.size() > 1) {
-        root = solve_by_newton_technique(temp, guess);
+        root = solve_by_fixed_point_technique(temp, guess);
         result.emplace_back(root);
         calculate_quotient(temp, root);
         guess = 0;
     }
     return result;
+}
+
+double Polynomial::solve_by_fixed_point_technique(const std::vector<Expression> &expressions, double guess) const {
+    Polynomial f(expressions), g = create_g_function(expressions);
+    long double previous = guess - 1, current = guess;
+    long double f_answer;
+    while (!compare_with_precision(previous, current, 6)) {
+        previous = current;
+        f_answer = f.set_value(std::make_pair('x', previous));
+        // define and get precision in constructor
+        if (compare_with_precision(f_answer, 0, 6))
+            break;
+        current = g.set_value(std::make_pair('x', previous));
+    }
+    return static_cast<double>(current);
+}
+
+const Polynomial::Expression &Polynomial::find_expression(const std::vector<Expression> &expressions,
+                                                          const char &variable, const int64_t &power) {
+    for (const auto& expr: expressions) {
+        for (const auto& var: expr.get_variables()) {
+            if (var.variable == variable) {
+                if (power != INT64_MIN && var.power == power) {
+                    return expr;
+                }
+            }
+        }
+    }
+    return *expressions.end();
+}
+
+size_t Polynomial::find_index(const std::vector<Expression> &expressions, const char &variable, const int64_t &power) {
+    size_t result = 0;
+    for (const auto& expr: expressions) {
+        for (const auto& var: expr.get_variables()) {
+            if (var.variable == variable) {
+                if (power != INT64_MIN && var.power == power) {
+                    return result;
+                }
+            }
+        }
+        ++result;
+    }
+    return UINT64_MAX;
+}
+
+Polynomial Polynomial::create_g_function(std::vector<Expression> expressions) const {
+    size_t index = find_index(expressions, 'x', 1);
+    if (index != UINT64_MAX) {
+        std::swap(expressions[index], expressions[expressions.size() - 1]);
+        expressions.pop_back();
+    } else {
+        expressions.emplace_back(1, 'x', 1);
+    }
+    Polynomial g(std::move(expressions));
+    return g;
 }
 
 
