@@ -40,6 +40,8 @@ public:
 
     explicit Polynomial(double constant);
 
+    Polynomial(const Polynomial& another);
+
     Polynomial(Polynomial &&another) noexcept;
 
     Polynomial &operator+=(const Polynomial &another);
@@ -83,7 +85,11 @@ private:
 
         explicit Expression(double constant);
 
+        Expression(const Expression& another);
+
         Expression(Expression&& another) noexcept;
+
+        Expression& operator=(const Expression& anohter) = default;
 
         Expression &operator+=(const Expression &expression);
 

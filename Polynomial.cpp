@@ -56,6 +56,10 @@ Polynomial::Expression::Expression(double constant, std::vector<Variable> variab
 Polynomial::Expression::Expression(double constant) :
         constant(constant) {}
 
+Polynomial::Expression::Expression(const Polynomial::Expression &another) : constant(another.constant) {
+    variables = another.variables;
+}
+
 Polynomial::Expression::Expression(Polynomial::Expression &&another) noexcept :
     constant(another.constant),
     variables(std::move(another.variables)) {}
@@ -240,6 +244,10 @@ Polynomial::Polynomial(double constant, const char variable, int64_t power) :
 
 Polynomial::Polynomial(double constant) :
         all_expressions(std::vector<Expression>{Expression(constant)}) {}
+
+Polynomial::Polynomial(const Polynomial &another) {
+    all_expressions = another.all_expressions;
+}
 
 Polynomial::Polynomial(Polynomial &&another) noexcept :
         all_expressions(std::move(another.all_expressions)) {}
@@ -596,8 +604,3 @@ size_t Polynomial::find_index(const std::vector<Expression> &expressions, const 
     }
     return UINT64_MAX;
 }
-
-
-
-
-
