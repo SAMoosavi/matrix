@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <cstdint>
+#include <cfloat>
 
 class Polynomial {
 public:
@@ -39,6 +40,8 @@ public:
 
     explicit Polynomial(double constant);
 
+    Polynomial(Polynomial &&another) noexcept;
+
     Polynomial &operator+=(const Polynomial &another);
 
     Polynomial &operator-=(const Polynomial &another);
@@ -51,18 +54,17 @@ public:
 
     Polynomial &operator=(const Polynomial &another) = default;
 
-    Polynomial operator+(const Polynomial &another) const;
+    inline Polynomial operator+(const Polynomial &another) const;
 
-    Polynomial operator-(const Polynomial &another) const;
+    inline Polynomial operator-(const Polynomial &another) const;
 
-    Polynomial operator*(const Polynomial &another) const;
+    inline Polynomial operator*(const Polynomial &another) const;
 
-    Polynomial operator/(const Monomial &another) const;
+    inline Polynomial operator/(const Monomial &another) const;
 
-    Polynomial power(const uint64_t &power) const;
+    inline Polynomial power(const uint64_t &power) const;
 
-    PolynomialRoot
-    solve(long double guess = 0, const uint16_t &max_iteration = 100, const uint16_t &precision = 6) const;
+    PolynomialRoot solve(double guess = 0, const uint16_t &max_iteration = 100, const uint16_t &precision = 6) const;
 
     Polynomial derivate(uint64_t degree) const;
 
@@ -81,6 +83,8 @@ private:
 
         explicit Expression(double constant);
 
+        Expression(Expression&& another) noexcept;
+
         Expression &operator+=(const Expression &expression);
 
         Expression &operator-=(const Expression &expression);
@@ -91,13 +95,13 @@ private:
 
         inline Expression &power_equal(const int64_t &pow);
 
-        Expression operator+(const Expression &expression) const;
+        inline Expression operator+(const Expression &expression) const;
 
-        Expression operator-(const Expression &expression) const;
+        inline Expression operator-(const Expression &expression) const;
 
-        Expression operator*(const Expression &expression) const;
+        inline Expression operator*(const Expression &expression) const;
 
-        Expression operator/(const Expression &expression) const;
+        inline Expression operator/(const Expression &expression) const;
 
         inline Expression power(const int64_t &pow) const;
 
@@ -135,6 +139,15 @@ private:
         void check_expression();
     };
 
+    struct NewtonOutput {
+        bool is_repeated;
+        long double root;
+
+        explicit NewtonOutput(long double root = LDBL_MAX, bool is_repeated = false) :
+                root(root),
+                is_repeated(is_repeated) {}
+    };
+
     typedef std::vector<Polynomial::Variable> PolynomialVariableMaxPower;
 
     std::vector<Expression> all_expressions;
@@ -151,7 +164,7 @@ private:
 
     static int32_t create_random_number(const int32_t &max_value = INT32_MAX);
 
-    static void calculate_quotient(std::vector<Expression> &expressions, const double &root);
+    std::vector<Expression> calculate_quotient(const long double &root) const;
 
     static const Expression &find_expression(const std::vector<Expression> &expressions, const char &variable,
                                              const int64_t &power = INT64_MIN);
@@ -175,19 +188,23 @@ private:
 
     PolynomialRoot solve_quardatic_equation(const uint16_t &precision) const;
 
-    PolynomialRoot solve_greater_power(double guess) const;
+    PolynomialRoot solve_greater_equation(double guess, const uint16_t &max_iteration, const uint16_t &precision) const;
 
-    long double solve_by_newton_technique(const std::vector<Expression> &expressions, double guess,
-                                          const uint16_t &max_iteration = 100, const uint16_t &precision = 6) const;
+    NewtonOutput solve_by_newton_technique(double guess, const uint16_t &max_iteration,
+                                           const uint16_t &precision) const;
 
-    long double solve_by_fixed_point_technique(const std::vector<Expression> &expressions, double guess,
-                                               const uint16_t &max_iteration = 100,
-                                               const uint16_t &precision = 6) const;
+    long double solve_by_fixed_point_technique(double guess,
+                                               const uint16_t &max_iteration,
+                                               const uint16_t &precision) const;
 
     int64_t calculate_constant_of_derivated(int64_t power, uint64_t degree) const;
 
-    Polynomial create_g_function(std::vector<Expression> expressions) const;
+    inline Polynomial create_g_function() const;
 
+    inline void save_newton_answer(PolynomialRoot &result, const Polynomial::NewtonOutput &answer,
+                                   Polynomial &polynomial) const;
+
+    inline void save_fixed_point_answer(PolynomialRoot &result, long double answer, Polynomial &polynomial) const;
 };
 
 #include "Polynomial-inl.h"

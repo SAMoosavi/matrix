@@ -1,7 +1,6 @@
 #include <stdexcept>
 #include <cmath>
 #include <format>
-#include <cfloat>
 #include <algorithm>
 #include "Polynomial.h"
 
@@ -56,6 +55,10 @@ Polynomial::Expression::Expression(double constant, std::vector<Variable> variab
 
 Polynomial::Expression::Expression(double constant) :
         constant(constant) {}
+
+Polynomial::Expression::Expression(Polynomial::Expression &&another) noexcept :
+    constant(another.constant),
+    variables(std::move(another.variables)) {}
 
 Polynomial::Expression &Polynomial::Expression::operator+=(const Expression &expression) {
     if (is_similar_terms(expression)) {
@@ -124,23 +127,6 @@ void Polynomial::Expression::check_expression() {
     }
 }
 
-Polynomial::Expression Polynomial::Expression::operator+(const Expression &expression) const {
-    return Expression(*this) += expression;
-}
-
-Polynomial::Expression Polynomial::Expression::operator-(const Expression &expression) const {
-    return Expression(*this) -= expression;
-}
-
-Polynomial::Expression Polynomial::Expression::operator*(const Expression &expression) const {
-    return Expression(*this) *= expression;
-}
-
-Polynomial::Expression Polynomial::Expression::operator/(const Expression &expression) const {
-    return Expression(*this) /= expression;
-}
-
-
 long double Polynomial::Expression::set_value(const std::vector<std::pair<char, double>> &values) const {
     if (variables.size() > values.size())
         throw std::invalid_argument(std::format("there should be {} at least argument.", variables.size()));
@@ -178,7 +164,6 @@ long double Polynomial::Expression::set_value(const std::pair<char, double> &val
 
     return result;
 }
-
 
 // Polynomial
 void Polynomial::delete_repeated_expressions(std::vector<Expression> &expressions) {
@@ -219,17 +204,23 @@ bool Polynomial::Expression::compare_expressions_by_power(const Polynomial::Expr
     return power1 > power2;
 }
 
-void Polynomial::calculate_quotient(std::vector<Expression> &expressions,
-                                    const double &root) {
-    std::sort(expressions.begin(), expressions.end(), Expression::compare_expressions_by_power);
-    double temp = expressions.begin()->get_constant();
-    expressions.begin()->decrease_power();
-    for (size_t i = 1; i < expressions.size() - 1; ++i) {
-        temp = temp * root + expressions[i].get_constant();
-        expressions[i].set_constant(temp);
-        expressions[i].decrease_power();
+std::vector<Polynomial::Expression> Polynomial::calculate_quotient(const long double &root) const {
+    std::vector<Expression> result = all_expressions;
+    std::sort(result.begin(), result.end(), Expression::compare_expressions_by_power);
+    long double temp;
+    for (size_t i = 0; i < result.size() - 1; ++i) {
+        if (i == 0) {
+            temp = result.begin()->get_constant();
+            result.begin()->decrease_power();
+        } else {
+            temp = temp * root + result[i].get_constant();
+            result[i].set_constant(temp);
+            result[i].decrease_power();
+        }
     }
-    expressions.pop_back();
+    result.pop_back();
+
+    return std::move(result);
 }
 
 Polynomial::Polynomial(double constant, const Polynomial &polynomial, const int64_t &power) :
@@ -249,6 +240,9 @@ Polynomial::Polynomial(double constant, const char variable, int64_t power) :
 
 Polynomial::Polynomial(double constant) :
         all_expressions(std::vector<Expression>{Expression(constant)}) {}
+
+Polynomial::Polynomial(Polynomial &&another) noexcept :
+        all_expressions(std::move(another.all_expressions)) {}
 
 Polynomial::Polynomial(Polynomial::Expression expression) :
         all_expressions(std::vector<Expression>{std::move(expression)}) {};
@@ -346,27 +340,6 @@ Polynomial &Polynomial::power_equal(const uint64_t &power) {
     return *this;
 }
 
-Polynomial Polynomial::operator+(const Polynomial &another) const {
-    return Polynomial(*this) += another;
-}
-
-Polynomial Polynomial::operator-(const Polynomial &another) const {
-    return Polynomial(*this) -= another;
-}
-
-Polynomial Polynomial::operator*(const Polynomial &another) const {
-    return Polynomial(*this) *= another;
-}
-
-Polynomial Polynomial::operator/(const Monomial &another) const {
-    return Polynomial(*this) /= another;
-}
-
-Polynomial Polynomial::power(const uint64_t &power) const {
-    Polynomial another = *this;
-    another.power_equal(power);
-    return another;
-}
 
 bool Polynomial::check_solve_validation(const Polynomial::PolynomialVariableMaxPower &variableMaxPower) const {
     bool result = false;
@@ -385,7 +358,7 @@ bool Polynomial::check_solve_validation(const Polynomial::PolynomialVariableMaxP
 }
 
 Polynomial::PolynomialRoot
-Polynomial::solve(long double guess, const uint16_t &max_iteration, const uint16_t &precision) const {
+Polynomial::solve(double guess, const uint16_t &max_iteration, const uint16_t &precision) const {
     PolynomialVariableMaxPower variableMaxPower = find_variables_and_max_power();
     PolynomialRoot roots;
     if (check_solve_validation(variableMaxPower)) {
@@ -395,7 +368,7 @@ Polynomial::solve(long double guess, const uint16_t &max_iteration, const uint16
         else if (variableMaxPower.begin()->power == 2)
             roots = solve_quardatic_equation(precision);
         else    // does not answer when you have many same roots
-            roots = solve_greater_power(guess);
+            roots = solve_greater_equation(guess, max_iteration, precision);
     }
     return roots;
 }
@@ -469,30 +442,34 @@ Polynomial::PolynomialRoot Polynomial::solve_quardatic_equation(const uint16_t &
     return result;
 }
 
-long double Polynomial::solve_by_newton_technique(const std::vector<Expression> &expressions, double guess,
-                                                  const uint16_t &max_iteration, const uint16_t &precision) const {
-    Polynomial temp(expressions);
-    Polynomial derivated = temp.derivate(1);
-    const char variable = temp.find_variables_and_max_power().begin()->variable;
+Polynomial::NewtonOutput
+Polynomial::solve_by_newton_technique(double guess, const uint16_t &max_iteration, const uint16_t &precision) const {
+    NewtonOutput result;
+    Polynomial derivated = derivate(1);
+    const char variable = find_variables_and_max_power().begin()->variable;
     long double previous_answer = LDBL_MIN_10_EXP, current_answer = guess;
     long double polynomial_answer, derivated_answer;
     uint16_t iteration = 0;
     while (!compare_with_precision(previous_answer, current_answer, precision) && iteration < max_iteration) {
         previous_answer = current_answer;
-        polynomial_answer = temp.set_value(std::make_pair(variable, previous_answer));
+        polynomial_answer = set_value(std::make_pair(variable, previous_answer));
         derivated_answer = derivated.set_value(std::make_pair(variable, previous_answer));
         if (compare_with_precision(polynomial_answer, 0.0, precision))
             break;
-        else if (derivated_answer == 0) {
-            // bug
-            current_answer = create_random_number();
+        else if (compare_with_precision(derivated_answer, 0.0, precision / 2)) {
+            // it could replace with 2 or three as precision. check this
+            if (compare_with_precision(polynomial_answer, 0.0, precision / 2))
+                result.is_repeated = true;
+            else
+                current_answer = create_random_number();
         } else {
             current_answer = previous_answer - (polynomial_answer / derivated_answer);
         }
         ++iteration;
     }
-
-    return round(current_answer, precision);
+    if (compare_with_precision(set_value(std::make_pair(variable, current_answer)), 0.0, precision / 2))
+        result.root = round(current_answer, precision);
+    return std::move(result);
 }
 
 Polynomial Polynomial::derivate(uint64_t degree) const {
@@ -512,7 +489,7 @@ Polynomial Polynomial::derivate(uint64_t degree) const {
                 expressions.emplace_back(constant, temp->variable, temp->power - degree);
             }
         }
-        return Polynomial(std::move(expressions));
+        return std::move(Polynomial(std::move(expressions)));
     }
 }
 
@@ -548,35 +525,47 @@ long double Polynomial::set_value(const std::pair<char, double> &value) const {
     return result;
 }
 
-Polynomial::PolynomialRoot Polynomial::solve_greater_power(double guess) const {
+Polynomial::PolynomialRoot Polynomial::solve_greater_equation(double guess, const uint16_t &max_iteration,
+                                                              const uint16_t &precision) const {
     PolynomialRoot result;
-    std::vector<Expression> temp = all_expressions;
-    double root;
-    while (temp.size() > 1) {
-        root = solve_by_newton_technique(temp, guess);
-        result.emplace_back(root);
-        calculate_quotient(temp, root);
+    Polynomial temp(all_expressions);
+    NewtonOutput newton_answer;
+    while (temp.all_expressions.size() > 1) {
+        newton_answer = temp.solve_by_newton_technique(guess, max_iteration, precision);
+        if (newton_answer.root != LDBL_MAX)
+            save_newton_answer(result, newton_answer, temp);
+        else {
+            auto fixed_point_result = temp.solve_by_fixed_point_technique(guess, max_iteration, precision);
+            if (fixed_point_result != LDBL_MAX)
+                save_fixed_point_answer(result, fixed_point_result, temp);
+            else  // it may was wrong
+                break;
+        }
         guess = 0;
     }
     return result;
 }
 
-long double Polynomial::solve_by_fixed_point_technique(const std::vector<Expression> &expressions, double guess,
+long double Polynomial::solve_by_fixed_point_technique(double guess,
                                                        const uint16_t &max_iteration,
                                                        const uint16_t &precision) const {
-    Polynomial f(expressions), g = create_g_function(expressions);
+    long double result = LDBL_MAX;
+    Polynomial g = create_g_function();
+    const char variable = find_variables_and_max_power().begin()->variable;
     long double previous = guess - 1, current = guess;
     long double f_answer;
     uint16_t iteration = 0;
     while (!compare_with_precision(previous, current, precision) && iteration < max_iteration) {
         previous = current;
-        f_answer = f.set_value(std::make_pair('x', previous));
+        f_answer = set_value(std::make_pair(variable, previous));
         if (compare_with_precision(f_answer, 0, precision))
             break;
-        current = g.set_value(std::make_pair('x', previous));
+        current = g.set_value(std::make_pair(variable, previous));
         ++iteration;
     }
-    return round(current, precision);
+    if (compare_with_precision(set_value(std::make_pair(variable, current)), 0.0, precision / 2))
+        result = round(current, precision);
+    return result;
 }
 
 const Polynomial::Expression &Polynomial::find_expression(const std::vector<Expression> &expressions,
@@ -608,17 +597,7 @@ size_t Polynomial::find_index(const std::vector<Expression> &expressions, const 
     return UINT64_MAX;
 }
 
-Polynomial Polynomial::create_g_function(std::vector<Expression> expressions) const {
-    size_t index = find_index(expressions, 'x', 1);
-    if (index != UINT64_MAX) {
-        std::swap(expressions[index], expressions[expressions.size() - 1]);
-        expressions.pop_back();
-    } else {
-        expressions.emplace_back(1, 'x', 1);
-    }
-    Polynomial g(std::move(expressions));
-    return g;
-}
+
 
 
 
