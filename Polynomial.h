@@ -22,23 +22,23 @@ public:
     };
 
     struct Monomial {
-        double constant;
+        double coefficient;
         std::vector<Variable> variables;
 
-        explicit Monomial(double constant, std::vector<Variable> variables = {}) :
-                constant(constant),
+        explicit Monomial(double coefficient, std::vector<Variable> variables = {}) :
+                coefficient(coefficient),
                 variables(std::move(variables)) {}
     };
 
-    Polynomial(double constant, const Polynomial &polynomial, const uint64_t &power = 1);
+    Polynomial(double coefficient, const Polynomial &polynomial, const uint64_t &power = 1);
 
-    Polynomial(double constant, const char variable, uint64_t power);
+    Polynomial(double coefficient, const char variable, uint64_t power);
 
     explicit Polynomial(Monomial monomial);
 
     explicit Polynomial(std::vector<Monomial> monomials);
 
-    explicit Polynomial(double constant);
+    explicit Polynomial(double coefficient);
 
     Polynomial(const Polynomial& another);
 
@@ -79,11 +79,11 @@ public:
 private:
     class Internal_Monomial {
     public:
-        Internal_Monomial(double constant, char variable, uint64_t power);
+        Internal_Monomial(double coefficient, char variable, uint64_t power);
 
-        Internal_Monomial(double constant, std::vector<Variable> variables);
+        Internal_Monomial(double coefficient, std::vector<Variable> variables);
 
-        explicit Internal_Monomial(double constant);
+        explicit Internal_Monomial(double coefficient);
 
         Internal_Monomial(const Internal_Monomial& another);
 
@@ -113,10 +113,10 @@ private:
 
         bool is_similar_terms(const Internal_Monomial &expression) const;
 
-        inline double get_constant() const;
+        inline double get_coefficient() const;
 
 //        it needs to added set_variables
-        inline void set_constant(double constant);
+        inline void set_coefficient(double coefficient);
 
         inline void increase_power();
 
@@ -133,7 +133,7 @@ private:
         static bool compare_expressions_by_power(const Internal_Monomial &first, const Internal_Monomial &second);
 
     private:
-        double constant;
+        double coefficient;
         std::vector<Variable> variables;
 
         static inline constexpr bool is_alpha(const char &ch) noexcept;
@@ -203,7 +203,7 @@ private:
                                                const uint16_t &max_iteration,
                                                const uint16_t &precision) const;
 
-    int64_t calculate_constant_of_derivated(int64_t power, uint64_t degree) const;
+    int64_t calculate_coefficient_of_derivated(int64_t power, uint64_t degree) const;
 
     inline Polynomial create_g_function() const;
 

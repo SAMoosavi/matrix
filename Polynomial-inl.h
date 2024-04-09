@@ -15,8 +15,8 @@ constexpr bool Polynomial::Internal_Monomial::is_number(const char &ch) noexcept
     return ch - '0' <= '9' - '0';
 }
 
-double Polynomial::Internal_Monomial::get_constant() const {
-    return constant;
+double Polynomial::Internal_Monomial::get_coefficient() const {
+    return coefficient;
 }
 
 const std::vector<Polynomial::Variable> &Polynomial::Internal_Monomial::get_variables() const {
@@ -25,7 +25,7 @@ const std::vector<Polynomial::Variable> &Polynomial::Internal_Monomial::get_vari
 
 bool Polynomial::Internal_Monomial::operator==(const Internal_Monomial &expression) const {
     bool result = true;
-    if (constant != expression.constant)
+    if (coefficient != expression.coefficient)
         result = false;
     else
         result = is_similar_terms(expression);
@@ -60,8 +60,8 @@ Polynomial::Internal_Monomial Polynomial::Internal_Monomial::power(const uint64_
     return another;
 }
 
-void Polynomial::Internal_Monomial::set_constant(double constant) {
-    this->constant = constant;
+void Polynomial::Internal_Monomial::set_coefficient(double coefficient) {
+    this->coefficient = coefficient;
 }
 
 void Polynomial::Internal_Monomial::increase_power() {
@@ -142,13 +142,13 @@ Polynomial Polynomial::create_g_function() const {
 std::ostream &operator<<(std::ostream &os, const Polynomial &polynomial) {
     bool flag = false;
     for (auto &expr: polynomial.all_expressions) {
-        if (expr.get_constant() < 0)
+        if (expr.get_coefficient() < 0)
             os << '-';
         else
             os << '+';
         if (flag)
             os << ' ';
-        os << std::abs(expr.get_constant());
+        os << std::abs(expr.get_coefficient());
         for (auto &var: expr.get_variables())
             os << '*' << var.variable << '^' << var.power;
 
