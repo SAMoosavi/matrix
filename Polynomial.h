@@ -36,7 +36,7 @@ public:
 
     explicit Polynomial(Monomial monomial);
 
-    explicit Polynomial(std::vector<Monomial> polynomial);
+    explicit Polynomial(std::vector<Monomial> monomials);
 
     explicit Polynomial(double constant);
 
@@ -77,41 +77,41 @@ public:
     friend inline std::ostream &operator<<(std::ostream &os, const Polynomial &polynomial);
 
 private:
-    class Expression {
+    class Internal_Monomial {
     public:
-        Expression(double constant, const char variable, int64_t power);
+        Internal_Monomial(double constant, const char variable, int64_t power);
 
-        Expression(double constant, std::vector<Variable> variables);
+        Internal_Monomial(double constant, std::vector<Variable> variables);
 
-        explicit Expression(double constant);
+        explicit Internal_Monomial(double constant);
 
-        Expression(const Expression& another);
+        Internal_Monomial(const Internal_Monomial& another);
 
-        Expression(Expression&& another) noexcept;
+        Internal_Monomial(Internal_Monomial&& another) noexcept;
 
-        Expression& operator=(const Expression& anohter) = default;
+        Internal_Monomial& operator=(const Internal_Monomial& anohter) = default;
 
-        Expression &operator+=(const Expression &expression);
+        Internal_Monomial &operator+=(const Internal_Monomial &expression);
 
-        Expression &operator-=(const Expression &expression);
+        Internal_Monomial &operator-=(const Internal_Monomial &expression);
 
-        Expression &operator*=(const Expression &expression);
+        Internal_Monomial &operator*=(const Internal_Monomial &expression);
 
-        Expression &operator/=(const Expression &expression);
+        Internal_Monomial &operator/=(const Internal_Monomial &expression);
 
-        inline Expression &power_equal(const int64_t &pow);
+        inline Internal_Monomial &power_equal(const int64_t &pow);
 
-        inline Expression operator+(const Expression &expression) const;
+        inline Internal_Monomial operator+(const Internal_Monomial &expression) const;
 
-        inline Expression operator-(const Expression &expression) const;
+        inline Internal_Monomial operator-(const Internal_Monomial &expression) const;
 
-        inline Expression operator*(const Expression &expression) const;
+        inline Internal_Monomial operator*(const Internal_Monomial &expression) const;
 
-        inline Expression operator/(const Expression &expression) const;
+        inline Internal_Monomial operator/(const Internal_Monomial &expression) const;
 
-        inline Expression power(const int64_t &pow) const;
+        inline Internal_Monomial power(const int64_t &pow) const;
 
-        bool is_similar_terms(const Expression &expression) const;
+        bool is_similar_terms(const Internal_Monomial &expression) const;
 
         inline double get_constant() const;
 
@@ -128,9 +128,9 @@ private:
 
         long double set_value(const std::pair<char, double> &value) const;
 
-        inline bool operator==(const Expression &expression) const;
+        inline bool operator==(const Internal_Monomial &expression) const;
 
-        static bool compare_expressions_by_power(const Expression &first, const Expression &second);
+        static bool compare_expressions_by_power(const Internal_Monomial &first, const Internal_Monomial &second);
 
     private:
         double constant;
@@ -156,13 +156,13 @@ private:
 
     typedef std::vector<Polynomial::Variable> PolynomialVariableMaxPower;
 
-    std::vector<Expression> all_expressions;
+    std::vector<Internal_Monomial> all_expressions;
 
-    explicit Polynomial(Expression expression);
+    explicit Polynomial(Internal_Monomial expression);
 
-    explicit Polynomial(std::vector<Expression> expressions);
+    explicit Polynomial(std::vector<Internal_Monomial> expressions);
 
-    static void delete_repeated_expressions(std::vector<Expression> &expression);
+    static void delete_repeated_expressions(std::vector<Internal_Monomial> &expression);
 
     static PolynomialVariableMaxPower createvariables(const std::vector<int64_t> &alphabets);
 
@@ -170,25 +170,25 @@ private:
 
     static int32_t create_random_number(const int32_t &max_value = INT32_MAX);
 
-    std::vector<Expression> calculate_quotient(const long double &root) const;
+    std::vector<Internal_Monomial> calculate_quotient(const long double &root) const;
 
-    static const Expression &find_expression(const std::vector<Expression> &expressions, const char &variable,
+    static const Internal_Monomial &find_expression(const std::vector<Internal_Monomial> &expressions, const char &variable,
                                              const int64_t &power = INT64_MIN);
 
-    static size_t find_index(const std::vector<Expression> &expressions, const char &variable,
+    static size_t find_index(const std::vector<Internal_Monomial> &expressions, const char &variable,
                              const int64_t &power = INT64_MIN);
 
     // it needs to have an enable_if
     template<typename T>
     static inline T round(const T &number, const uint16_t &precision);
 
-    Expression *find_similar_expression(const Expression &expression) const;
+    Internal_Monomial *find_similar_expression(const Internal_Monomial &expression) const;
 
     bool check_solve_validation(const PolynomialVariableMaxPower &variableMaxPower) const;
 
     PolynomialVariableMaxPower find_variables_and_max_power() const;
 
-    Expression *find_expression_by_power(int64_t target_power) const;
+    Internal_Monomial *find_expression_by_power(int64_t target_power) const;
 
     PolynomialRoot solve_linear_equation(const uint16_t &precision) const;
 

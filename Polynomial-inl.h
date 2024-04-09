@@ -5,25 +5,25 @@
 #include <cmath>
 #include <iostream>
 
-// Expression
+// Internal_Monomial
 
-constexpr bool Polynomial::Expression::is_alpha(const char &ch) noexcept {
+constexpr bool Polynomial::Internal_Monomial::is_alpha(const char &ch) noexcept {
     return ch - 'a' <= 'z' - 'a';
 }
 
-constexpr bool Polynomial::Expression::is_number(const char &ch) noexcept {
+constexpr bool Polynomial::Internal_Monomial::is_number(const char &ch) noexcept {
     return ch - '0' <= '9' - '0';
 }
 
-double Polynomial::Expression::get_constant() const {
+double Polynomial::Internal_Monomial::get_constant() const {
     return constant;
 }
 
-const std::vector<Polynomial::Variable> &Polynomial::Expression::get_variables() const {
+const std::vector<Polynomial::Variable> &Polynomial::Internal_Monomial::get_variables() const {
     return variables;
 }
 
-bool Polynomial::Expression::operator==(const Expression &expression) const {
+bool Polynomial::Internal_Monomial::operator==(const Internal_Monomial &expression) const {
     bool result = true;
     if (constant != expression.constant)
         result = false;
@@ -32,44 +32,44 @@ bool Polynomial::Expression::operator==(const Expression &expression) const {
     return result;
 }
 
-Polynomial::Expression &Polynomial::Expression::power_equal(const int64_t &pow) {
+Polynomial::Internal_Monomial &Polynomial::Internal_Monomial::power_equal(const int64_t &pow) {
     for (auto &var: variables)
         var.power *= pow;
     return *this;
 }
 
-Polynomial::Expression Polynomial::Expression::operator+(const Expression &expression) const {
-    return Expression(*this) += expression;
+Polynomial::Internal_Monomial Polynomial::Internal_Monomial::operator+(const Internal_Monomial &expression) const {
+    return Internal_Monomial(*this) += expression;
 }
 
-Polynomial::Expression Polynomial::Expression::operator-(const Expression &expression) const {
-    return Expression(*this) -= expression;
+Polynomial::Internal_Monomial Polynomial::Internal_Monomial::operator-(const Internal_Monomial &expression) const {
+    return Internal_Monomial(*this) -= expression;
 }
 
-Polynomial::Expression Polynomial::Expression::operator*(const Expression &expression) const {
-    return Expression(*this) *= expression;
+Polynomial::Internal_Monomial Polynomial::Internal_Monomial::operator*(const Internal_Monomial &expression) const {
+    return Internal_Monomial(*this) *= expression;
 }
 
-Polynomial::Expression Polynomial::Expression::operator/(const Expression &expression) const {
-    return Expression(*this) /= expression;
+Polynomial::Internal_Monomial Polynomial::Internal_Monomial::operator/(const Internal_Monomial &expression) const {
+    return Internal_Monomial(*this) /= expression;
 }
 
-Polynomial::Expression Polynomial::Expression::power(const int64_t &pow) const {
-    Expression another = *this;
+Polynomial::Internal_Monomial Polynomial::Internal_Monomial::power(const int64_t &pow) const {
+    Internal_Monomial another = *this;
     another.power_equal(pow);
     return another;
 }
 
-void Polynomial::Expression::set_constant(double constant) {
+void Polynomial::Internal_Monomial::set_constant(double constant) {
     this->constant = constant;
 }
 
-void Polynomial::Expression::increase_power() {
+void Polynomial::Internal_Monomial::increase_power() {
     for (auto &var: variables)
         ++var.power;
 }
 
-void Polynomial::Expression::decrease_power() {
+void Polynomial::Internal_Monomial::decrease_power() {
     for (auto &var: variables)
         --var.power;
 }
@@ -133,7 +133,7 @@ T Polynomial::round(const T &number, const uint16_t &precision) {
 }
 
 Polynomial Polynomial::create_g_function() const {
-    std::vector<Expression> expressions = all_expressions;
+    std::vector<Internal_Monomial> expressions = all_expressions;
     expressions.emplace_back(1, 'x', 1);
     Polynomial g(std::move(expressions));
     return std::move(g);
