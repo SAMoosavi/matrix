@@ -32,7 +32,7 @@ bool Polynomial::Internal_Monomial::operator==(const Internal_Monomial &expressi
     return result;
 }
 
-Polynomial::Internal_Monomial &Polynomial::Internal_Monomial::power_equal(const int64_t &pow) {
+Polynomial::Internal_Monomial &Polynomial::Internal_Monomial::power_equal(const uint64_t &pow) {
     for (auto &var: variables)
         var.power *= pow;
     return *this;
@@ -54,7 +54,7 @@ Polynomial::Internal_Monomial Polynomial::Internal_Monomial::operator/(const Int
     return Internal_Monomial(*this) /= expression;
 }
 
-Polynomial::Internal_Monomial Polynomial::Internal_Monomial::power(const int64_t &pow) const {
+Polynomial::Internal_Monomial Polynomial::Internal_Monomial::power(const uint64_t &pow) const {
     Internal_Monomial another = *this;
     another.power_equal(pow);
     return another;

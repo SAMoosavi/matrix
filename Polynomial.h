@@ -12,11 +12,11 @@ public:
 
     struct Variable {
         char variable;
-        int64_t power;
+        uint64_t power;
 
         inline bool operator==(const Variable &another) const;
 
-        explicit Variable(char variable, int64_t power = 1) :
+        explicit Variable(char variable, uint64_t power = 1) :
                 variable(variable),
                 power(power) {}
     };
@@ -30,9 +30,9 @@ public:
                 variables(std::move(variables)) {}
     };
 
-    Polynomial(double constant, const Polynomial &polynomial, const int64_t &power = 1);
+    Polynomial(double constant, const Polynomial &polynomial, const uint64_t &power = 1);
 
-    Polynomial(double constant, const char variable, int64_t power);
+    Polynomial(double constant, const char variable, uint64_t power);
 
     explicit Polynomial(Monomial monomial);
 
@@ -79,7 +79,7 @@ public:
 private:
     class Internal_Monomial {
     public:
-        Internal_Monomial(double constant, const char variable, int64_t power);
+        Internal_Monomial(double constant, char variable, uint64_t power);
 
         Internal_Monomial(double constant, std::vector<Variable> variables);
 
@@ -99,7 +99,7 @@ private:
 
         Internal_Monomial &operator/=(const Internal_Monomial &expression);
 
-        inline Internal_Monomial &power_equal(const int64_t &pow);
+        inline Internal_Monomial &power_equal(const uint64_t &pow);
 
         inline Internal_Monomial operator+(const Internal_Monomial &expression) const;
 
@@ -109,7 +109,7 @@ private:
 
         inline Internal_Monomial operator/(const Internal_Monomial &expression) const;
 
-        inline Internal_Monomial power(const int64_t &pow) const;
+        inline Internal_Monomial power(const uint64_t &pow) const;
 
         bool is_similar_terms(const Internal_Monomial &expression) const;
 
@@ -164,7 +164,7 @@ private:
 
     static void delete_repeated_expressions(std::vector<Internal_Monomial> &expression);
 
-    static PolynomialVariableMaxPower createvariables(const std::vector<int64_t> &alphabets);
+    static PolynomialVariableMaxPower createvariables(const std::vector<uint64_t> &alphabets);
 
     static inline bool compare_with_precision(const long double &num1, const long double &num2, const int &precision);
 
@@ -188,7 +188,7 @@ private:
 
     PolynomialVariableMaxPower find_variables_and_max_power() const;
 
-    Internal_Monomial *find_expression_by_power(int64_t target_power) const;
+    Internal_Monomial *find_expression_by_power(uint64_t target_power) const;
 
     PolynomialRoot solve_linear_equation(const uint16_t &precision) const;
 

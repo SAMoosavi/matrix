@@ -41,7 +41,7 @@ bool Polynomial::Internal_Monomial::is_similar_terms(const Internal_Monomial &ex
 }
 
 
-Polynomial::Internal_Monomial::Internal_Monomial(double constant, const char variable, int64_t power) :
+Polynomial::Internal_Monomial::Internal_Monomial(double constant, char variable, uint64_t power) :
         constant(constant) {
     if (constant != 0 && power != 0)
         variables.emplace_back(variable, power);
@@ -184,10 +184,10 @@ void Polynomial::delete_repeated_expressions(std::vector<Internal_Monomial> &exp
     }
 }
 
-Polynomial::PolynomialVariableMaxPower Polynomial::createvariables(const std::vector<int64_t> &alphabets) {
+Polynomial::PolynomialVariableMaxPower Polynomial::createvariables(const std::vector<uint64_t> &alphabets) {
     Polynomial::PolynomialVariableMaxPower result;
     for (size_t i = 0; i < alphabets.size(); ++i) {
-        if (alphabets[i] != INT64_MIN)
+        if (alphabets[i] != 0)
             result.emplace_back('a' + i, alphabets[i]);
     }
     return result;
@@ -227,7 +227,7 @@ std::vector<Polynomial::Internal_Monomial> Polynomial::calculate_quotient(const 
     return std::move(result);
 }
 
-Polynomial::Polynomial(double constant, const Polynomial &polynomial, const int64_t &power) :
+Polynomial::Polynomial(double constant, const Polynomial &polynomial, const uint64_t &power) :
         all_expressions(polynomial.all_expressions) {
     if (constant != 0 || power != 0) {
         this->power_equal(power);
@@ -239,7 +239,7 @@ Polynomial::Polynomial(double constant, const Polynomial &polynomial, const int6
     }
 }
 
-Polynomial::Polynomial(double constant, const char variable, int64_t power) :
+Polynomial::Polynomial(double constant, const char variable, uint64_t power) :
         all_expressions(std::vector<Polynomial::Internal_Monomial>{{constant, variable, power}}) {}
 
 Polynomial::Polynomial(double constant) :
@@ -384,7 +384,7 @@ Polynomial::solve(double guess, const uint16_t &max_iteration, const uint16_t &p
 Polynomial::PolynomialVariableMaxPower Polynomial::find_variables_and_max_power() const {
     // check  when there is constant only
     PolynomialVariableMaxPower result;
-    std::vector<int64_t> alphabets(26, INT64_MIN);
+    std::vector<uint64_t> alphabets(26, 0);
     for (const auto &expr: all_expressions) {
         if (expr.get_constant() != 0) {
             for (const auto &var: expr.get_variables()) {
@@ -396,10 +396,10 @@ Polynomial::PolynomialVariableMaxPower Polynomial::find_variables_and_max_power(
 
     result = createvariables(alphabets);
 
-    return result;
+    return std::move(result);
 }
 
-Polynomial::Internal_Monomial *Polynomial::find_expression_by_power(int64_t target_power) const {
+Polynomial::Internal_Monomial *Polynomial::find_expression_by_power(uint64_t target_power) const {
     Internal_Monomial *result = nullptr;
     if (target_power == 0) {
         for (auto &expr: all_expressions) {
