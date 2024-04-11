@@ -156,7 +156,7 @@ private:
 
     typedef std::vector<Polynomial::Variable> PolynomialVariableMaxPower;
 
-    std::vector<Internal_Monomial> all_expressions;
+    std::vector<Internal_Monomial> all_monomials;
 
     explicit Polynomial(Internal_Monomial expression);
 

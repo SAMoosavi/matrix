@@ -116,14 +116,14 @@ void Polynomial::save_newton_answer(Polynomial::PolynomialRoot &result, const Po
         equation_calculation_number = 2;
     for (uint16_t i = 0; i < equation_calculation_number; ++i) {
         result.emplace_back(answer.root);
-        polynomial.all_expressions = polynomial.calculate_quotient(answer.root);
+        polynomial.all_monomials = polynomial.calculate_quotient(answer.root);
     }
 }
 
 void Polynomial::save_fixed_point_answer(Polynomial::PolynomialRoot &result, long double answer,
                                          Polynomial &polynomial) const {
     result.emplace_back(answer);
-    polynomial.all_expressions = polynomial.calculate_quotient(answer);
+    polynomial.all_monomials = polynomial.calculate_quotient(answer);
 }
 
 template<typename T>
@@ -133,7 +133,7 @@ T Polynomial::round(const T &number, const uint16_t &precision) {
 }
 
 Polynomial Polynomial::create_g_function() const {
-    std::vector<Internal_Monomial> expressions = all_expressions;
+    std::vector<Internal_Monomial> expressions = all_monomials;
     expressions.emplace_back(1, 'x', 1);
     Polynomial g(std::move(expressions));
     return std::move(g);
@@ -141,7 +141,7 @@ Polynomial Polynomial::create_g_function() const {
 
 std::ostream &operator<<(std::ostream &os, const Polynomial &polynomial) {
     bool flag = false;
-    for (auto &expr: polynomial.all_expressions) {
+    for (auto &expr: polynomial.all_monomials) {
         if (expr.get_coefficient() < 0)
             os << '-';
         else
