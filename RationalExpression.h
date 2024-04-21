@@ -40,9 +40,9 @@ public:
     Polynomial::PolynomialRoot solve(double guess = 0, const uint16_t &max_iteration = 100,
                                      const uint16_t &precision = 6) const;
 
-    long double set_value(const std::vector<std::pair<char, double>> &values) const;
+    inline long double set_value(const std::vector<std::pair<char, double>> &values) const;
 
-    long double set_value(const std::pair<char, double> &values) const;
+    inline long double set_value(const std::pair<char, double> &values) const;
 
 private:
     Polynomial numerator;

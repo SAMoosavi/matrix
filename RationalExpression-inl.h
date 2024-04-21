@@ -91,5 +91,19 @@ RationalExpression RationalExpression::derivate() const {
     return std::move(temp.derivate_equal());
 }
 
+long double RationalExpression::set_value(const std::vector<std::pair<char, double>> &values) const {
+    auto denominator_response = denominator.set_value(values);
+    if (denominator_response == 0)
+        throw std::runtime_error("denominator should not be zero");
+    return numerator.set_value(values) / denominator_response;
+}
+
+long double RationalExpression::set_value(const std::pair<char, double> &values) const {
+    auto denominator_response = denominator.set_value(values);
+    if (denominator_response == 0)
+        throw std::runtime_error("denominator should not be zero");
+    return numerator.set_value(values) / denominator_response;
+}
+
 
 #endif //MATRIX_RATIONALEXPRESSION_INL_H
