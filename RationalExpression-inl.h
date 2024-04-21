@@ -61,5 +61,35 @@ RationalExpression &RationalExpression::derivate_equal() {
     denominator.power_equal(2);
 }
 
+RationalExpression RationalExpression::operator+(const RationalExpression &another) const {
+    auto temp = *this;
+    return std::move(temp += another);
+}
+
+RationalExpression RationalExpression::operator-(const RationalExpression &another) const {
+    auto temp = *this;
+    return std::move(temp -= another);
+}
+
+RationalExpression RationalExpression::operator*(const RationalExpression &another) const {
+    auto temp = *this;
+    return std::move(temp *= another);
+}
+
+RationalExpression RationalExpression::operator/(const RationalExpression &another) const {
+    auto temp = *this;
+    return std::move(temp /= another);
+}
+
+RationalExpression RationalExpression::power(const int64_t &power) const {
+    auto temp = *this;
+    return std::move(temp.power_equal(power));
+}
+
+RationalExpression RationalExpression::derivate() const {
+    auto temp = *this;
+    return std::move(temp.derivate_equal());
+}
+
 
 #endif //MATRIX_RATIONALEXPRESSION_INL_H
