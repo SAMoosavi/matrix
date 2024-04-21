@@ -11,15 +11,19 @@ public:
 
     RationalExpression(RationalExpression&& another) noexcept ;
 
-    RationalExpression &operator+=(const RationalExpression &another);
+    inline bool operator==(const RationalExpression& another) const;
 
-    RationalExpression &operator-=(const RationalExpression &another);
+    inline RationalExpression &operator+=(const RationalExpression &another);
 
-    RationalExpression &operator*=(const RationalExpression &another);
+    inline RationalExpression &operator-=(const RationalExpression &another);
 
-    RationalExpression &operator/=(const RationalExpression &another);
+    inline RationalExpression &operator*=(const RationalExpression &another);
 
-    RationalExpression &power_equal(const int64_t &power);
+    inline RationalExpression &operator/=(const RationalExpression &another);
+
+    inline RationalExpression &power_equal(const int64_t &power);
+
+    inline RationalExpression &derivate_equal();
 
     inline RationalExpression operator+(const RationalExpression &another) const;
 
@@ -31,6 +35,8 @@ public:
 
     inline RationalExpression power(const int64_t &power) const;
 
+    inline RationalExpression derivate() const;
+
     Polynomial::PolynomialRoot solve(double guess = 0, const uint16_t &max_iteration = 100,
                                      const uint16_t &precision = 6) const;
 
@@ -41,6 +47,8 @@ public:
 private:
     Polynomial numerator;
     Polynomial denominator;
+
+    inline Polynomial calculate_common_denominator(const Polynomial& another) const;
 };
 
 #include "RationalExpression-inl.h"

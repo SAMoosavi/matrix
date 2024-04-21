@@ -44,6 +44,8 @@ public:
 
     Polynomial(Polynomial &&another) noexcept;
 
+    bool operator==(const Polynomial& another) const;
+
     Polynomial &operator+=(const Polynomial &another);
 
     Polynomial &operator-=(const Polynomial &another);
@@ -53,6 +55,8 @@ public:
     Polynomial &operator/=(const Monomial &another);
 
     Polynomial &power_equal(const uint64_t &power);
+
+    Polynomial &derivate_equal(uint64_t degree = 1);
 
     Polynomial &operator=(const Polynomial &another) = default;
 
@@ -66,9 +70,9 @@ public:
 
     inline Polynomial power(const uint64_t &power) const;
 
-    PolynomialRoot solve(double guess = 0, const uint16_t &max_iteration = 100, const uint16_t &precision = 6) const;
+    inline Polynomial derivate(uint64_t degree) const;
 
-    Polynomial derivate(uint64_t degree) const;
+    PolynomialRoot solve(double guess = 0, const uint16_t &max_iteration = 100, const uint16_t &precision = 6) const;
 
     long double set_value(const std::vector<std::pair<char, double>> &values) const;
 
@@ -203,7 +207,7 @@ private:
                                                const uint16_t &max_iteration,
                                                const uint16_t &precision) const;
 
-    int64_t calculate_coefficient_of_derivated(int64_t power, uint64_t degree) const;
+    int64_t calculate_coefficient_of_derivated(uint64_t power, uint64_t degree) const;
 
     inline Polynomial create_g_function() const;
 

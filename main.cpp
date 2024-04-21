@@ -168,7 +168,7 @@ int main()
     Polynomial polynomial3(1, polynomial1, 2);
     Polynomial polynomial4(1, polynomial2 * polynomial3);
 
-    std::cout << polynomial4 << '\n';
+    std::cout << polynomial4.derivate_equal(1) << '\n';
 
     auto result = polynomial4.solve(1000000);
     std::cout << polynomial4.set_value(make_pair('x', -3)) << '\n';

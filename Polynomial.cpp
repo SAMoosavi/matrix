@@ -57,13 +57,14 @@ Polynomial::Internal_Monomial::Internal_Monomial(double coefficient, std::vector
 Polynomial::Internal_Monomial::Internal_Monomial(double coefficient) :
         coefficient(coefficient) {}
 
-Polynomial::Internal_Monomial::Internal_Monomial(const Polynomial::Internal_Monomial &another) : coefficient(another.coefficient) {
+Polynomial::Internal_Monomial::Internal_Monomial(const Polynomial::Internal_Monomial &another) : coefficient(
+        another.coefficient) {
     variables = another.variables;
 }
 
-Polynomial::Internal_Monomial::Internal_Monomial(Polynomial::Internal_Monomial &&another) noexcept :
-    coefficient(another.coefficient),
-    variables(std::move(another.variables)) {}
+Polynomial::Internal_Monomial::Internal_Monomial(Polynomial::Internal_Monomial &&another) noexcept:
+        coefficient(another.coefficient),
+        variables(std::move(another.variables)) {}
 
 Polynomial::Internal_Monomial &Polynomial::Internal_Monomial::operator+=(const Internal_Monomial &expression) {
     if (is_similar_terms(expression)) {
@@ -200,7 +201,7 @@ int32_t Polynomial::create_random_number(const int32_t &max_value) {
 }
 
 bool Polynomial::Internal_Monomial::compare_expressions_by_power(const Polynomial::Internal_Monomial &first,
-                                                          const Polynomial::Internal_Monomial &second) {
+                                                                 const Polynomial::Internal_Monomial &second) {
     int64_t power1 = 0, power2 = 0;
     for (const auto &var: first.get_variables())
         power1 += var.power;
@@ -250,7 +251,7 @@ Polynomial::Polynomial(const Polynomial &another) {
     all_monomials = another.all_monomials;
 }
 
-Polynomial::Polynomial(Polynomial &&another) noexcept :
+Polynomial::Polynomial(Polynomial &&another) noexcept:
         all_monomials(std::move(another.all_monomials)) {}
 
 Polynomial::Polynomial(Polynomial::Internal_Monomial expression) :
@@ -349,6 +350,39 @@ Polynomial &Polynomial::power_equal(const uint64_t &power) {
     return *this;
 }
 
+Polynomial &Polynomial::derivate_equal(uint64_t degree) {
+    // just derivate for single variables
+    if (find_variables_and_max_power().size() > 1)
+        throw std::invalid_argument("it can not calculate derivate of multi variable polynomials.");
+    else {
+        // need to check that a positive power can not be a negative power after derivation
+        double coefficient;
+        Variable *temp;
+        size_t i = 0;
+        bool flag = true;
+        while (i < all_monomials.size()) {
+            temp = (Variable *) &all_monomials[i].get_variables()[0];
+            if (temp != nullptr) {
+                coefficient = all_monomials[i].get_coefficient() *
+                              calculate_coefficient_of_derivated(temp->power, degree);
+                if (coefficient != 0) {
+                    all_monomials[i].set_coefficient(coefficient);
+                    flag = false;
+                    for (size_t j = 0; j < degree; ++j)
+                        all_monomials[i].decrease_power();
+                    ++i;
+                }
+            }
+            if (flag) {
+                std::swap(all_monomials[i], all_monomials[all_monomials.size() - 1]);
+                all_monomials.pop_back();
+            }
+            flag = true;
+        }
+        return *this;
+    }
+}
+
 
 bool Polynomial::check_solve_validation(const Polynomial::PolynomialVariableMaxPower &variableMaxPower) const {
     bool result = false;
@@ -426,7 +460,8 @@ Polynomial::PolynomialRoot Polynomial::solve_linear_equation(const uint16_t &pre
     Internal_Monomial *coefficient = find_expression_by_power(0);
     Internal_Monomial *one_power = find_expression_by_power(1);
 
-    result[0] = round(static_cast<long double>(-1 * coefficient->get_coefficient()) / one_power->get_coefficient(), precision);
+    result[0] = round(static_cast<long double>(-1 * coefficient->get_coefficient()) / one_power->get_coefficient(),
+                      precision);
 
     return result;
 }
@@ -437,7 +472,8 @@ Polynomial::PolynomialRoot Polynomial::solve_quardatic_equation(const uint16_t &
     Internal_Monomial *one_power = find_expression_by_power(1);
     Internal_Monomial *two_power = find_expression_by_power(2);
 
-    double delta = pow(one_power->get_coefficient(), 2) - 4 * two_power->get_coefficient() * coefficient->get_coefficient();
+    double delta =
+            pow(one_power->get_coefficient(), 2) - 4 * two_power->get_coefficient() * coefficient->get_coefficient();
 
     if (delta >= 0) {
         result.emplace_back(
@@ -481,28 +517,7 @@ Polynomial::solve_by_newton_technique(double guess, const uint16_t &max_iteratio
     return std::move(result);
 }
 
-Polynomial Polynomial::derivate(uint64_t degree) const {
-    // just derivate for single variables
-    if (find_variables_and_max_power().size() > 1)
-        throw std::invalid_argument("it can not calculate derivate of multi variable polynomials.");
-    else {
-        // need to check that a positive power can not be a negative power after derivation
-        std::vector<Internal_Monomial> expressions;
-        double coefficient;
-        Variable *temp;
-        for (auto &expr: all_monomials) {
-            temp = (Variable *) &expr.get_variables()[0];
-            if (temp != nullptr) {
-                coefficient = expr.get_coefficient() *
-                           calculate_coefficient_of_derivated(temp->power, degree);
-                expressions.emplace_back(coefficient, temp->variable, temp->power - degree);
-            }
-        }
-        return std::move(Polynomial(std::move(expressions)));
-    }
-}
-
-int64_t Polynomial::calculate_coefficient_of_derivated(int64_t power, uint64_t degree) const {
+int64_t Polynomial::calculate_coefficient_of_derivated(uint64_t power, uint64_t degree) const {
     int64_t result = 1;
     while (degree > 0) {
         result *= power;
@@ -578,7 +593,7 @@ long double Polynomial::solve_by_fixed_point_technique(double guess,
 }
 
 const Polynomial::Internal_Monomial &Polynomial::find_expression(const std::vector<Internal_Monomial> &expressions,
-                                                          const char &variable, const int64_t &power) {
+                                                                 const char &variable, const int64_t &power) {
     for (const auto &expr: expressions) {
         for (const auto &var: expr.get_variables()) {
             if (var.variable == variable) {
@@ -591,7 +606,8 @@ const Polynomial::Internal_Monomial &Polynomial::find_expression(const std::vect
     return *expressions.end();
 }
 
-size_t Polynomial::find_index(const std::vector<Internal_Monomial> &expressions, const char &variable, const int64_t &power) {
+size_t
+Polynomial::find_index(const std::vector<Internal_Monomial> &expressions, const char &variable, const int64_t &power) {
     size_t result = 0;
     for (const auto &expr: expressions) {
         for (const auto &var: expr.get_variables()) {
@@ -605,3 +621,14 @@ size_t Polynomial::find_index(const std::vector<Internal_Monomial> &expressions,
     }
     return UINT64_MAX;
 }
+
+bool Polynomial::operator==(const Polynomial &another) const {
+    for (const auto &mono: all_monomials) {
+        for (const auto &another_mono: another.all_monomials) {
+            if (mono != another_mono)
+                return false;
+        }
+    }
+    return true;
+}
+

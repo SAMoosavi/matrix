@@ -11,3 +11,8 @@ RationalExpression::RationalExpression(const RationalExpression &another) :
 RationalExpression::RationalExpression(RationalExpression &&another) noexcept :
         numerator(std::move(another.numerator)),
         denominator(std::move(another.denominator)) {}
+
+
+
+
+

@@ -70,8 +70,16 @@ void Polynomial::Internal_Monomial::increase_power() {
 }
 
 void Polynomial::Internal_Monomial::decrease_power() {
-    for (auto &var: variables)
-        --var.power;
+    size_t i = 0;
+    while (i < variables.size()) {
+        if (variables[i].power == 1) {
+            std::swap(variables[i], variables[variables.size() - 1]);
+            variables.pop_back();
+        } else{
+            --variables[i].power;
+            ++i;
+        }
+    }
 }
 
 bool Polynomial::Variable::operator==(const Polynomial::Variable &another) const {
@@ -100,6 +108,11 @@ Polynomial Polynomial::power(const uint64_t &power) const {
     Polynomial another = *this;
     another.power_equal(power);
     return std::move(another);
+}
+
+Polynomial Polynomial::derivate(uint64_t degree) const {
+    Polynomial another = *this;
+    return std::move(another.derivate_equal(degree));
 }
 
 bool Polynomial::compare_with_precision(const long double &num1, const long double &num2, const int &precision) {
