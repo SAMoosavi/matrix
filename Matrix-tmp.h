@@ -75,7 +75,7 @@ template <Elementable Element>
 template <typename OtherElement>
 Matrix<Element> Matrix<Element>::operator-(const Matrix<OtherElement>& other) const
 {
-	return multiple(std::move(other));
+	return submission(std::move(other));
 }
 
 template <Elementable Element>

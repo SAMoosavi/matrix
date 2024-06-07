@@ -94,6 +94,10 @@ public:
 		return *this;
 	}
 
+	W operator-() const {
+		return W(num * -1);
+	}
+
 	[[nodiscard]] int get() const
 	{
 		return num;

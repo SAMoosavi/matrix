@@ -2,6 +2,8 @@
 #define MATRIX_POLYNOMIAL_INL_H
 
 #include "Polynomial.h"
+#include "polynomial.h"
+
 #include <cmath>
 #include <iostream>
 
@@ -114,6 +116,8 @@ Polynomial Polynomial::derivate(uint64_t degree) const {
     Polynomial another = *this;
     return std::move(another.derivate_equal(degree));
 }
+
+
 
 bool Polynomial::compare_with_precision(const long double &num1, const long double &num2, const int &precision) {
     long double diff = std::abs(num1 - num2);
