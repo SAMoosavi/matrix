@@ -74,6 +74,6 @@ template <typename Element, typename OtherElement>
 	requires(not IsMatrixable<Element>) and (not IsMatrixable<OtherElement>) and MultipleableDifferentType<Element, OtherElement>
 Matrix<Element> operator*(const OtherElement& number, const Matrix<Element>& matrix);
 
-#include "Matrix-tmp.h"
+#include "matrix-tmp.h"
 
 #endif
