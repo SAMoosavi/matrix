@@ -467,24 +467,24 @@ Polynomial::PolynomialRoot Polynomial::solve_linear_equation(const uint16_t &pre
 }
 
 Polynomial::PolynomialRoot Polynomial::solve_quardatic_equation(const uint16_t &precision) const {
-    PolynomialRoot result;
-    Internal_Monomial *coefficient = find_expression_by_power(0);
-    Internal_Monomial *one_power = find_expression_by_power(1);
-    Internal_Monomial *two_power = find_expression_by_power(2);
+        PolynomialRoot result;
+        Internal_Monomial *coefficient = find_expression_by_power(0);
+        Internal_Monomial *one_power = find_expression_by_power(1);
+        Internal_Monomial *two_power = find_expression_by_power(2);
 
-    double delta =
-            pow(one_power->get_coefficient(), 2) - 4 * two_power->get_coefficient() * coefficient->get_coefficient();
+        double delta =
+                pow(one_power->get_coefficient(), 2) - 4 * two_power->get_coefficient() * coefficient->get_coefficient();
 
-    if (delta >= 0) {
-        result.emplace_back(
-                round((static_cast<long double>(-1 * one_power->get_coefficient()) + sqrt(delta)) / 2 *
-                      two_power->get_coefficient(), precision));
-        result.emplace_back(
-                round((static_cast<long double>(-1 * one_power->get_coefficient()) - sqrt(delta)) / 2 *
-                      two_power->get_coefficient(), precision));
-    }
+        if (delta >= 0) {
+            result.emplace_back(
+                    round((static_cast<long double>(-1 * one_power->get_coefficient()) + sqrt(delta)) / 2 *
+                        two_power->get_coefficient(), precision));
+            result.emplace_back(
+                    round((static_cast<long double>(-1 * one_power->get_coefficient()) - sqrt(delta)) / 2 *
+                        two_power->get_coefficient(), precision));
+        }
 
-    return result;
+        return result;
 }
 
 Polynomial::NewtonOutput
@@ -549,8 +549,7 @@ long double Polynomial::set_value(const std::pair<char, double> &value) const {
     return result;
 }
 
-Polynomial::PolynomialRoot Polynomial::solve_greater_equation(double guess, const uint16_t &max_iteration,
-                                                              const uint16_t &precision) const {
+Polynomial::PolynomialRoot Polynomial::solve_greater_equation(double guess, const uint16_t &max_iteration, const uint16_t &precision) const {
     PolynomialRoot result;
     Polynomial temp(all_monomials);
     NewtonOutput newton_answer;

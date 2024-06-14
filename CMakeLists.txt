@@ -8,12 +8,6 @@ add_executable(Matrix main.cpp
         Matrix.h
         concept.h
         Matrix-tmp.h
-        Polynomial.h
-        Polynomial.cpp
-        Polynomial-inl.h
-        RationalExpression.cpp
-        RationalExpression.h
-        RationalExpression-inl.h
         polynomial.cpp
         polynomial.h
         polynomial-temp.h

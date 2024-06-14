@@ -4,7 +4,7 @@
 
 #include "Matrix.h"
 #include "concept.h"
-#include "Polynomial.h"
+#include "polynomial.h"
 
 using namespace std;
 
@@ -162,23 +162,8 @@ int main()
 	Matrix<W> v7 = 10 * v2;
 	print(v7.get_table());
 
-    Polynomial::Monomial two(2);
-    Polynomial::Monomial three(3);
-    Polynomial::Monomial x(1, std::vector<Polynomial::Variable> {Polynomial::Variable('x')});
-
-    Polynomial polynomial(std::vector<Polynomial::Monomial> {x, two});
-    Polynomial polynomial1(std::vector<Polynomial::Monomial> {x, three});
-    Polynomial polynomial2(1, polynomial, 2);
-    Polynomial polynomial3(1, polynomial1, 2);
-    Polynomial polynomial4(1, polynomial2 * polynomial3);
-
-    std::cout << polynomial4.derivate_equal(1) << '\n';
-
-    auto result = polynomial4.solve(1000000);
-    std::cout << polynomial4.set_value(make_pair('x', -3)) << '\n';
-    for (const auto& ans: result) {
-        std::cout << ans << '\t';
-    }
+	vector<int> temp = {1, 2, 3};
+	Polynomial<int> p(temp);
 
   return 0;
 }

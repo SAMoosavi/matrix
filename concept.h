@@ -56,9 +56,9 @@ concept Sumable = requires(T t) {
 };
 template <typename T>
 concept Symmetryable = requires(T t) {
-    {
-    -t
-    } -> same_as<T>;
+	{
+		-t
+	} -> same_as<T>;
 };
 template <typename T>
 concept AssignSumable = requires(T t) {
@@ -110,7 +110,7 @@ template <typename Element>
 concept Elementable = requires(Element) {
 	requires Multiplicationable<Element>;
 	requires Sumable<Element>;
-    requires Symmetryable<Element>;
+	requires Symmetryable<Element>;
 };
 
 template <typename Matrix>
@@ -126,16 +126,11 @@ concept IsMatrixable = requires(Matrix m) {
 	};
 };
 
-template <typename Element>
-concept Derivatable = requires(Element e) {
-	requires MultipleableDifferentTypeReturnFirstType<Element, int>;
-	requires MultipleableDifferentTypeReturnFirstType<Element, float>;
-};
-
 template <typename Coefficient>
 concept Polynomialable = requires(Coefficient c) {
-	requires Elementable<Coefficient>;
-	requires Derivatable<Coefficient>;
+	requires std::is_arithmetic_v<Coefficient>;
+	// requires Elementable<Coefficient>;
+	// requires Derivatable<Coefficient>;
 };
 
 
