@@ -2,9 +2,9 @@
 #include <ranges>
 #include <vector>
 
-#include "Matrix.h"
 #include "concept.h"
 #include "polynomial.h"
+#include "matrix.h"
 
 using namespace std;
 
