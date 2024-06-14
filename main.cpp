@@ -94,7 +94,8 @@ public:
 		return *this;
 	}
 
-	W operator-() const {
+	W operator-() const
+	{
 		return W(num * -1);
 	}
 
@@ -106,6 +107,11 @@ public:
 	bool operator==(const int& other) const
 	{
 		return num == other;
+	}
+
+	bool operator==(const W& other) const
+	{
+		return num == other.num;
 	}
 
 private:
@@ -162,8 +168,14 @@ int main()
 	Matrix<W> v7 = 10 * v2;
 	print(v7.get_table());
 
-	vector<int> temp = {1, 2, 3};
+	vector<int> temp = {0, 3, -4, 1};
 	Polynomial<int> p(temp);
 
-  return 0;
+	auto roots = p.solve();
+	for (auto& root: roots) {
+		cout << root << '\n';
+	}
+
+
+	return 0;
 }

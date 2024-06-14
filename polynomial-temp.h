@@ -13,7 +13,7 @@ Polynomial<Element>::Polynomial(const Coefficient &coefficients)
 
 template <Polynomialable Element>
 Polynomial<Element>::Polynomial(const Polynomial &other)
-	: coefficients(other, coefficients)
+	: coefficients(other.coefficients)
 {
 }
 
@@ -98,6 +98,7 @@ Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve_quadratic_equatio
 	Element one_power = coefficients.at(1);
 	Element two_power = coefficients.at(2);
 
+	// need tp support sqrt
 	Element delta = pow(one_power, 2) - 4 * two_power * coefficient;
 
 	if (delta >= 0) {
@@ -126,7 +127,7 @@ Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve_greater_power(dou
 				result.emplace_back(temp_newton.first);
 		}
 	}
-	PolynomialRoot temp = solve(guess, max_iteration, precision);
+	PolynomialRoot temp = temp_polynomial.solve(guess, max_iteration, precision);
 	result.insert(result.end(), temp.begin(), temp.end());
 	return result;
 }
@@ -276,14 +277,14 @@ Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve(double guess, uin
 {
 	PolynomialRoot result;
 	if (coefficients.size() == 1)
-		result.emplace_back(coefficients.begin());
+		result.emplace_back(*coefficients.begin());
 	else if (coefficients.size() == 2)
-		result.emplace_back(-coefficients.begin() / coefficients.end());
+		result.emplace_back((-(*coefficients.begin())) / *coefficients.end());
 	else if (coefficients.size() == 3)
 		result = solve_quadratic_equation();
 	else {
 		if (!coefficients.empty())
-			result = solve_greater_power();
+			result = solve_greater_power(guess, max_iteration, precision);
 	}
 
 	return result;
