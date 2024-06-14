@@ -6,7 +6,7 @@
 #include "polynomial.h"
 
 template <Polynomialable Element>
-Polynomial<Element>::Polynomial(const vector<Element> &coefficients)
+Polynomial<Element>::Polynomial(const Coefficient &coefficients)
 	: coefficients(coefficients)
 {
 }
@@ -119,7 +119,7 @@ Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve_greater_power(dou
 		temp_newton = solve_by_newton(guess, max_iteration, precision);
 		if (temp_newton.first == NOT_FOUND)
 			guess = create_random_number(guess - guess * 0.1, guess + guess * 0.1);
-		else{
+		else {
 			temp_polynomial.simplify_by_horner(temp_newton);
 			result.emplace_back(temp_newton.first);
 			if (temp_newton.second)
@@ -275,15 +275,16 @@ template <Polynomialable Element>
 Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve(double guess, uint16_t max_iteration, uint16_t precision) const
 {
 	PolynomialRoot result;
-	// check zero condition in constructor
 	if (coefficients.size() == 1)
 		result.emplace_back(coefficients.begin());
 	else if (coefficients.size() == 2)
 		result.emplace_back(-coefficients.begin() / coefficients.end());
 	else if (coefficients.size() == 3)
 		result = solve_quadratic_equation();
-	else
-		result = solve_greater_power();
+	else {
+		if (!coefficients.empty())
+			result = solve_greater_power();
+	}
 
 	return result;
 }
