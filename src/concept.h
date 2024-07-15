@@ -130,15 +130,17 @@ concept IsMatrixable = requires(Matrix m) {
 	};
 };
 
-template <typename Coefficient>
-concept Polynomialable = requires(Coefficient c) {
-	requires Elementable<Coefficient>;
-	requires MultipleableDifferentType<Coefficient, int>;
-	requires MultipleableDifferentType<Coefficient, float>;
+template <typename Coefficientable>
+concept Polynomialable = requires(Coefficientable c) {
+	requires Elementable<Coefficientable>;
+	requires MultipleableDifferentType<Coefficientable, int>;
+	requires MultipleableDifferentType<Coefficientable, float>;
 	{
 		c < 0.0
 	} -> std::same_as<bool>;
 };
 
+template<typename Element>
+concept Numberable = std::is_arithmetic_v<Element>;
 
 #endif

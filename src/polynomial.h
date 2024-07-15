@@ -1,30 +1,29 @@
 #ifndef MATRIX_POLYNOMIAL_H
 #define MATRIX_POLYNOMIAL_H
 
-#include <cfloat>
-#include <cstdint>
-
-#include <random>
+#include <numeric>
 #include <vector>
+
+#include <inttypes.h>
 
 #include "concept.h"
 
 template <Polynomialable Element>
 class Polynomial {
 private:
-	typedef std::vector<Element> Coefficient;
-	typedef std::pair<double, bool> NewtonOutput;
-	typedef std::vector<double> PolynomialRoot;
+	using Coefficient = std::vector<Element>;
+	using NewtonOutput = std::pair<double, bool>;
+	using PolynomialRoot = std::vector<double>;
 
-	template <typename Number>
-	[[nodiscard]] static inline std::enable_if_t<std::is_arithmetic_v<Number>, Number>
-	round(Number number, uint16_t precision);
+	template <Numberable Number>
+	[[nodiscard]] static constexpr Number round(Number number, uint16_t precision) noexcept;
 
 	template <typename Float>
-	[[nodiscard]] static inline std::enable_if_t<std::is_floating_point_v<Float>, bool>
-	compare_with_precision(Float number1, Float number2, uint16_t precision);
+		requires std::floating_point<Float>
+	[[nodiscard]] static constexpr bool
+	compare_with_precision(Float number1, Float number2, uint16_t precision) noexcept;
 
-	[[nodiscard]] static inline int64_t create_random_number(int64_t begin, int64_t end);
+	[[nodiscard]] static inline int64_t create_random_number(int64_t begin, int64_t end) noexcept;
 
 	[[nodiscard]] PolynomialRoot solve_quadratic_equation(uint16_t precision = 6) const;
 
@@ -34,17 +33,19 @@ private:
 
 	void simplify_by_horner(NewtonOutput info);
 
-	static constexpr double NOT_FOUND = LDBL_MIN_10_EXP;
+	static constexpr double NOT_FOUND = std::numeric_limits<double>::min_exponent10;
 	Coefficient coefficients;
 
 public:
-	explicit Polynomial(const Coefficient& coefficients);
+	Polynomial();
+
+	explicit Polynomial(Coefficient coefficients);
 
 	Polynomial(const Polynomial& other);
 
 	Polynomial(Polynomial&& other) noexcept;
 
-	inline Polynomial& operator=(const Polynomial& another) = default;
+	Polynomial& operator=(const Polynomial& another) = default;
 
 
 	template <typename OtherElement>
@@ -84,20 +85,19 @@ public:
 	[[nodiscard]] inline Polynomial<Element> derivate() const;
 	[[nodiscard]] inline Polynomial<Element>& derivate_equal();
 
-	template <typename Number>
-	[[nodiscard]] std::enable_if_t<std::is_arithmetic_v<Number>, Number>
-	set_value(Number value) const;
+	template <Numberable Number>
+	[[nodiscard]] Number set_value(Number value) const;
 
 	[[nodiscard]] PolynomialRoot solve(double guess = 0, uint16_t max_iteration = 100, uint16_t precision = 6) const;
 
 	Element& at(size_t index);
 
 
-	Element& operator[](size_t idx);
+	Element& operator[](size_t index);
 };
 
 
-#include "polynomial-temp.h"
+#include "polynomial-tmp.h"
 
 
 #endif//MATRIX_POLYNOMIAL_H

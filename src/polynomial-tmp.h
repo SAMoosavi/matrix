@@ -1,13 +1,19 @@
 #ifndef MATRIX_POLYNOMIAL_TEMP_H
 #define MATRIX_POLYNOMIAL_TEMP_H
 
-#include <cmath>
+#include <random>
 
 #include "polynomial.h"
 
 template <Polynomialable Element>
-Polynomial<Element>::Polynomial(const Coefficient &coefficients)
-	: coefficients(coefficients)
+inline Polynomial<Element>::Polynomial()
+	: Polynomial(Coefficient(0))
+{
+}
+
+template <Polynomialable Element>
+Polynomial<Element>::Polynomial(Coefficient coefficients)
+	: coefficients(std::move(coefficients))
 {
 }
 
@@ -25,8 +31,8 @@ Polynomial<Element>::Polynomial(Polynomial &&other) noexcept
 
 template <Polynomialable Element>
 template <typename Float>
-inline std::enable_if_t<std::is_floating_point_v<Float>, bool>
-Polynomial<Element>::compare_with_precision(Float number1, Float number2, uint16_t precision)
+	requires std::floating_point<Float>
+constexpr bool Polynomial<Element>::compare_with_precision(Float number1, Float number2, uint16_t precision) noexcept
 {
 	Float diff = std::abs(number1 - number2);
 	Float epsilon = std::pow(10, -precision);
@@ -35,23 +41,26 @@ Polynomial<Element>::compare_with_precision(Float number1, Float number2, uint16
 }
 
 template <Polynomialable Element>
-int64_t Polynomial<Element>::create_random_number(int64_t begin, int64_t end)
+inline int64_t Polynomial<Element>::create_random_number(int64_t begin, int64_t end) noexcept
 {
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
+	static std::random_device random;
+	static std::mt19937 gen(random());
 
-	std::uniform_int_distribution<int> distribution(begin, end);
+	std::uniform_int_distribution<int64_t> distribution(begin, end);
 
 	return distribution(gen);
 }
 
 template <Polynomialable Element>
-inline Polynomial<Element>::NewtonOutput Polynomial<Element>::solve_by_newton(double guess, uint16_t max_iteration, uint16_t precision) const
+Polynomial<Element>::NewtonOutput
+Polynomial<Element>::solve_by_newton(double guess, uint16_t max_iteration, uint16_t precision) const
 {
 	NewtonOutput result;
-	Polynomial<Element> derived = derivate();
-	double previous_answer = NOT_FOUND, current_answer = guess;
-	double polynomial_answer, derived_answer;
+	const Polynomial<Element> derived = derivate();
+	double previous_answer = NOT_FOUND;
+	double current_answer = guess;
+	double polynomial_answer = NAN;
+	double derived_answer = NAN;
 	uint16_t iteration = 0;
 	while (!compare_with_precision(previous_answer, current_answer, precision) && iteration < max_iteration) {
 		previous_answer = current_answer;
@@ -59,8 +68,8 @@ inline Polynomial<Element>::NewtonOutput Polynomial<Element>::solve_by_newton(do
 		derived_answer = derived.set_value(previous_answer);
 		if (compare_with_precision(polynomial_answer, 0.0, precision))
 			break;
-		else if (compare_with_precision(derived_answer, 0.0, precision / 2)) {
-			// it could replace with 2 or three as precision. check this
+		if (compare_with_precision(derived_answer, 0.0, precision / 2)) {
+			// TODO: it could replace with 2 or three as precision. check this
 			if (compare_with_precision(polynomial_answer, 0.0, precision / 2))
 				result.second = true;
 			else
@@ -76,22 +85,25 @@ inline Polynomial<Element>::NewtonOutput Polynomial<Element>::solve_by_newton(do
 }
 
 template <Polynomialable Element>
-inline void Polynomial<Element>::simplify_by_horner(NewtonOutput info)
+void Polynomial<Element>::simplify_by_horner(NewtonOutput info)
 {
 	Element temp;
-	for (size_t i = coefficients.size() - 1; i > 0; --i) {
-		if (i == coefficients.size() - 1)
-			temp = coefficients[i];
-		else {
-			temp = temp * info.first + coefficients[i];
-			coefficients[i] = temp;
+	for (auto it = coefficients.rbegin(); it != coefficients.rend(); ++it) {
+		if (it == coefficients.rbegin())
+			temp = *it;
+		else
+		{
+			temp = temp * info.first + *it;
+			*it = temp;
 		}
 	}
+
+
 	coefficients.erase(coefficients.begin());
 }
 
 template <Polynomialable Element>
-Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve_quadratic_equation(uint16_t precision) const
+auto Polynomial<Element>::solve_quadratic_equation(uint16_t precision) const -> PolynomialRoot
 {
 	PolynomialRoot result;
 	Element coefficient = coefficients.at(0);
@@ -133,11 +145,10 @@ Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve_greater_power(dou
 }
 
 template <Polynomialable Element>
-template <typename Number>
-inline std::enable_if_t<std::is_arithmetic_v<Number>, Number>
-Polynomial<Element>::round(Number number, uint16_t precision)
+template <Numberable Number>
+constexpr Number Polynomial<Element>::round(Number number, uint16_t precision) noexcept
 {
-	double precision_number = std::pow(10.0, precision);
+	double const precision_number = std::pow(10.0, precision);
 	return static_cast<Number>(std::round(number * precision_number) / precision_number);
 }
 
@@ -146,17 +157,17 @@ template <typename OtherElement>
 	requires SamableDifferentType<Element, OtherElement>
 Polynomial<Element> Polynomial<Element>::sum(const Polynomial<OtherElement> &other) const
 {
-	uint64_t max_length = std::max(coefficients.size(), other.coefficients.size());
-	std::vector<Element> temp(max_length);
+	const uint64_t max_length = std::max(coefficients.size(), other.coefficients.size());
+	Coefficient coefficient_of_result(max_length);
 	for (uint64_t i = 0; i < max_length; ++i) {
 		if (coefficients.size() <= i)
-			temp[i] = other.coefficients[i];
+			coefficient_of_result[i] = other.coefficients[i];
 		else if (other.coefficients.size() <= i)
-			temp[i] = coefficients[i];
+			coefficient_of_result[i] = coefficients[i];
 		else
-			temp[i] = coefficients[i] + other.coefficients[i];
+			coefficient_of_result[i] = coefficients[i] + other.coefficients[i];
 	}
-	return Polynomial(std::move(temp));
+	return Polynomial(std::move(coefficient_of_result));
 }
 
 template <Polynomialable Element>
@@ -230,14 +241,13 @@ template <typename OtherElement>
 	requires MultipleableDifferentTypeReturnFirstType<Element, OtherElement>
 Polynomial<Element> Polynomial<Element>::multiple(const Polynomial<OtherElement> &other) const
 {
-	uint64_t max_length = std::max(coefficients.size(), other.coefficients.size());
-	Polynomial result(std::vector<Element>(0));
+	Polynomial<Element> result;
 	for (const auto &coeff: coefficients) {
 		for (const auto &other_coeff: other.coefficients) {
 			result += coeff * other_coeff;
 		}
 	}
-	return Polynomial(std::move(result));
+	return result;
 }
 
 template <Polynomialable Element>
@@ -245,7 +255,7 @@ template <typename OtherElement>
 Polynomial<Element> Polynomial<Element>::operator*(const OtherElement &other) const
 {
 	Polynomial new_polynomial(*this);
-	for (const auto &coeff: new_polynomial.coefficients)
+	for (auto &coeff: new_polynomial.coefficients)
 		coeff *= other;
 	return new_polynomial;
 }
@@ -255,37 +265,37 @@ template <typename OtherElement>
 Polynomial<Element> &Polynomial<Element>::operator*=(const OtherElement &other)
 {
 	*this = multiple(other);
-	return this;
+	return *this;
 }
 
 template <Polynomialable Element>
-template <typename Number>
-std::enable_if_t<std::is_arithmetic_v<Number>, Number>
-Polynomial<Element>::set_value(Number value) const
+template <Numberable Number>
+Number Polynomial<Element>::set_value(Number value) const
 {
 	Number result{};
-	Number temp = static_cast<Number>(1);
+	auto variable_nth_power = static_cast<Number>(1);
 	for (const auto &coeff: coefficients) {
-		result += temp * coeff;
-		temp *= value;
+		result += variable_nth_power * coeff;
+		variable_nth_power *= value;
 	}
 	return result;
 }
 
 template <Polynomialable Element>
-Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve(double guess, uint16_t max_iteration, uint16_t precision) const
+Polynomial<Element>::PolynomialRoot
+Polynomial<Element>::solve(double guess, uint16_t max_iteration, uint16_t precision) const
 {
 	PolynomialRoot result;
+	if (coefficients.empty())
+		return result;
 	if (coefficients.size() == 1)
 		result.emplace_back(*coefficients.begin());
 	else if (coefficients.size() == 2)
 		result.emplace_back((-(*coefficients.begin())) / *coefficients.end());
 	else if (coefficients.size() == 3)
 		result = solve_quadratic_equation();
-	else {
-		if (!coefficients.empty())
-			result = solve_greater_power(guess, max_iteration, precision);
-	}
+	else
+		result = solve_greater_power(guess, max_iteration, precision);
 
 	return result;
 }
@@ -294,7 +304,7 @@ template <Polynomialable Element>
 Polynomial<Element> Polynomial<Element>::power(uint64_t number) const
 {
 	if (number == 0)
-		return Polynomial(std::vector<Element>(0));
+		return Polynomial();
 	Polynomial result(*this);
 	for (uint64_t i = 0; i < number - 1; ++i) {
 		result *= *this;
@@ -306,6 +316,7 @@ template <Polynomialable Element>
 Polynomial<Element> &Polynomial<Element>::power_equal(uint64_t number)
 {
 	*this = power(number);
+	return *this;
 }
 
 template <Polynomialable Element>
@@ -315,14 +326,14 @@ Polynomial<Element> Polynomial<Element>::derivate() const
 	result.coefficients.erase(result.coefficients.begin());
 	for (size_t i = 0; i < result.coefficients.size(); ++i)
 		result.coefficients[i] *= i + 1;
-	return std::move(result);
+	return result;
 }
 
 template <Polynomialable Element>
 Polynomial<Element> &Polynomial<Element>::derivate_equal()
 {
 	*this = derivate();
-	return this;
+	return *this;
 }
 
 template <Polynomialable Element>
