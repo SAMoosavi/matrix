@@ -72,7 +72,7 @@ public:
 	Polynomial<Element>& operator-=(const Polynomial<OtherElement>& other);
 
 	template <typename OtherElement>
-		requires MultipleableDifferentTypeReturnFirstType<Element, OtherElement>
+		requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
 	[[nodiscard]] Polynomial<Element> multiple(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
 	inline Polynomial<Element> operator*(const OtherElement& other) const;
@@ -96,6 +96,17 @@ public:
 	Element& operator[](size_t index);
 };
 
+template <typename Element, typename OtherElement>
+auto operator*(const OtherElement& other, const Polynomial<Element>& polynomial)
+{
+	if constexpr (MultiplableDifferentTypeReturnFirstType<Element, OtherElement>)
+		return polynomial * other;
+	else if constexpr (MultiplableDifferentTypeReturnSecondType<Element, OtherElement> and Polynomialable<OtherElement>) {
+		Polynomial other_polynomial(other);
+		return other * polynomial;
+	} else
+		static_assert(true, "could not multiple two types Element and OtherElement");
+}
 
 #include "polynomial-tmp.h"
 

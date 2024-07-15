@@ -3,8 +3,8 @@
 #include <vector>
 
 #include "concept.h"
-#include "polynomial.h"
 #include "matrix.h"
+#include "polynomial.h"
 
 using namespace std;
 

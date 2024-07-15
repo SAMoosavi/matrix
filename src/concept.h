@@ -27,23 +27,23 @@ concept MultipleAssignableDifferentType = requires(T t, U u) {
 };
 
 template <typename T, typename U>
-concept MultipleableDifferentTypeReturnFirstType = requires(T t, U u) {
+concept MultiplableDifferentTypeReturnFirstType = requires(T t, U u) {
 	{
 		t* u
 	} -> same_as<T>;
 };
 
 template <typename T, typename U>
-concept MultipleableDifferentTypeReturnSecondType = requires(T t, U u) {
+concept MultiplableDifferentTypeReturnSecondType = requires(T t, U u) {
 	{
 		u* t
 	} -> same_as<T>;
 };
 
 template <typename T, typename U>
-concept MultipleableDifferentType = requires(T, U) {
-	requires MultipleableDifferentTypeReturnSecondType<T, U> or
-					 MultipleableDifferentTypeReturnFirstType<T, U> or
+concept MultiplableDifferentType = requires(T, U) {
+	requires MultiplableDifferentTypeReturnSecondType<T, U> or
+					 MultiplableDifferentTypeReturnFirstType<T, U> or
 					 MultipleAssignableDifferentType<T, U>;
 };
 
@@ -121,10 +121,10 @@ template <typename Matrix>
 concept IsMatrixable = requires(Matrix m) {
 	{
 		m.get_row()
-	} -> std::same_as<size_t>;
+	} -> same_as<size_t>;
 	{
 		m.get_col()
-	} -> std::same_as<size_t>;
+	} -> same_as<size_t>;
 	{
 		m.get_table()
 	};
@@ -133,14 +133,20 @@ concept IsMatrixable = requires(Matrix m) {
 template <typename Coefficientable>
 concept Polynomialable = requires(Coefficientable c) {
 	requires Elementable<Coefficientable>;
-	requires MultipleableDifferentType<Coefficientable, int>;
-	requires MultipleableDifferentType<Coefficientable, float>;
+	requires MultiplableDifferentType<Coefficientable, int>;
+	requires MultiplableDifferentType<Coefficientable, float>;
 	{
 		c < 0.0
-	} -> std::same_as<bool>;
+	} -> same_as<bool>;
 };
 
-template<typename Element>
-concept Numberable = std::is_arithmetic_v<Element>;
+template <typename Element>
+concept Numberable = is_arithmetic_v<Element>;
+
+template <typename Element, typename OtherElement>
+concept AnotherElementMultiplable = requires() {
+	requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement> or
+					 (MultiplableDifferentTypeReturnSecondType<Element, OtherElement> and Polynomialable<OtherElement>);
+};
 
 #endif

@@ -106,10 +106,16 @@
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
   "cSpell.words": [
     "Coefficientable",
-    "Multipleable",
+    "Containerable",
+    "Elementable",
+    "Matrixable",
+    "Multiplable",
+    "Multiplable",
     "Multiplicationable",
     "Polynomialable",
-    "Samable"
+    "Samable",
+    "Sumable",
+    "Symmetryable"
   ],
   "cmake.ctest.allowParallelJobs": true,
   "cmake.configureOnEdit": true,

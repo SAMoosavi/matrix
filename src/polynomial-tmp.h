@@ -91,8 +91,7 @@ void Polynomial<Element>::simplify_by_horner(NewtonOutput info)
 	for (auto it = coefficients.rbegin(); it != coefficients.rend(); ++it) {
 		if (it == coefficients.rbegin())
 			temp = *it;
-		else
-		{
+		else {
 			temp = temp * info.first + *it;
 			*it = temp;
 		}
@@ -238,7 +237,7 @@ Polynomial<Element> &Polynomial<Element>::operator-=(const Polynomial<OtherEleme
 
 template <Polynomialable Element>
 template <typename OtherElement>
-	requires MultipleableDifferentTypeReturnFirstType<Element, OtherElement>
+	requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
 Polynomial<Element> Polynomial<Element>::multiple(const Polynomial<OtherElement> &other) const
 {
 	Polynomial<Element> result;
