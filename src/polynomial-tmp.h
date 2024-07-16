@@ -128,7 +128,7 @@ Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve_greater_power(dou
 	Polynomial<Element> temp_polynomial(*this);
 	NewtonOutput temp_newton;
 	while (temp_polynomial.coefficients.size() > 3) {
-		temp_newton = solve_by_newton(guess, max_iteration, precision);
+		temp_newton = temp_polynomial.solve_by_newton(guess, max_iteration, precision);
 		if (temp_newton.first == NOT_FOUND)
 			guess = create_random_number(guess - guess * 0.1, guess + guess * 0.1);
 		else {
@@ -153,7 +153,7 @@ constexpr Number Polynomial<Element>::round(Number number, uint16_t precision) n
 
 template <Polynomialable Element>
 template <typename OtherElement>
-	requires SamableDifferentType<Element, OtherElement>
+	requires SumableDifferentType<Element, OtherElement>
 Polynomial<Element> Polynomial<Element>::sum(const Polynomial<OtherElement> &other) const
 {
 	const uint64_t max_length = std::max(coefficients.size(), other.coefficients.size());
@@ -178,7 +178,7 @@ Polynomial<Element> Polynomial<Element>::operator+(const Polynomial<OtherElement
 
 template <Polynomialable Element>
 template <typename OtherElement>
-	requires SamableDifferentType<Element, OtherElement>
+	requires SumableDifferentType<Element, OtherElement>
 Polynomial<Element> Polynomial<Element>::operator+(const OtherElement &other) const
 {
 	Polynomial new_polynomial(*this);
@@ -191,7 +191,14 @@ template <typename OtherElement>
 Polynomial<Element> &Polynomial<Element>::operator+=(const Polynomial<OtherElement> &other)
 {
 	*this = sum(other);
-	return this;
+	return *this;
+}
+
+template <Polynomialable Element>
+inline Polynomial<Element> &Polynomial<Element>::operator+=(const Element& new_coefficient)
+{
+	coefficients.begin() = coefficients.begin() + new_coefficient;
+	return *this;
 }
 
 template <Polynomialable Element>
@@ -219,7 +226,7 @@ Polynomial<Element> Polynomial<Element>::operator-(const Polynomial<OtherElement
 
 template <Polynomialable Element>
 template <typename OtherElement>
-	requires SamableDifferentType<Element, OtherElement>
+	requires SumableDifferentType<Element, OtherElement>
 Polynomial<Element> Polynomial<Element>::operator-(const OtherElement &other) const
 {
 	Polynomial new_polynomial(*this);
@@ -229,7 +236,7 @@ Polynomial<Element> Polynomial<Element>::operator-(const OtherElement &other) co
 
 template <Polynomialable Element>
 template <typename OtherElement>
-Polynomial<Element> &Polynomial<Element>::operator-=(const Polynomial<OtherElement> &other)
+inline Polynomial<Element> &Polynomial<Element>::operator-=(const Polynomial<OtherElement> &other)
 {
 	*this = submission(other);
 	return *this;
@@ -240,13 +247,16 @@ template <typename OtherElement>
 	requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
 Polynomial<Element> Polynomial<Element>::multiple(const Polynomial<OtherElement> &other) const
 {
-	Polynomial<Element> result;
-	for (const auto &coeff: coefficients) {
-		for (const auto &other_coeff: other.coefficients) {
-			result += coeff * other_coeff;
+	Coefficient multiple_result_coefficients(coefficients.size() + other.coefficients.size() - 1, Element());
+	for (size_t i = 0; i < coefficients.size(); i++)
+	{
+		for (size_t j = 0; j < other.coefficients.size(); j++)
+		{
+			multiple_result_coefficients[i + j] =
+					multiple_result_coefficients[i + j] + (coefficients[i] * other.coefficients[j]);
 		}
 	}
-	return result;
+	return Polynomial(multiple_result_coefficients);
 }
 
 template <Polynomialable Element>
@@ -300,6 +310,13 @@ Polynomial<Element>::solve(double guess, uint16_t max_iteration, uint16_t precis
 }
 
 template <Polynomialable Element>
+inline Polynomial<Element> &Polynomial<Element>::operator-=(const Element &new_coefficient)
+{
+	coefficients.begin() = coefficients.begin() - new_coefficient;
+	return *this;
+}
+
+template <Polynomialable Element>
 Polynomial<Element> Polynomial<Element>::power(uint64_t number) const
 {
 	if (number == 0)
@@ -345,6 +362,18 @@ template <Polynomialable Element>
 Element &Polynomial<Element>::operator[](size_t index)
 {
 	return at(index);
+}
+
+template <typename Element, typename OtherElement>
+auto operator*(const OtherElement &other, const Polynomial<Element> &polynomial)
+{
+	if constexpr (MultiplableDifferentTypeReturnFirstType<Element, OtherElement>)
+		return polynomial * other;
+	else if constexpr (MultiplableDifferentTypeReturnSecondType<Element, OtherElement> and Polynomialable<OtherElement>) {
+		Polynomial other_polynomial(other);
+		return other * polynomial;
+	} else
+		static_assert(true, "could not multiple two types Element and OtherElement");
 }
 
 #endif//MATRIX_POLYNOMIAL_TEMP_H

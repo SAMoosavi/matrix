@@ -28,7 +28,7 @@ public:
 	size_t get_col() const;
 
 	template <typename OtherElement>
-		requires SamableDifferentType<Element, OtherElement>
+		requires SumableDifferentType<Element, OtherElement>
 	Matrix<Element> sum(const Matrix<OtherElement>& other) const;
 	template <typename OtherElement>
 	Matrix<Element> operator+(const Matrix<OtherElement>& other) const;

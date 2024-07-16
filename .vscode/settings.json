@@ -110,10 +110,8 @@
     "Elementable",
     "Matrixable",
     "Multiplable",
-    "Multiplable",
     "Multiplicationable",
     "Polynomialable",
-    "Samable",
     "Sumable",
     "Symmetryable"
   ],
@@ -140,6 +138,8 @@
     "llvm-header-guard",
     "llvmlibc-restrict-system-libc-headers",
     "cppcoreguidelines-avoid-magic-numbers",
-    "readability-magic-numbers"
-  ],
+    "readability-magic-numbers",
+    "llvmlibc-implementation-in-namespace",
+    "google-build-using-namespace"
+  ]
 }

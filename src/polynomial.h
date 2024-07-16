@@ -18,12 +18,18 @@ private:
 	template <Numberable Number>
 	[[nodiscard]] static constexpr Number round(Number number, uint16_t precision) noexcept;
 
-	template <typename Float>
-		requires std::floating_point<Float>
-	[[nodiscard]] static constexpr bool
-	compare_with_precision(Float number1, Float number2, uint16_t precision) noexcept;
-
 	[[nodiscard]] static inline int64_t create_random_number(int64_t begin, int64_t end) noexcept;
+
+	template <typename OtherElement>
+		requires SumableDifferentType<Element, OtherElement>
+	[[nodiscard]] Polynomial<Element> sum(const Polynomial<OtherElement>& other) const;
+
+	template <typename OtherElement>
+	[[nodiscard]] Polynomial<Element> submission(const Polynomial<OtherElement>& other) const;
+
+	template <typename OtherElement>
+		requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
+	[[nodiscard]] Polynomial<Element> multiple(const Polynomial<OtherElement>& other) const;
 
 	[[nodiscard]] PolynomialRoot solve_quadratic_equation(uint16_t precision = 6) const;
 
@@ -34,6 +40,7 @@ private:
 	void simplify_by_horner(NewtonOutput info);
 
 	static constexpr double NOT_FOUND = std::numeric_limits<double>::min_exponent10;
+	// smallest to biggest degree
 	Coefficient coefficients;
 
 public:
@@ -47,33 +54,31 @@ public:
 
 	Polynomial& operator=(const Polynomial& another) = default;
 
+	template <typename Float>
+		requires std::floating_point<Float>
+	[[nodiscard]] static constexpr bool
+	compare_with_precision(Float number1, Float number2, uint16_t precision) noexcept;
 
-	template <typename OtherElement>
-		requires SamableDifferentType<Element, OtherElement>
-	[[nodiscard]] Polynomial<Element> sum(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
 	inline Polynomial<Element> operator+(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
-		requires SamableDifferentType<Element, OtherElement>
+		requires SumableDifferentType<Element, OtherElement>
 	inline Polynomial<Element> operator+(const OtherElement& other) const;
 	template <typename OtherElement>
 	inline Polynomial<Element>& operator+=(const Polynomial<OtherElement>& other);
+	inline Polynomial<Element>& operator+=(const Element& new_coefficient);
 
 	Polynomial<Element> operator-() const;
 
 	template <typename OtherElement>
-	[[nodiscard]] Polynomial<Element> submission(const Polynomial<OtherElement>& other) const;
-	template <typename OtherElement>
 	inline Polynomial<Element> operator-(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
-		requires SamableDifferentType<Element, OtherElement>
+		requires SumableDifferentType<Element, OtherElement>
 	inline Polynomial<Element> operator-(const OtherElement& other) const;
 	template <typename OtherElement>
-	Polynomial<Element>& operator-=(const Polynomial<OtherElement>& other);
+	inline Polynomial<Element>& operator-=(const Polynomial<OtherElement>& other);
+	inline Polynomial<Element>& operator-=(const Element& new_coefficient);
 
-	template <typename OtherElement>
-		requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
-	[[nodiscard]] Polynomial<Element> multiple(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
 	inline Polynomial<Element> operator*(const OtherElement& other) const;
 	template <typename OtherElement>
@@ -92,21 +97,11 @@ public:
 
 	Element& at(size_t index);
 
-
 	Element& operator[](size_t index);
 };
 
 template <typename Element, typename OtherElement>
-auto operator*(const OtherElement& other, const Polynomial<Element>& polynomial)
-{
-	if constexpr (MultiplableDifferentTypeReturnFirstType<Element, OtherElement>)
-		return polynomial * other;
-	else if constexpr (MultiplableDifferentTypeReturnSecondType<Element, OtherElement> and Polynomialable<OtherElement>) {
-		Polynomial other_polynomial(other);
-		return other * polynomial;
-	} else
-		static_assert(true, "could not multiple two types Element and OtherElement");
-}
+auto operator*(const OtherElement& other, const Polynomial<Element>& polynomial);
 
 #include "polynomial-tmp.h"
 

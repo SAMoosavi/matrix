@@ -7,6 +7,7 @@ include_directories(../src)
 # List all test source files
 set(TEST_FILES
         matrixFunctionality.cpp
+        polynomialFunctionality.cpp
 )
 
 # Create an executable target for each test file

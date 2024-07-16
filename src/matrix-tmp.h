@@ -31,7 +31,7 @@ Matrix<Element>::Matrix(const Container<Container<Element>>& matrix)
 
 template <Elementable Element>
 template <typename OtherElement>
-	requires SamableDifferentType<Element, OtherElement>
+	requires SumableDifferentType<Element, OtherElement>
 Matrix<Element> Matrix<Element>::sum(const Matrix<OtherElement>& other) const
 {
 	if ((row != other.get_row()) and (col != other.get_col()))

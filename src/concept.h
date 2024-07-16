@@ -80,23 +80,23 @@ concept SamAssignableDifferentType = requires(T t, U u) {
 };
 
 template <typename T, typename U>
-concept SamableDifferentTypeReturnFirstType = requires(T t, U u) {
+concept SumableDifferentTypeReturnFirstType = requires(T t, U u) {
 	{
 		t + u
 	} -> same_as<T>;
 };
 
 template <typename T, typename U>
-concept SamableDifferentTypeReturnSecondType = requires(T t, U u) {
+concept SumableDifferentTypeReturnSecondType = requires(T t, U u) {
 	{
 		u + t
 	} -> same_as<T>;
 };
 
 template <typename T, typename U>
-concept SamableDifferentType = requires(T, U) {
-	requires SamableDifferentTypeReturnSecondType<T, U> or
-					 SamableDifferentTypeReturnFirstType<T, U> or
+concept SumableDifferentType = requires(T, U) {
+	requires SumableDifferentTypeReturnSecondType<T, U> or
+					 SumableDifferentTypeReturnFirstType<T, U> or
 					 SamAssignableDifferentType<T, U>;
 };
 
