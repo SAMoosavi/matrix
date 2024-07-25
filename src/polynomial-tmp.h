@@ -87,16 +87,12 @@ Polynomial<Element>::solve_by_newton(double guess, uint16_t max_iteration, uint1
 template <Polynomialable Element>
 void Polynomial<Element>::simplify_by_horner(NewtonOutput info)
 {
-	Element temp;
-	for (auto it = coefficients.rbegin(); it != coefficients.rend(); ++it) {
-		if (it == coefficients.rbegin())
-			temp = *it;
-		else {
-			temp = temp * info.first + *it;
-			*it = temp;
-		}
+	Element temp = *coefficients.rbegin();
+	for (auto it = (coefficients.rbegin() + 1); it != coefficients.rend(); ++it) {
+		Element current_coefficient = *it;
+		temp = temp * info.first + current_coefficient;
+		current_coefficient = temp;
 	}
-
 
 	coefficients.erase(coefficients.begin());
 }
@@ -110,7 +106,7 @@ auto Polynomial<Element>::solve_quadratic_equation(uint16_t precision) const -> 
 	Element two_power = coefficients[2];
 
 	// need tp support sqrt
-	Element delta = pow(one_power, 2) - 4 * two_power * coefficient;
+	Element delta = (one_power * one_power) - (4 * two_power * coefficient);
 
 	if (delta >= 0) {
 		result.emplace_back(round(((-1 * one_power) + sqrt(delta)) / (2 * two_power), precision));
@@ -122,7 +118,7 @@ auto Polynomial<Element>::solve_quadratic_equation(uint16_t precision) const -> 
 
 template <Polynomialable Element>
 Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve_greater_power(double guess, uint16_t max_iteration,
-																			 uint16_t precision) const
+		uint16_t precision) const
 {
 	PolynomialRoot result;
 	Polynomial<Element> temp_polynomial(*this);
@@ -197,7 +193,7 @@ Polynomial<Element> &Polynomial<Element>::operator+=(const Polynomial<OtherEleme
 template <Polynomialable Element>
 Polynomial<Element> &Polynomial<Element>::operator+=(const Element &new_coefficient)
 {
-	coefficients.begin() = coefficients.begin() + new_coefficient;
+	coefficients[0] += new_coefficient;
 	return *this;
 }
 
@@ -230,7 +226,7 @@ template <typename OtherElement>
 Polynomial<Element> Polynomial<Element>::operator-(const OtherElement &other) const
 {
 	Polynomial new_polynomial(*this);
-	new_polynomial[0] += -other;
+	new_polynomial[0] -= other;
 	return new_polynomial;
 }
 
@@ -279,7 +275,7 @@ Number Polynomial<Element>::set_value(Number value) const
 {
 	Number result;
 	Number variable_nth_power = 1;
-	for (const auto &coeff: coefficients) {
+	for (const Element &coeff: coefficients) {
 		result += variable_nth_power * coeff;
 		variable_nth_power *= value;
 	}
@@ -323,6 +319,7 @@ Polynomial<Element> Polynomial<Element>::power(uint64_t number) const
 {
 	if (number == 0)
 		return Polynomial();
+
 	Polynomial result(*this);
 	for (uint64_t i = 0; i < number - 1; ++i)
 		result *= *this;
