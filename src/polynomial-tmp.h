@@ -6,7 +6,7 @@
 #include "polynomial.h"
 
 template <Polynomialable Element>
-inline Polynomial<Element>::Polynomial()
+Polynomial<Element>::Polynomial()
 	: Polynomial(Coefficient(0))
 {
 }
@@ -41,7 +41,7 @@ constexpr bool Polynomial<Element>::compare_with_precision(Float number1, Float 
 }
 
 template <Polynomialable Element>
-inline int64_t Polynomial<Element>::create_random_number(int64_t begin, int64_t end) noexcept
+int64_t Polynomial<Element>::create_random_number(int64_t begin, int64_t end) noexcept
 {
 	static std::random_device random;
 	static std::mt19937 gen(random());
@@ -56,7 +56,7 @@ Polynomial<Element>::NewtonOutput
 Polynomial<Element>::solve_by_newton(double guess, uint16_t max_iteration, uint16_t precision) const
 {
 	NewtonOutput result;
-	const Polynomial<Element> derived = derivate();
+	const Polynomial<Element> derived = derivative();
 	double previous_answer = NOT_FOUND;
 	double current_answer = guess;
 	double polynomial_answer = NAN;
@@ -105,9 +105,9 @@ template <Polynomialable Element>
 auto Polynomial<Element>::solve_quadratic_equation(uint16_t precision) const -> PolynomialRoot
 {
 	PolynomialRoot result;
-	Element coefficient = coefficients.at(0);
-	Element one_power = coefficients.at(1);
-	Element two_power = coefficients.at(2);
+	Element coefficient = coefficients[0];
+	Element one_power = coefficients[1];
+	Element two_power = coefficients[2];
 
 	// need tp support sqrt
 	Element delta = pow(one_power, 2) - 4 * two_power * coefficient;
@@ -195,7 +195,7 @@ Polynomial<Element> &Polynomial<Element>::operator+=(const Polynomial<OtherEleme
 }
 
 template <Polynomialable Element>
-inline Polynomial<Element> &Polynomial<Element>::operator+=(const Element& new_coefficient)
+Polynomial<Element> &Polynomial<Element>::operator+=(const Element &new_coefficient)
 {
 	coefficients.begin() = coefficients.begin() + new_coefficient;
 	return *this;
@@ -236,7 +236,7 @@ Polynomial<Element> Polynomial<Element>::operator-(const OtherElement &other) co
 
 template <Polynomialable Element>
 template <typename OtherElement>
-inline Polynomial<Element> &Polynomial<Element>::operator-=(const Polynomial<OtherElement> &other)
+Polynomial<Element> &Polynomial<Element>::operator-=(const Polynomial<OtherElement> &other)
 {
 	*this = submission(other);
 	return *this;
@@ -249,13 +249,9 @@ Polynomial<Element> Polynomial<Element>::multiple(const Polynomial<OtherElement>
 {
 	Coefficient multiple_result_coefficients(coefficients.size() + other.coefficients.size() - 1, Element());
 	for (size_t i = 0; i < coefficients.size(); i++)
-	{
 		for (size_t j = 0; j < other.coefficients.size(); j++)
-		{
-			multiple_result_coefficients[i + j] =
-					multiple_result_coefficients[i + j] + (coefficients[i] * other.coefficients[j]);
-		}
-	}
+			multiple_result_coefficients[i + j] += coefficients[i] * other.coefficients[j];
+
 	return Polynomial(multiple_result_coefficients);
 }
 
@@ -281,8 +277,8 @@ template <Polynomialable Element>
 template <Numberable Number>
 Number Polynomial<Element>::set_value(Number value) const
 {
-	Number result{};
-	auto variable_nth_power = static_cast<Number>(1);
+	Number result;
+	Number variable_nth_power = 1;
 	for (const auto &coeff: coefficients) {
 		result += variable_nth_power * coeff;
 		variable_nth_power *= value;
@@ -295,24 +291,30 @@ Polynomial<Element>::PolynomialRoot
 Polynomial<Element>::solve(double guess, uint16_t max_iteration, uint16_t precision) const
 {
 	PolynomialRoot result;
-	if (coefficients.empty())
-		return result;
-	if (coefficients.size() == 1)
-		result.emplace_back(*coefficients.begin());
-	else if (coefficients.size() == 2)
-		result.emplace_back((-(*coefficients.begin())) / *coefficients.end());
-	else if (coefficients.size() == 3)
-		result = solve_quadratic_equation();
-	else
-		result = solve_greater_power(guess, max_iteration, precision);
+	switch (coefficients.size()) {
+		case 0:
+			break;
+		case 1:
+			result.emplace_back(coefficients[0]);
+			break;
+		case 2:
+			result.emplace_back((-coefficients[0]) / coefficients[1]);
+			break;
+		case 3:
+			result = solve_quadratic_equation();
+			break;
+		default:
+			result = solve_greater_power(guess, max_iteration, precision);
+			break;
+	}
 
 	return result;
 }
 
 template <Polynomialable Element>
-inline Polynomial<Element> &Polynomial<Element>::operator-=(const Element &new_coefficient)
+Polynomial<Element> &Polynomial<Element>::operator-=(const Element &new_coefficient)
 {
-	coefficients.begin() = coefficients.begin() - new_coefficient;
+	coefficients[0] -= new_coefficient;
 	return *this;
 }
 
@@ -322,9 +324,9 @@ Polynomial<Element> Polynomial<Element>::power(uint64_t number) const
 	if (number == 0)
 		return Polynomial();
 	Polynomial result(*this);
-	for (uint64_t i = 0; i < number - 1; ++i) {
+	for (uint64_t i = 0; i < number - 1; ++i)
 		result *= *this;
-	}
+
 	return result;
 }
 
@@ -336,7 +338,7 @@ Polynomial<Element> &Polynomial<Element>::power_equal(uint64_t number)
 }
 
 template <Polynomialable Element>
-Polynomial<Element> Polynomial<Element>::derivate() const
+Polynomial<Element> Polynomial<Element>::derivative() const
 {
 	Polynomial result(*this);
 	result.coefficients.erase(result.coefficients.begin());
@@ -346,9 +348,9 @@ Polynomial<Element> Polynomial<Element>::derivate() const
 }
 
 template <Polynomialable Element>
-Polynomial<Element> &Polynomial<Element>::derivate_equal()
+Polynomial<Element> &Polynomial<Element>::derivative_equal()
 {
-	*this = derivate();
+	*this = derivative();
 	return *this;
 }
 
@@ -359,7 +361,19 @@ Element &Polynomial<Element>::at(size_t index)
 }
 
 template <Polynomialable Element>
+const Element &Polynomial<Element>::at(size_t index) const
+{
+	return coefficients[index];
+}
+
+template <Polynomialable Element>
 Element &Polynomial<Element>::operator[](size_t index)
+{
+	return at(index);
+}
+
+template <Polynomialable Element>
+const Element &Polynomial<Element>::operator[](size_t index) const
 {
 	return at(index);
 }
@@ -376,4 +390,4 @@ auto operator*(const OtherElement &other, const Polynomial<Element> &polynomial)
 		static_assert(true, "could not multiple two types Element and OtherElement");
 }
 
-#endif//MATRIX_POLYNOMIAL_TEMP_H
+#endif
