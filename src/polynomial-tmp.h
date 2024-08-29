@@ -91,7 +91,7 @@ void Polynomial<Element>::simplify_by_horner(NewtonOutput info)
 	for (auto it = (coefficients.rbegin() + 1); it != coefficients.rend(); ++it) {
 		Element current_coefficient = *it;
 		temp = temp * info.first + current_coefficient;
-		current_coefficient = temp;
+		*it = temp;
 	}
 
 	coefficients.erase(coefficients.begin());
@@ -273,9 +273,9 @@ template <Polynomialable Element>
 template <Numberable Number>
 Number Polynomial<Element>::set_value(Number value) const
 {
-	Number result;
+	Number result{};
 	Number variable_nth_power = 1;
-	for (const Element &coeff: coefficients) {
+	for (const auto &coeff: coefficients) {
 		result += variable_nth_power * coeff;
 		variable_nth_power *= value;
 	}
