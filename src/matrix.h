@@ -21,11 +21,11 @@ public:
 	Matrix(size_t row, size_t col);
 
 	template <template <Containerable> typename Container>
-	Matrix(const Container<Container<Element>>& matrix);
+	explicit Matrix(const Container<Container<Element>>& matrix);
 
 	TableType get_table() const;
-	size_t get_row() const;
-	size_t get_col() const;
+	[[nodiscard]] size_t get_number_of_row() const;
+	[[nodiscard]] size_t get_number_of_col() const;
 
 	template <typename OtherElement>
 		requires SamableDifferentType<Element, OtherElement>

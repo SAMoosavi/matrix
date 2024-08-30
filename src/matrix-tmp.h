@@ -1,7 +1,7 @@
 #ifndef MATRIX_MATRIX_TMP_H
 #define MATRIX_MATRIX_TMP_H
 
-#include <format>
+//#include <format>
 
 #include "matrix.h"
 
@@ -28,7 +28,7 @@ template <typename OtherElement>
 	requires SamableDifferentType<Element, OtherElement>
 Matrix<Element> Matrix<Element>::sum(const Matrix<OtherElement>& other) const
 {
-	if ((row != other.get_row()) and (col != other.get_col()))
+	if ((row != other.get_number_of_row()) and (col != other.get_number_of_col()))
 		throw invalid_argument("Cannot sum spans of different sizes");
 
 	Matrix<Element> result(row, col);
@@ -91,14 +91,15 @@ template <typename OtherElement>
 	requires MultipleableDifferentTypeReturnFirstType<Element, OtherElement>
 Matrix<Element> Matrix<Element>::multiple(const Matrix<OtherElement>& other) const
 {
-	if (col != other.get_row())
-		throw std::runtime_error(std::format("Must be number of col in first Matrix equal to row of second Matrix but {} not equal to {}", col, other.get_row()));
+	if (col != other.get_number_of_row())
+//		throw std::runtime_error(std::format("Must be number of col in first Matrix equal to row of second Matrix but {} not equal to {}", col, other.get_number_of_row()));
+		throw;
 
 	Matrix<Element> result(row, col);
 
 	for (size_t i = 0; i < row; ++i)
 		for (size_t k = 0; k < col; ++k)
-			for (size_t j = 0; j < other.get_col(); ++j)
+			for (size_t j = 0; j < other.get_number_of_col(); ++j)
 				result[i][j] += table[i][k] * other[k][j];
 
 	return result;
@@ -214,13 +215,13 @@ auto Matrix<Element>::get_table() const -> TableType
 }
 
 template <Elementable Element>
-size_t Matrix<Element>::get_row() const
+size_t Matrix<Element>::get_number_of_row() const
 {
 	return row;
 }
 
 template <Elementable Element>
-size_t Matrix<Element>::get_col() const
+size_t Matrix<Element>::get_number_of_col() const
 {
 	return col;
 }
