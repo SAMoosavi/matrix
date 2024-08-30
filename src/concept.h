@@ -109,10 +109,10 @@ concept Elementable = requires(Element) {
 template <typename Matrix>
 concept IsMatrixable = requires(Matrix m) {
 	{
-		m.get_row()
+		m.get_number_of_row()
 	} -> std::same_as<size_t>;
 	{
-		m.get_col()
+		m.get_number_of_col()
 	} -> std::same_as<size_t>;
 	{
 		m.get_table()
