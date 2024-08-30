@@ -1,14 +1,24 @@
+#include "matrix.h"
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "matrix.h"
+using namespace ::testing;
 
-TEST(MatrixFunctionality, default_values_of_table_in_matrix_shuld_be_zero)
+class MatrixFunctionality: public Test {
+public:
+	const size_t DEFAULT_VALUE_OF_MATRIX_CONSTRUCTOR = 0;
+};
+
+TEST_F(MatrixFunctionality, default_values_of_table_in_matrix_shuld_be_zero)
 {
-	Matrix<int> matrix(3, 3);
-	auto table = matrix.get_table();
+	constexpr size_t NUMBER_OF_RAW = 4;
+	constexpr size_t NUMBER_OF_COL = 4;
+
+	Matrix<int> matrix(NUMBER_OF_RAW, NUMBER_OF_COL);
+	const auto& table = matrix.get_table();
+	EXPECT_EQ(matrix.get_number_of_row(), NUMBER_OF_RAW);
 	for (const auto& row: table) {
-		EXPECT_EQ(row.size(), 3);
-		for (const auto& cell: row)
-			EXPECT_EQ(cell, 0);
+		EXPECT_THAT(row, SizeIs(NUMBER_OF_COL));
+		EXPECT_THAT(row, Each(DEFAULT_VALUE_OF_MATRIX_CONSTRUCTOR));
 	}
 }
