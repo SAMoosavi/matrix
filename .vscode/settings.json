@@ -140,6 +140,10 @@
     "llvmlibc-implementation-in-namespace",
     "google-build-using-namespace",
     "cert-err58-cpp",
-    "modernize-pass-by-value"
+    "modernize-pass-by-value",
+    "fuchsia-statically-constructed-objects",
+    "cppcoreguidelines-owning-memory",
+    "cppcoreguidelines-non-private-member-variables-in-classes",
+    "cppcoreguidelines-pro-type-member-init"
   ]
 }
