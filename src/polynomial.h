@@ -43,6 +43,8 @@ public:
 
 	Polynomial& operator=(const Polynomial& another) = default;
 
+	bool operator==(const Polynomial<Element>& other) const;
+
 	template <typename Float>
 	    requires std::floating_point<Float>
 	[[nodiscard]] static constexpr bool compare_with_precision(Float number1, Float number2,
