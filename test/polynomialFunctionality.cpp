@@ -17,13 +17,13 @@ class SharePolynomial: public ::testing::Test
 protected:
 	Coefficient coefficients1;
 	Coefficient coefficients2;		/* its size must be greater than coefficients1 */
-	double element;
+	int element;
 
 	void SetUp() override
 	{
 		coefficients1 = Coefficient{2, -3, 1};
 		coefficients2 = Coefficient{3, 2, -3, 1};
-		element = 10.221;
+		element = 10;
 	}
 };
 
@@ -34,6 +34,15 @@ TEST_F(SharePolynomial, PolynomialSumWithPolynomialTest)
 		expected_result[i] += coefficients1[i];
 	
 	auto result = Polynomial(coefficients1) + Polynomial(coefficients2);
+	EXPECT_EQ(Polynomial(expected_result), result);
+}
+
+TEST_F(SharePolynomial, PolynomialSumWithElementTest)
+{
+	Coefficient expected_result = coefficients1;
+	expected_result[0] += element;
+
+	auto result = Polynomial(coefficients1) + element;
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
