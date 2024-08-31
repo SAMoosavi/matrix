@@ -139,6 +139,7 @@
     "readability-magic-numbers",
     "llvmlibc-implementation-in-namespace",
     "google-build-using-namespace",
-    "cert-err58-cpp"
+    "cert-err58-cpp",
+    "modernize-pass-by-value"
   ]
 }

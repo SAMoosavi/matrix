@@ -35,7 +35,7 @@ private:
 public:
 	Polynomial();
 
-	explicit Polynomial(Coefficient coefficients);
+	explicit Polynomial(const Coefficient& coefficients);
 
 	Polynomial(const Polynomial& other);
 

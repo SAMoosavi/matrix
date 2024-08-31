@@ -11,7 +11,7 @@ Polynomial<Element>::Polynomial() : Polynomial(Coefficient(0))
 }
 
 template <Polynomialable Element>
-Polynomial<Element>::Polynomial(Coefficient coefficients) : coefficients(std::move(coefficients))
+Polynomial<Element>::Polynomial(const Coefficient& coefficients) : coefficients(coefficients)
 {
 }
 
@@ -154,17 +154,15 @@ template <typename OtherElement>
     requires SumableDifferentType<Element, OtherElement>
 Polynomial<Element> Polynomial<Element>::sum(const Polynomial<OtherElement> &other) const
 {
-	const uint64_t max_length = std::max(coefficients.size(), other.coefficients.size());
-	Coefficient coefficient_of_result(max_length);
-	for (uint64_t i = 0; i < max_length; ++i) {
-		if (coefficients.size() <= i)
-			coefficient_of_result[i] = other.coefficients[i];
-		else if (other.coefficients.size() <= i)
-			coefficient_of_result[i] = coefficients[i];
+	Coefficient coefficient_of_result = coefficients;
+	for (size_t i = 0; i < other.coefficients.size(); i++)
+	{
+		if (i < coefficient_of_result.size())
+			coefficient_of_result[i] += other.coefficients[i];
 		else
-			coefficient_of_result[i] = coefficients[i] + other.coefficients[i];
+			coefficient_of_result.emplace_back(Element() + other.coefficients[i]);
 	}
-	return Polynomial(std::move(coefficient_of_result));
+	return Polynomial(coefficient_of_result);
 }
 
 template <Polynomialable Element>
