@@ -138,6 +138,7 @@
     "cppcoreguidelines-avoid-magic-numbers",
     "readability-magic-numbers",
     "llvmlibc-implementation-in-namespace",
-    "google-build-using-namespace"
+    "google-build-using-namespace",
+    "cert-err58-cpp"
   ]
 }

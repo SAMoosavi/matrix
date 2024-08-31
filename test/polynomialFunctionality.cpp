@@ -68,6 +68,16 @@ TEST_F(SharePolynomial, PolynomialSumEqualWithElementTest)
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
 }
 
+TEST_F(SharePolynomial, PolynomialSymmetryTest)
+{
+	Coefficient expected_result = coefficients1;
+	for (auto &element : expected_result)
+		element = -1 * element;
+	
+	auto polynomial = Polynomial(coefficients1);
+	EXPECT_EQ(-polynomial, Polynomial(expected_result));
+}
+
 class PolynomialTest: public testing::TestWithParam<SolveParameter> {
 };
 
