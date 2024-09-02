@@ -215,13 +215,13 @@ TEST_F(PolynomialMultipleWithElement, PolynomialMultipleEqualWithElement)
 class PowerCoefficients: public ::testing::Test {
 protected:
 	Coefficient base;
-	Coefficient fourth_power;
+	Polynomial<int> fourth_power;
 	uint8_t degree;
 
 	void SetUp() override
 	{
 		base = Coefficient{-1, 1};
-		fourth_power = Coefficient{1, -4, 6, -4, 1};
+		fourth_power = Polynomial(Coefficient{1, -4, 6, -4, 1});
 		degree = 4;
 	}
 };
@@ -229,14 +229,39 @@ protected:
 TEST_F(PowerCoefficients, PolynomialPower)
 {
 	const Polynomial<int> result = Polynomial(base).power(degree);
-	EXPECT_EQ(Polynomial(fourth_power), result);
+	EXPECT_EQ(fourth_power, result);
 }
 
 TEST_F(PowerCoefficients, PolynomialPowerEqual)
 {
 	Polynomial<int> result(base);
 	result.power_equal(degree);
-	EXPECT_EQ(Polynomial(fourth_power), result);
+	EXPECT_EQ(fourth_power, result);
+}
+
+class DerivateCoefficients: public ::testing::Test {
+protected:
+	Coefficient base;
+	Polynomial<int> derivate;
+
+	void SetUp() override
+	{
+		base = Coefficient{-9, 0, 5, 0, -3, 0, 10};
+		derivate = Polynomial(Coefficient{0, 10, 0, -12, 0, 60});
+	}
+};
+
+TEST_F(DerivateCoefficients, PolynomialDerivate)
+{
+	const Polynomial<int> result = Polynomial(base).derivative();
+	EXPECT_EQ(derivate, result);
+}
+
+TEST_F(DerivateCoefficients, PolynomialDerivateEqual)
+{
+	Polynomial<int> result(base);
+	result.derivative_equal();
+	EXPECT_EQ(derivate, result);
 }
 
 class PolynomialTest: public testing::TestWithParam<SolveParameter> {};
