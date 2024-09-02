@@ -13,7 +13,7 @@ using Coefficient = vector<int>;
 using Root = vector<double>;
 using SolveParameter = tuple<Coefficient, Root>;
 
-class SharedCoefficients: public ::testing::Test {
+class BasicOperationsCoefficients: public ::testing::Test {
 protected:
 	Coefficient coefficients1;
 	Coefficient coefficients2; /* its size must be greater than coefficients1 */
@@ -27,7 +27,7 @@ protected:
 	}
 };
 
-TEST_F(SharedCoefficients, PolynomialSumWithPolynomialTest)
+TEST_F(BasicOperationsCoefficients, PolynomialSumWithPolynomial)
 {
 	Coefficient expected_result = coefficients2;
 	for (size_t i = 0; i < coefficients1.size(); i++)
@@ -37,7 +37,7 @@ TEST_F(SharedCoefficients, PolynomialSumWithPolynomialTest)
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-TEST_F(SharedCoefficients, PolynomialSumWithElementTest)
+TEST_F(BasicOperationsCoefficients, PolynomialSumWithElement)
 {
 	Coefficient expected_result = coefficients1;
 	expected_result[0] += element;
@@ -46,7 +46,7 @@ TEST_F(SharedCoefficients, PolynomialSumWithElementTest)
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-TEST_F(SharedCoefficients, PolynomialSumEqualWithPolynomialTest)
+TEST_F(BasicOperationsCoefficients, PolynomialSumEqualWithPolynomial)
 {
 	Coefficient expected_result = coefficients2;
 	for (size_t i = 0; i < coefficients1.size(); i++)
@@ -58,7 +58,7 @@ TEST_F(SharedCoefficients, PolynomialSumEqualWithPolynomialTest)
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
 }
 
-TEST_F(SharedCoefficients, PolynomialSumEqualWithElementTest)
+TEST_F(BasicOperationsCoefficients, PolynomialSumEqualWithElement)
 {
 	Coefficient expected_result = coefficients1;
 	expected_result[0] += element;
@@ -68,7 +68,7 @@ TEST_F(SharedCoefficients, PolynomialSumEqualWithElementTest)
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
 }
 
-TEST_F(SharedCoefficients, PolynomialSymmetryTest)
+TEST_F(BasicOperationsCoefficients, PolynomialSymmetry)
 {
 	Coefficient expected_result = coefficients1;
 	for (auto &element: expected_result)
@@ -78,7 +78,7 @@ TEST_F(SharedCoefficients, PolynomialSymmetryTest)
 	EXPECT_EQ(-polynomial, Polynomial(expected_result));
 }
 
-TEST_F(SharedCoefficients, PolynomialSubmissionWithPolynomialTest)
+TEST_F(BasicOperationsCoefficients, PolynomialSubmissionWithPolynomial)
 {
 	Coefficient expected_result(coefficients2.size());
 	std::transform(coefficients2.begin(), coefficients2.end(), expected_result.begin(),
@@ -90,7 +90,7 @@ TEST_F(SharedCoefficients, PolynomialSubmissionWithPolynomialTest)
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-TEST_F(SharedCoefficients, PolynomialSubmissionWithElementTest)
+TEST_F(BasicOperationsCoefficients, PolynomialSubmissionWithElement)
 {
 	Coefficient expected_result = coefficients1;
 	expected_result[0] -= element;
@@ -99,7 +99,7 @@ TEST_F(SharedCoefficients, PolynomialSubmissionWithElementTest)
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-TEST_F(SharedCoefficients, PolynomialSubmissionEqualWithPolynomialTest)
+TEST_F(BasicOperationsCoefficients, PolynomialSubmissionEqualWithPolynomial)
 {
 	Coefficient expected_result(coefficients2.size());
 	std::transform(coefficients2.begin(), coefficients2.end(), expected_result.begin(),
@@ -114,7 +114,7 @@ TEST_F(SharedCoefficients, PolynomialSubmissionEqualWithPolynomialTest)
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
 }
 
-TEST_F(SharedCoefficients, PolynomialSubmissionEqualWithElementTest)
+TEST_F(BasicOperationsCoefficients, PolynomialSubmissionEqualWithElement)
 {
 	Coefficient expected_result = coefficients1;
 	expected_result[0] -= element;
@@ -124,7 +124,7 @@ TEST_F(SharedCoefficients, PolynomialSubmissionEqualWithElementTest)
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
 }
 
-TEST_F(SharedCoefficients, PolynomialMultipleWithPolynomialTest)
+TEST_F(BasicOperationsCoefficients, PolynomialMultipleWithPolynomial)
 {
 	Coefficient expected_result(coefficients1.size() + coefficients2.size() - 1, 0);
 	for (size_t i = 0; i < coefficients1.size(); i++) {
@@ -136,7 +136,7 @@ TEST_F(SharedCoefficients, PolynomialMultipleWithPolynomialTest)
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-TEST_F(SharedCoefficients, PolynomialMultipleWithElementTest)
+TEST_F(BasicOperationsCoefficients, PolynomialMultipleWithElement)
 {
 	Coefficient expected_result = coefficients1;
 	for (auto &coefficient: expected_result)
@@ -146,7 +146,7 @@ TEST_F(SharedCoefficients, PolynomialMultipleWithElementTest)
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-TEST_F(SharedCoefficients, PolynomialMultipleEqualWithPolynomialTest)
+TEST_F(BasicOperationsCoefficients, PolynomialMultipleEqualWithPolynomial)
 {
 	Coefficient expected_result(coefficients1.size() + coefficients2.size() - 1, 0);
 	for (size_t i = 0; i < coefficients1.size(); i++) {
@@ -159,7 +159,7 @@ TEST_F(SharedCoefficients, PolynomialMultipleEqualWithPolynomialTest)
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-TEST_F(SharedCoefficients, PolynomialMultipleEqualWithElementTest)
+TEST_F(BasicOperationsCoefficients, PolynomialMultipleEqualWithElement)
 {
 	Coefficient expected_result = coefficients1;
 	for (auto &coefficient: expected_result)
@@ -168,6 +168,33 @@ TEST_F(SharedCoefficients, PolynomialMultipleEqualWithElementTest)
 	Polynomial<int> result = Polynomial(coefficients1);
 	result *= element;
 	EXPECT_EQ(Polynomial(expected_result), result);
+}
+
+class PowerCoefficients: public ::testing::Test {
+protected:
+	Coefficient base;
+	Coefficient fourth_power;
+	uint8_t degree;
+
+	void SetUp() override
+	{
+		base = Coefficient{-1, 1};
+		fourth_power = Coefficient{1, -4, 6, -4, 1};
+		degree = 4;
+	}
+};
+
+TEST_F(PowerCoefficients, PolynomialPower)
+{
+	const Polynomial<int> result = Polynomial(base).power(degree);
+	EXPECT_EQ(Polynomial(fourth_power), result);
+}
+
+TEST_F(PowerCoefficients, PolynomialPowerEqual)
+{
+	Polynomial<int> result(base);
+	result.power_equal(degree);
+	EXPECT_EQ(Polynomial(fourth_power), result);
 }
 
 class PolynomialTest: public testing::TestWithParam<SolveParameter> {};

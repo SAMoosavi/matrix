@@ -54,23 +54,23 @@ public:
 	    requires SumableDifferentType<Element, OtherElement>
 	[[nodiscard]] Polynomial<Element> sum(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
-	Polynomial<Element> operator+(const Polynomial<OtherElement>& other) const;
+	[[nodiscard]] Polynomial<Element> operator+(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
 	    requires SumableDifferentType<Element, OtherElement>
-	Polynomial<Element> operator+(const OtherElement& other) const;
+	[[nodiscard]] Polynomial<Element> operator+(const OtherElement& other) const;
 	template <typename OtherElement>
 	Polynomial<Element>& operator+=(const Polynomial<OtherElement>& other);
 	Polynomial<Element>& operator+=(const Element& new_coefficient);
 
-	Polynomial<Element> operator-() const;
+	[[nodiscard]] Polynomial<Element> operator-() const;
 
 	template <typename OtherElement>
 	[[nodiscard]] Polynomial<Element> submission(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
-	Polynomial<Element> operator-(const Polynomial<OtherElement>& other) const;
+	[[nodiscard]] Polynomial<Element> operator-(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
 	    requires SumableDifferentType<Element, OtherElement>
-	Polynomial<Element> operator-(const OtherElement& other) const;
+	[[nodiscard]] Polynomial<Element> operator-(const OtherElement& other) const;
 	template <typename OtherElement>
 	Polynomial<Element>& operator-=(const Polynomial<OtherElement>& other);
 	Polynomial<Element>& operator-=(const Element& new_coefficient);
@@ -80,30 +80,30 @@ public:
 	[[nodiscard]] Polynomial<Element> multiple(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
 	    requires MultiplableDifferentType<Element, OtherElement>
-	Polynomial<Element> operator*(const OtherElement& other) const;
+	[[nodiscard]] Polynomial<Element> operator*(const OtherElement& other) const;
 	template <typename OtherElement>
-	Polynomial<Element> operator*(const Polynomial<OtherElement>& other) const;
+	[[nodiscard]] Polynomial<Element> operator*(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
 	Polynomial<Element>& operator*=(const OtherElement& other);
 	template <typename OtherElement>
 	Polynomial<Element>& operator*=(const Polynomial<OtherElement>& other);
 
 	[[nodiscard]] Polynomial<Element> power(uint64_t number) const;
-	[[nodiscard]] Polynomial<Element>& power_equal(uint64_t number);
+	Polynomial<Element>& power_equal(uint64_t number);
 
 	[[nodiscard]] Polynomial<Element> derivative() const;
-	[[nodiscard]] Polynomial<Element>& derivative_equal();
+	Polynomial<Element>& derivative_equal();
 
 	template <Numberable Number>
 	[[nodiscard]] Number set_value(Number value) const;
 
 	[[nodiscard]] PolynomialRoot solve(double guess = 0, uint16_t max_iteration = 100, uint16_t precision = 6) const;
 
-	Element& at(size_t index);
+	[[nodiscard]] Element& at(size_t index);
 	[[nodiscard]] const Element& at(size_t index) const;
 
-	Element& operator[](size_t index);
-	const Element& operator[](size_t index) const;
+	[[nodiscard]] Element& operator[](size_t index);
+	[[nodiscard]] const Element& operator[](size_t index) const;
 };
 
 template <typename Element, typename OtherElement>
