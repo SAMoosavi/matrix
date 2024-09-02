@@ -253,6 +253,7 @@ Polynomial<Element> Polynomial<Element>::multiple(const Polynomial<OtherElement>
 
 template <Polynomialable Element>
 template <typename OtherElement>
+    requires MultiplableDifferentType<Element, OtherElement>
 Polynomial<Element> Polynomial<Element>::operator*(const OtherElement &other) const
 {
 	Polynomial new_polynomial(*this);
@@ -263,7 +264,22 @@ Polynomial<Element> Polynomial<Element>::operator*(const OtherElement &other) co
 
 template <Polynomialable Element>
 template <typename OtherElement>
-Polynomial<Element> &Polynomial<Element>::operator*=(const OtherElement &other)
+inline Polynomial<Element> Polynomial<Element>::operator*(const Polynomial<OtherElement> &other) const
+{
+	return multiple(other);
+}
+
+template <Polynomialable Element>
+template <typename OtherElement>
+inline Polynomial<Element> &Polynomial<Element>::operator*=(const OtherElement &other)
+{
+	*this = *this * other;
+	return *this;
+}
+
+template <Polynomialable Element>
+template <typename OtherElement>
+Polynomial<Element> &Polynomial<Element>::operator*=(const Polynomial<OtherElement> &other)
 {
 	*this = multiple(other);
 	return *this;
@@ -376,16 +392,18 @@ const Element &Polynomial<Element>::operator[](size_t index) const
 }
 
 template <typename Element, typename OtherElement>
-auto operator*(const OtherElement &other, const Polynomial<Element> &polynomial)
+    requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
+constexpr Polynomial<Element> operator*(const OtherElement &other, const Polynomial<Element> &polynomial)
 {
-	if constexpr (MultiplableDifferentTypeReturnFirstType<Element, OtherElement>)
-		return polynomial * other;
-	else if constexpr (MultiplableDifferentTypeReturnSecondType<Element, OtherElement> and
-	                   Polynomialable<OtherElement>) {
-		Polynomial other_polynomial(other);
-		return other * polynomial;
-	} else
-		static_assert(true, "could not multiple two types Element and OtherElement");
+	return polynomial * other;
+}
+
+template <typename Element, typename OtherElement>
+    requires MultiplableDifferentTypeReturnSecondType<Element, OtherElement> and Polynomialable<OtherElement>
+constexpr Polynomial<OtherElement> operator*(const OtherElement &other, const Polynomial<Element> &polynomial)
+{
+	Polynomial other_polynomial(other);
+	return other * polynomial;
 }
 
 #endif

@@ -79,9 +79,14 @@ public:
 	    requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
 	[[nodiscard]] Polynomial<Element> multiple(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
+	    requires MultiplableDifferentType<Element, OtherElement>
 	Polynomial<Element> operator*(const OtherElement& other) const;
 	template <typename OtherElement>
+	Polynomial<Element> operator*(const Polynomial<OtherElement>& other) const;
+	template <typename OtherElement>
 	Polynomial<Element>& operator*=(const OtherElement& other);
+	template <typename OtherElement>
+	Polynomial<Element>& operator*=(const Polynomial<OtherElement>& other);
 
 	[[nodiscard]] Polynomial<Element> power(uint64_t number) const;
 	[[nodiscard]] Polynomial<Element>& power_equal(uint64_t number);
@@ -102,7 +107,12 @@ public:
 };
 
 template <typename Element, typename OtherElement>
-auto operator*(const OtherElement& other, const Polynomial<Element>& polynomial);
+    requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
+constexpr Polynomial<Element> operator*(const OtherElement& other, const Polynomial<Element>& polynomial);
+
+template <typename Element, typename OtherElement>
+    requires MultiplableDifferentTypeReturnSecondType<Element, OtherElement> and Polynomialable<OtherElement>
+constexpr Polynomial<OtherElement> operator*(const OtherElement& other, const Polynomial<Element>& polynomial);
 
 #include "polynomial-tmp.h"
 

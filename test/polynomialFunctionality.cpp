@@ -1,7 +1,6 @@
 #include <cstddef>
 
 #include <algorithm>
-#include <functional>
 #include <tuple>
 #include <vector>
 
@@ -34,7 +33,7 @@ TEST_F(SharedCoefficients, PolynomialSumWithPolynomialTest)
 	for (size_t i = 0; i < coefficients1.size(); i++)
 		expected_result[i] += coefficients1[i];
 
-	auto result = Polynomial(coefficients1) + Polynomial(coefficients2);
+	const Polynomial<int> result = Polynomial(coefficients1) + Polynomial(coefficients2);
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
@@ -43,7 +42,7 @@ TEST_F(SharedCoefficients, PolynomialSumWithElementTest)
 	Coefficient expected_result = coefficients1;
 	expected_result[0] += element;
 
-	auto result = Polynomial(coefficients1) + element;
+	const Polynomial<int> result = Polynomial(coefficients1) + element;
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
@@ -53,7 +52,7 @@ TEST_F(SharedCoefficients, PolynomialSumEqualWithPolynomialTest)
 	for (size_t i = 0; i < coefficients1.size(); i++)
 		expected_result[i] += coefficients1[i];
 
-	auto polynomial = Polynomial(coefficients1);
+	Polynomial<int> polynomial = Polynomial(coefficients1);
 	polynomial += Polynomial(coefficients2);
 
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
@@ -64,7 +63,7 @@ TEST_F(SharedCoefficients, PolynomialSumEqualWithElementTest)
 	Coefficient expected_result = coefficients1;
 	expected_result[0] += element;
 
-	auto polynomial = Polynomial(coefficients1);
+	Polynomial<int> polynomial = Polynomial(coefficients1);
 	polynomial += element;
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
 }
@@ -72,10 +71,10 @@ TEST_F(SharedCoefficients, PolynomialSumEqualWithElementTest)
 TEST_F(SharedCoefficients, PolynomialSymmetryTest)
 {
 	Coefficient expected_result = coefficients1;
-	for (auto& element: expected_result)
+	for (auto &element: expected_result)
 		element = -1 * element;
 
-	auto polynomial = Polynomial(coefficients1);
+	const Polynomial<int> polynomial = Polynomial(coefficients1);
 	EXPECT_EQ(-polynomial, Polynomial(expected_result));
 }
 
@@ -87,7 +86,7 @@ TEST_F(SharedCoefficients, PolynomialSubmissionWithPolynomialTest)
 	for (size_t i = 0; i < coefficients1.size(); i++)
 		expected_result[i] += coefficients1[i];
 
-	auto result = Polynomial(coefficients1) - Polynomial(coefficients2);
+	const Polynomial<int> result = Polynomial(coefficients1) - Polynomial(coefficients2);
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
@@ -96,7 +95,7 @@ TEST_F(SharedCoefficients, PolynomialSubmissionWithElementTest)
 	Coefficient expected_result = coefficients1;
 	expected_result[0] -= element;
 
-	auto result = Polynomial(coefficients1) - element;
+	const Polynomial<int> result = Polynomial(coefficients1) - element;
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
@@ -109,7 +108,7 @@ TEST_F(SharedCoefficients, PolynomialSubmissionEqualWithPolynomialTest)
 		expected_result[i] += coefficients1[i];
 
 
-	auto polynomial = Polynomial(coefficients1);
+	Polynomial<int> polynomial = Polynomial(coefficients1);
 	polynomial -= Polynomial(coefficients2);
 
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
@@ -120,9 +119,55 @@ TEST_F(SharedCoefficients, PolynomialSubmissionEqualWithElementTest)
 	Coefficient expected_result = coefficients1;
 	expected_result[0] -= element;
 
-	auto polynomial = Polynomial(coefficients1);
+	Polynomial<int> polynomial = Polynomial(coefficients1);
 	polynomial -= element;
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
+}
+
+TEST_F(SharedCoefficients, PolynomialMultipleWithPolynomialTest)
+{
+	Coefficient expected_result(coefficients1.size() + coefficients2.size() - 1, 0);
+	for (size_t i = 0; i < coefficients1.size(); i++) {
+		for (size_t j = 0; j < coefficients2.size(); j++)
+			expected_result[i + j] += coefficients1[i] * coefficients2[j];
+	}
+
+	const Polynomial<int> result = Polynomial(coefficients1) * Polynomial(coefficients2);
+	EXPECT_EQ(Polynomial(expected_result), result);
+}
+
+TEST_F(SharedCoefficients, PolynomialMultipleWithElementTest)
+{
+	Coefficient expected_result = coefficients1;
+	for (auto &coefficient: expected_result)
+		coefficient *= element;
+
+	const Polynomial<int> result = Polynomial(coefficients1) * element;
+	EXPECT_EQ(Polynomial(expected_result), result);
+}
+
+TEST_F(SharedCoefficients, PolynomialMultipleEqualWithPolynomialTest)
+{
+	Coefficient expected_result(coefficients1.size() + coefficients2.size() - 1, 0);
+	for (size_t i = 0; i < coefficients1.size(); i++) {
+		for (size_t j = 0; j < coefficients2.size(); j++)
+			expected_result[i + j] += coefficients1[i] * coefficients2[j];
+	}
+
+	Polynomial<int> result = Polynomial(coefficients1);
+	result *= Polynomial(coefficients2);
+	EXPECT_EQ(Polynomial(expected_result), result);
+}
+
+TEST_F(SharedCoefficients, PolynomialMultipleEqualWithElementTest)
+{
+	Coefficient expected_result = coefficients1;
+	for (auto &coefficient: expected_result)
+		coefficient *= element;
+
+	Polynomial<int> result = Polynomial(coefficients1);
+	result *= element;
+	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
 class PolynomialTest: public testing::TestWithParam<SolveParameter> {};
@@ -132,7 +177,7 @@ TEST_P(PolynomialTest, PolynomialSolveTest)
 	const Coefficient coefficients = std::get<0>(GetParam());
 	const Root expected_roots = std::get<1>(GetParam());
 
-	const auto polynomial = Polynomial(coefficients);
+	const Polynomial<int> polynomial = Polynomial(coefficients);
 	Root roots = polynomial.solve(100);
 	std::sort(roots.begin(), roots.end());
 
