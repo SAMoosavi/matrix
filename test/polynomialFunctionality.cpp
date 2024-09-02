@@ -13,159 +13,201 @@ using Coefficient = vector<int>;
 using Root = vector<double>;
 using SolveParameter = tuple<Coefficient, Root>;
 
-class BasicOperationsCoefficients: public ::testing::Test {
+class SharedCoefficients: public ::testing::Test {
 protected:
 	Coefficient coefficients1;
-	Coefficient coefficients2; /* its size must be greater than coefficients1 */
-	int element;
+	Coefficient coefficients2;
+	Polynomial<int> expected_result;
+
+	virtual inline void CreateExpectedResult() = 0;
 
 	void SetUp() override
 	{
-		coefficients1 = Coefficient{2, -3, 1};
-		coefficients2 = Coefficient{3, 2, -3, 1};
-		element = 10;
+		coefficients1 = Coefficient{-1, 1};
+		coefficients2 = Coefficient{1, -4, 6, -4, 1};
+		CreateExpectedResult();
 	}
 };
 
-TEST_F(BasicOperationsCoefficients, PolynomialSumWithPolynomial)
-{
-	Coefficient expected_result = coefficients2;
-	for (size_t i = 0; i < coefficients1.size(); i++)
-		expected_result[i] += coefficients1[i];
+class SharedCoefficientAndElement: public ::testing::Test {
+protected:
+	Coefficient coefficients;
+	int element;
+	Polynomial<int> expected_result;
 
+	virtual inline void CreateExpectedResult() = 0;
+
+	void SetUp() override
+	{
+		coefficients = Coefficient{-1, 1};
+		element = 4;
+		CreateExpectedResult();
+	}
+};
+
+class PolynomialSumWithPolynomial: public SharedCoefficients {
+protected:
+	void CreateExpectedResult() override
+	{
+		Coefficient expected_coefficients = coefficients2;
+		for (size_t i = 0; i < coefficients1.size(); i++)
+			expected_coefficients[i] += coefficients1[i];
+		expected_result = Polynomial(expected_coefficients);
+	}
+};
+
+TEST_F(PolynomialSumWithPolynomial, WithoutEqual)
+{
 	const Polynomial<int> result = Polynomial(coefficients1) + Polynomial(coefficients2);
+	EXPECT_EQ(expected_result, result);
+}
+
+TEST_F(PolynomialSumWithPolynomial, Equal)
+{
+	Polynomial<int> result = Polynomial(coefficients1);
+	result += Polynomial(coefficients2);
+
+	EXPECT_EQ(expected_result, result);
+}
+
+class PolynomialSumWithElement: public SharedCoefficientAndElement {
+protected:
+	void CreateExpectedResult() override
+	{
+		Coefficient expected_coefficients = coefficients;
+		expected_coefficients[0] += element;
+		expected_result = Polynomial(expected_coefficients);
+	}
+};
+
+TEST_F(PolynomialSumWithElement, WithoutEqual)
+{
+	const Polynomial<int> result = Polynomial(coefficients) + element;
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-TEST_F(BasicOperationsCoefficients, PolynomialSumWithElement)
+TEST_F(PolynomialSumWithElement, Equal)
 {
-	Coefficient expected_result = coefficients1;
-	expected_result[0] += element;
-
-	const Polynomial<int> result = Polynomial(coefficients1) + element;
-	EXPECT_EQ(Polynomial(expected_result), result);
-}
-
-TEST_F(BasicOperationsCoefficients, PolynomialSumEqualWithPolynomial)
-{
-	Coefficient expected_result = coefficients2;
-	for (size_t i = 0; i < coefficients1.size(); i++)
-		expected_result[i] += coefficients1[i];
-
-	Polynomial<int> polynomial = Polynomial(coefficients1);
-	polynomial += Polynomial(coefficients2);
-
-	EXPECT_EQ(Polynomial(expected_result), polynomial);
-}
-
-TEST_F(BasicOperationsCoefficients, PolynomialSumEqualWithElement)
-{
-	Coefficient expected_result = coefficients1;
-	expected_result[0] += element;
-
-	Polynomial<int> polynomial = Polynomial(coefficients1);
+	Polynomial<int> polynomial = Polynomial(coefficients);
 	polynomial += element;
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
 }
 
-TEST_F(BasicOperationsCoefficients, PolynomialSymmetry)
-{
-	Coefficient expected_result = coefficients1;
-	for (auto &element: expected_result)
-		element = -1 * element;
+class PolynomialSymmetry: public SharedCoefficients {
+protected:
+	void CreateExpectedResult() override
+	{
+		Coefficient expected_coefficients = coefficients1;
+		for (auto &element: expected_coefficients)
+			element = -1 * element;
+		expected_result = Polynomial(expected_coefficients);
+	}
+};
 
+TEST_F(PolynomialSymmetry, PolynomialSymmetry)
+{
 	const Polynomial<int> polynomial = Polynomial(coefficients1);
 	EXPECT_EQ(-polynomial, Polynomial(expected_result));
 }
 
-TEST_F(BasicOperationsCoefficients, PolynomialSubmissionWithPolynomial)
-{
-	Coefficient expected_result(coefficients2.size());
-	std::transform(coefficients2.begin(), coefficients2.end(), expected_result.begin(),
-	               [](auto element) { return element * -1; });
-	for (size_t i = 0; i < coefficients1.size(); i++)
-		expected_result[i] += coefficients1[i];
+class PolynomialSubmissionWithPolynomial: public SharedCoefficients {
+protected:
+	void CreateExpectedResult() override
+	{
+		Coefficient expected_coefficients(coefficients2.size());
+		std::transform(coefficients2.begin(), coefficients2.end(), expected_coefficients.begin(),
+		               [](auto element) { return element * -1; });
+		for (size_t i = 0; i < coefficients1.size(); i++)
+			expected_coefficients[i] += coefficients1[i];
+		expected_result = Polynomial(expected_coefficients);
+	}
+};
 
+TEST_F(PolynomialSubmissionWithPolynomial, WithoutEqual)
+{
 	const Polynomial<int> result = Polynomial(coefficients1) - Polynomial(coefficients2);
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-TEST_F(BasicOperationsCoefficients, PolynomialSubmissionWithElement)
+TEST_F(PolynomialSubmissionWithPolynomial, PolynomialSubmissionEqualWithPolynomial)
 {
-	Coefficient expected_result = coefficients1;
-	expected_result[0] -= element;
-
-	const Polynomial<int> result = Polynomial(coefficients1) - element;
-	EXPECT_EQ(Polynomial(expected_result), result);
-}
-
-TEST_F(BasicOperationsCoefficients, PolynomialSubmissionEqualWithPolynomial)
-{
-	Coefficient expected_result(coefficients2.size());
-	std::transform(coefficients2.begin(), coefficients2.end(), expected_result.begin(),
-	               [](auto element) { return element * -1; });
-	for (size_t i = 0; i < coefficients1.size(); i++)
-		expected_result[i] += coefficients1[i];
-
-
 	Polynomial<int> polynomial = Polynomial(coefficients1);
 	polynomial -= Polynomial(coefficients2);
 
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
 }
 
-TEST_F(BasicOperationsCoefficients, PolynomialSubmissionEqualWithElement)
-{
-	Coefficient expected_result = coefficients1;
-	expected_result[0] -= element;
+class PolynomialSubmissionWithElement: public SharedCoefficientAndElement {
+protected:
+	void CreateExpectedResult() override
+	{
+		Coefficient expected_coefficients = coefficients;
+		expected_coefficients[0] -= element;
+		expected_result = Polynomial(expected_coefficients);
+	}
+};
 
-	Polynomial<int> polynomial = Polynomial(coefficients1);
+TEST_F(PolynomialSubmissionWithElement, WithoutEqual)
+{
+	const Polynomial<int> result = Polynomial(coefficients) - element;
+	EXPECT_EQ(Polynomial(expected_result), result);
+}
+
+
+TEST_F(PolynomialSubmissionWithElement, Equal)
+{
+	Polynomial<int> polynomial = Polynomial(coefficients);
 	polynomial -= element;
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
 }
 
-TEST_F(BasicOperationsCoefficients, PolynomialMultipleWithPolynomial)
-{
-	Coefficient expected_result(coefficients1.size() + coefficients2.size() - 1, 0);
-	for (size_t i = 0; i < coefficients1.size(); i++) {
-		for (size_t j = 0; j < coefficients2.size(); j++)
-			expected_result[i + j] += coefficients1[i] * coefficients2[j];
+class PolynomialMultipleWithPolynomial: public SharedCoefficients {
+protected:
+	void CreateExpectedResult() override
+	{
+		Coefficient expected_coefficients(coefficients1.size() + coefficients2.size() - 1, 0);
+		for (size_t i = 0; i < coefficients1.size(); i++) {
+			for (size_t j = 0; j < coefficients2.size(); j++)
+				expected_coefficients[i + j] += coefficients1[i] * coefficients2[j];
+		}
+		expected_result = Polynomial(expected_coefficients);
 	}
+};
 
+TEST_F(PolynomialMultipleWithPolynomial, WithoutEqual)
+{
 	const Polynomial<int> result = Polynomial(coefficients1) * Polynomial(coefficients2);
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-TEST_F(BasicOperationsCoefficients, PolynomialMultipleWithElement)
+TEST_F(PolynomialMultipleWithPolynomial, Equal)
 {
-	Coefficient expected_result = coefficients1;
-	for (auto &coefficient: expected_result)
-		coefficient *= element;
-
-	const Polynomial<int> result = Polynomial(coefficients1) * element;
-	EXPECT_EQ(Polynomial(expected_result), result);
-}
-
-TEST_F(BasicOperationsCoefficients, PolynomialMultipleEqualWithPolynomial)
-{
-	Coefficient expected_result(coefficients1.size() + coefficients2.size() - 1, 0);
-	for (size_t i = 0; i < coefficients1.size(); i++) {
-		for (size_t j = 0; j < coefficients2.size(); j++)
-			expected_result[i + j] += coefficients1[i] * coefficients2[j];
-	}
-
 	Polynomial<int> result = Polynomial(coefficients1);
 	result *= Polynomial(coefficients2);
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-TEST_F(BasicOperationsCoefficients, PolynomialMultipleEqualWithElement)
-{
-	Coefficient expected_result = coefficients1;
-	for (auto &coefficient: expected_result)
-		coefficient *= element;
+class PolynomialMultipleWithElement: public SharedCoefficientAndElement {
+protected:
+	void CreateExpectedResult() override
+	{
+		Coefficient expected_coefficients = coefficients;
+		for (auto &coefficient: expected_coefficients)
+			coefficient *= element;
+		expected_result = Polynomial(expected_coefficients);
+	}
+};
 
-	Polynomial<int> result = Polynomial(coefficients1);
+TEST_F(PolynomialMultipleWithElement, PolynomialMultipleWithElement)
+{
+	const Polynomial<int> result = Polynomial(coefficients) * element;
+	EXPECT_EQ(Polynomial(expected_result), result);
+}
+
+
+TEST_F(PolynomialMultipleWithElement, PolynomialMultipleEqualWithElement)
+{
+	Polynomial<int> result = Polynomial(coefficients);
 	result *= element;
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
