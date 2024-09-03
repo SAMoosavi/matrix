@@ -4,8 +4,7 @@
 
 using namespace ::testing;
 
-class MatrixFunctionality: public Test {
-};
+class MatrixFunctionality: public Test {};
 
 TEST_F(MatrixFunctionality, creat_matrix_with_size_should_creat_matrix_with_size_and_set_value_of_each_cell_zero)
 {
@@ -45,4 +44,9 @@ TEST_F(MatrixFunctionality, creat_matrix_with_intializer_list)
 
 	Matrix<uint32_t> matrix(INITIALIZE_LIST_OF_MATRIX);
 	EXPECT_THAT(matrix.get_table(), Eq(table_of_matrix));
+}
+
+TEST_F(MatrixFunctionality, creat_matrix_with_different_column_size_should_be_get_trow)
+{
+	EXPECT_THROW(Matrix<int>({{1, 2, 3}, {1, 4}, {5, 6, 7, 8}}), std::invalid_argument);
 }

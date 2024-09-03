@@ -18,8 +18,24 @@ template <template <Containerable> typename Container>
 Matrix<Element>::Matrix(const Container<Container<Element>>& matrix)
 	: row(matrix.size()), col(matrix.begin()->size()), table(0)
 {
-	for (const auto& row_of_matrix: matrix)
+	for (const auto& row_of_matrix: matrix) {
+		if(row_of_matrix.size() != col)
+			throw std::invalid_argument("Cannot creat matrix with different column size.");
+
 		table.emplace_back(row_of_matrix);
+	}
+}
+
+template <Elementable Element>
+Matrix<Element>::Matrix(const std::initializer_list<std::initializer_list<Element>>& matrix)
+	: row(matrix.size()), col(matrix.begin()->size()), table(0)
+{
+	for (const auto& row_of_matrix: matrix) {
+		if(row_of_matrix.size() != col)
+			throw std::invalid_argument("Cannot creat matrix with different column size.");
+
+		table.emplace_back(row_of_matrix);
+	}
 }
 
 template <Elementable Element>
@@ -28,7 +44,7 @@ template <typename OtherElement>
 Matrix<Element> Matrix<Element>::sum(const Matrix<OtherElement>& other) const
 {
 	if ((row != other.get_number_of_row()) and (col != other.get_number_of_col()))
-		throw invalid_argument("Cannot sum spans of different sizes");
+		throw std::invalid_argument("Cannot sum spans of different sizes");
 
 	Matrix<Element> result(row, col);
 	for (size_t row_index = 0; row_index < row; ++row_index)

@@ -7,23 +7,23 @@
 
 #include "concept.h"
 
-using namespace std;
-
 template <Elementable Element>
 class Matrix {
 private:
-	typedef vector<Element> RowType;
-	typedef vector<RowType> TableType;
+	typedef std::vector<Element> RowType;
+	typedef std::vector<RowType> TableType;
 
 public:
 	Matrix();
 
 	Matrix(size_t row, size_t col);
 
+	explicit Matrix(const std::initializer_list<std::initializer_list<Element>>& matrix);
+
 	template <template <Containerable> typename Container>
 	explicit Matrix(const Container<Container<Element>>& matrix);
 
-	TableType get_table() const;
+	[[nodiscard]] TableType get_table() const;
 	[[nodiscard]] size_t get_number_of_row() const;
 	[[nodiscard]] size_t get_number_of_col() const;
 
