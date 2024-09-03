@@ -268,11 +268,11 @@ TEST_F(DerivateCoefficients, PolynomialDerivateEqual)
 
 class SetValueTest: public ::testing::Test {
 protected:
-	Polynomial<double> polynomial;
+	Polynomial<int32_t> polynomial;
 
 	void SetUp() override
 	{
-		polynomial = Polynomial(vector<double>{-1, 3, -3, 1});
+		polynomial = Polynomial(Coefficient{-1, 3, -3, 1});
 	}
 };
 
@@ -314,3 +314,27 @@ INSTANTIATE_TEST_SUITE_P(SolveParameters, PolynomialTest,
                          testing::Values(make_tuple(vector<int>{2, -3, 1}, vector<double>{1, 2}),
                                          make_tuple(vector<int>{0, 2, -3, 1}, vector<double>{0, 1, 2}),
                                          make_tuple(vector<int>{0, -6, 11, -6, 1}, vector<double>{0, 1, 2, 3})));
+
+class CoefficientTest: public ::testing::Test {
+protected:
+	Coefficient coefficients;
+	Polynomial<int32_t> polynomial;
+
+	void SetUp() override
+	{
+		coefficients = Coefficient{-1, 3, -3, 1};
+		polynomial = Polynomial(coefficients);
+	}
+};
+
+TEST_F(CoefficientTest, BracketOperator)
+{
+	for (size_t i = 0; i < coefficients.size(); i++)
+		EXPECT_EQ(coefficients[i], polynomial[i]);
+}
+
+TEST_F(CoefficientTest, At)
+{
+	for (size_t i = 0; i < coefficients.size(); i++)
+		EXPECT_EQ(coefficients.at(i), polynomial.at(i));
+}
