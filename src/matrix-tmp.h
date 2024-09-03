@@ -241,4 +241,21 @@ size_t Matrix<Element>::get_number_of_col() const
 	return col;
 }
 
+template <Elementable Element>
+template <typename OtherElement>
+bool Matrix<Element>::operator==(const Matrix<OtherElement>& other) const
+{
+	if (this->col != other.col or this->row != other.row)
+		return false;
+
+	for (size_t i = 0; i < row; ++i) {
+		for (int j = 0; j < col; ++j) {
+			if (this->table[i][j] != other.table[i][j])
+				return false;
+		}
+	}
+
+	return true;
+}
+
 #endif

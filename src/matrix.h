@@ -55,6 +55,9 @@ public:
 	template <typename OtherElement>
 	Matrix<Element>& operator*=(const OtherElement& other);
 
+	template <typename OtherElement>
+	bool operator==(const Matrix<OtherElement>& other) const;
+
 	Element at(size_t row_index, size_t col_index);
 
 	RowType operator[](size_t idx) const;
