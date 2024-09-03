@@ -50,3 +50,58 @@ TEST_F(MatrixFunctionality, creat_matrix_with_different_column_size_should_be_ge
 {
 	EXPECT_THROW(Matrix<int>({{1, 2, 3}, {1, 4}, {5, 6, 7, 8}}), std::invalid_argument);
 }
+
+TEST_F(MatrixFunctionality, the_sum_function_suold_be_trow_when_first_and_second_matrix_is_not_compatible)
+{
+	const Matrix<int> FIRST_MATRIX({{1, 2, 3}});
+	const Matrix<int> SECOND_MATRIX({{1, 2, 3, 4}});
+	EXPECT_THROW(FIRST_MATRIX.sum(SECOND_MATRIX), std::invalid_argument);
+}
+
+using BaineryOperatorType = std::tuple<Matrix<int>, Matrix<int>, Matrix<int>>;
+
+class SumOfTwoMatrix: public ::testing::TestWithParam<BaineryOperatorType> {};
+
+TEST_P(SumOfTwoMatrix, the_sum_function_should_return_third_param_when_sum_first_and_second_params)
+{
+	const Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
+	const Matrix<int> SECOND_MATRIX = std::get<1>(GetParam());
+	const Matrix<int> THIRD_MATRIX = std::get<2>(GetParam());
+
+	EXPECT_EQ(FIRST_MATRIX.sum(SECOND_MATRIX), THIRD_MATRIX);
+}
+
+TEST_P(SumOfTwoMatrix, the_sum_operator_should_return_third_param_when_sum_first_and_second_params)
+{
+	const Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
+	const Matrix<int> SECOND_MATRIX = std::get<1>(GetParam());
+	const Matrix<int> THIRD_MATRIX = std::get<2>(GetParam());
+
+	EXPECT_EQ(FIRST_MATRIX + SECOND_MATRIX, THIRD_MATRIX);
+}
+
+TEST_P(SumOfTwoMatrix, the_sum_equal_operator_should_set_first_matrix_equal_to_third_param_when_sum_first_and_second_params)
+{
+	Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
+	const Matrix<int> SECOND_MATRIX = std::get<1>(GetParam());
+	const Matrix<int> THIRD_MATRIX = std::get<2>(GetParam());
+	FIRST_MATRIX += SECOND_MATRIX;
+	EXPECT_EQ(FIRST_MATRIX, THIRD_MATRIX);
+}
+
+INSTANTIATE_TEST_SUITE_P(
+		SumData,
+		SumOfTwoMatrix,
+		Values(
+				std::make_tuple(
+						Matrix<int>({{1, 2, 3}, {1, 2, 3}}),
+						Matrix<int>({{6, 5, 4}, {6, 5, 4}}),
+						Matrix<int>({{7, 7, 7}, {7, 7, 7}})
+				),
+				std::make_tuple(
+						Matrix<int>({{1, 2, 3, 4, 5, 6, 7}}),
+						Matrix<int>({{7, 6, 5, 4, 3, 2, 1}}),
+						Matrix<int>({{8, 8, 8, 8, 8, 8, 8}})
+				)
+		)
+);
