@@ -1,7 +1,9 @@
+#include <cinttypes>
 #include <cstddef>
 
 #include <algorithm>
 #include <tuple>
+#include <variant>
 #include <vector>
 
 #include "polynomial.h"
@@ -262,6 +264,36 @@ TEST_F(DerivateCoefficients, PolynomialDerivateEqual)
 	Polynomial<int> result(base);
 	result.derivative_equal();
 	EXPECT_EQ(derivate, result);
+}
+
+class SetValueTest: public ::testing::Test {
+protected:
+	Polynomial<double> polynomial;
+
+	void SetUp() override
+	{
+		polynomial = Polynomial(vector<double>{-1, 3, -3, 1});
+	}
+};
+
+TEST_F(SetValueTest, InputInt32)
+{
+	constexpr const int32_t input = 5;
+	constexpr const int32_t output = 64;
+
+	const int32_t result = polynomial.set_value(input);
+
+	EXPECT_EQ(result, output);
+}
+
+TEST_F(SetValueTest, Double)
+{
+	constexpr const double input = 3.75;
+	constexpr const double output = 20.796875;
+
+	const double result = polynomial.set_value(input);
+
+	EXPECT_EQ(result, output);
 }
 
 class PolynomialTest: public testing::TestWithParam<SolveParameter> {};
