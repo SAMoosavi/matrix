@@ -403,7 +403,7 @@ template <typename Element, typename OtherElement>
 constexpr Polynomial<OtherElement> operator*(const OtherElement &other, const Polynomial<Element> &polynomial)
 {
 	Polynomial other_polynomial(other);
-	return other * polynomial;
+	return other_polynomial * polynomial;
 }
 
 #endif
