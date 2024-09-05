@@ -102,6 +102,14 @@ TEST_F(MatrixFunctionality, the_multiple_function_suold_be_trow_when_col_number_
 	EXPECT_THROW(FIRST_MATRIX.multiple(SECOND_MATRIX), std::invalid_argument);
 }
 
+TEST_F(MatrixFunctionality, the_determinant_function_suold_be_trow_when_the_matrix_is_not_squrt)
+{
+	constexpr size_t ROW_NUMBER = 1;
+	constexpr size_t COL_NUMBER = 2;
+	const Matrix<int> MATRIX(ROW_NUMBER, COL_NUMBER);
+	EXPECT_THROW(MATRIX.determinant(), std::invalid_argument);
+}
+
 using BaineryOperatorType = std::tuple<Matrix<int>, Matrix<int>, Matrix<int>>;
 
 class SumOfTwoMatrix: public ::testing::TestWithParam<BaineryOperatorType> {};
@@ -288,5 +296,25 @@ INSTANTIATE_TEST_SUITE_P(
 						Matrix<int>({{1, 2, 3, 4, 5, 6, 7}}),
 						Matrix<int>({{-1, -2, -3, -4, -5, -6, -7}})
 				)
+		)
+);
+
+class DeterminantOfMatrix: public ::testing::TestWithParam<std::tuple<Matrix<int>, int>> {};
+
+TEST_P(DeterminantOfMatrix, the_determinant_should_return_second_param_when_determinant_first_params)
+{
+	const Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
+	const int DETERMINANT = std::get<1>(GetParam());
+	EXPECT_EQ(FIRST_MATRIX.determinant(), DETERMINANT);
+}
+
+INSTANTIATE_TEST_SUITE_P(
+		DeterminantData,
+		DeterminantOfMatrix,
+		Values(
+				std::make_tuple(Matrix<int>({{1, 2}, {0, 2}}), 2),
+				std::make_tuple(Matrix<int>({{1, 2, 3}, {0, 2, 3}, {1, 2, 0}}), -6),
+				std::make_tuple(Matrix<int>({{1, 2, 3, 4}, {0, 2, 3, 5}, {1, 2, 0, 5}, {1, 2, 8, 5}}), -12),
+				std::make_tuple(Matrix<int>({{1}}), 1)
 		)
 );
