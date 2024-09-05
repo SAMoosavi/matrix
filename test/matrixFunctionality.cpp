@@ -266,3 +266,27 @@ INSTANTIATE_TEST_SUITE_P(
 				)
 		)
 );
+
+class OppositeOfMatrix: public ::testing::TestWithParam<std::tuple<Matrix<int>, Matrix<int>>> {};
+
+TEST_P(OppositeOfMatrix, the_opposite_operator_should_return_second_param_when_opposit_first_params)
+{
+	const Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
+	const Matrix<int> SECOND_MATRIX = std::get<1>(GetParam());
+	EXPECT_EQ(-FIRST_MATRIX, SECOND_MATRIX);
+}
+
+INSTANTIATE_TEST_SUITE_P(
+		OppositeData,
+		OppositeOfMatrix,
+		Values(
+				std::make_tuple(
+						Matrix<int>({{1, 2, 3}, {1, 2, 3}}),
+						Matrix<int>({{-1, -2, -3}, {-1, -2, -3}})
+				),
+				std::make_tuple(
+						Matrix<int>({{1, 2, 3, 4, 5, 6, 7}}),
+						Matrix<int>({{-1, -2, -3, -4, -5, -6, -7}})
+				)
+		)
+);
