@@ -287,4 +287,11 @@ Matrix<Element>::operator std::string() const noexcept
 	return to_string();
 }
 
+template <Elementable Element>
+std::ostream& operator<<(std::ostream& os, const Matrix<Element>& matrix)
+{
+	os << matrix.to_string();
+	return os;
+}
+
 #endif

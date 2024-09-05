@@ -76,11 +76,7 @@ private:
 };
 
 template <Elementable Element>
-std::ostream& operator<<(std::ostream& os, const Matrix<Element>& matrix)
-{
-	os << matrix.to_string();
-	return os;
-}
+std::ostream& operator<<(std::ostream& os, const Matrix<Element>& matrix);
 
 
 template <typename Element, typename OtherElement>
