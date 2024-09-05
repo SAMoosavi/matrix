@@ -116,7 +116,7 @@ Matrix<Element> Matrix<Element>::multiple(const Matrix<OtherElement>& other) con
 
 	for (size_t i = 0; i < row; ++i)
 		for (size_t k = 0; k < col; ++k)
-			for (size_t j = 0; j < other.get_number_of_col(); ++j)
+			for (size_t j = 0; j < other.col ++j)
 				result[i][j] += table[i][k] * other[k][j];
 
 	return result;
