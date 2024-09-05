@@ -77,6 +77,8 @@ Matrix<Element> Matrix<Element>::operator-() const
 	for (RowType& row_of_tmp: tmp.table)
 		for (Element& element_of_tmp: row_of_tmp)
 			element_of_tmp = -element_of_tmp;
+
+	return tmp;
 }
 
 template <Elementable Element>
@@ -90,7 +92,7 @@ template <Elementable Element>
 template <typename OtherElement>
 Matrix<Element> Matrix<Element>::operator-(const Matrix<OtherElement>& other) const
 {
-	return multiple(std::move(other));
+	return submission(std::move(other));
 }
 
 template <Elementable Element>
