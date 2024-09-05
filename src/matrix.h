@@ -64,6 +64,9 @@ public:
 
 	Element determinant() const;
 
+	[[nodiscard]] std::string to_string() const noexcept;
+	[[nodiscard]] operator std::string() const noexcept;
+
 private:
 	RowType& operator[](size_t idx);
 
@@ -71,6 +74,13 @@ private:
 	size_t col;
 	TableType table;
 };
+
+template <Elementable Element>
+std::ostream& operator<<(std::ostream& os, const Matrix<Element>& matrix)
+{
+	os << matrix.to_string();
+	return os;
+}
 
 
 template <typename Element, typename OtherElement>

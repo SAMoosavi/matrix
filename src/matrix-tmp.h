@@ -258,4 +258,31 @@ bool Matrix<Element>::operator==(const Matrix<OtherElement>& other) const
 	return true;
 }
 
+template <Elementable Element>
+std::string Matrix<Element>::to_string() const noexcept
+{
+	std::string ans = "{\n";
+	for (const auto& a: table) {
+		ans += "\t{";
+
+		for (const auto& elem: a)
+			ans += std::to_string(elem) + ", ";
+
+		ans.pop_back();
+		ans.pop_back();
+
+		ans += "},\n";
+	}
+	ans.pop_back();
+	ans.pop_back();
+	ans += "\n}";
+	return ans;
+}
+
+template <Elementable Element>
+Matrix<Element>::operator std::string() const noexcept
+{
+	return to_string();
+}
+
 #endif
