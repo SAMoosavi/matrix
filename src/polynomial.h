@@ -15,33 +15,17 @@ private:
 	using NewtonOutput = std::pair<double, bool>;
 	using PolynomialRoot = std::vector<double>;
 
-	template <Numberable Number>
-	[[nodiscard]] static constexpr Number round(Number number, uint16_t precision) noexcept;
-
-	[[nodiscard]] static int64_t create_random_number(int64_t begin, int64_t end) noexcept;
-
-	[[nodiscard]] PolynomialRoot solve_quadratic_equation(uint16_t precision = 6) const;
-
-	[[nodiscard]] PolynomialRoot solve_greater_power(double guess, uint16_t max_iteration, uint16_t precision) const;
-
-	[[nodiscard]] NewtonOutput solve_by_newton(double guess, uint16_t max_iteration, uint16_t precision) const;
-
-	void simplify_by_horner(NewtonOutput info);
-
-	static constexpr double NOT_FOUND = std::numeric_limits<double>::min_exponent10;
-	// smallest to biggest degree
-	Coefficient coefficients;
 
 public:
-	Polynomial();
+	Polynomial() = default  ;
 
 	explicit Polynomial(const Coefficient& coefficients);
 
-	Polynomial(const Polynomial& other);
+	Polynomial(const Polynomial& other) = default;
+	Polynomial(Polynomial&& other) noexcept = default;
 
-	Polynomial(Polynomial&& other) noexcept;
-
-	Polynomial& operator=(const Polynomial& another) = default;
+    Polynomial& operator=(const Polynomial& another) = default;
+    Polynomial& operator=(Polynomial&& another) noexcept = default;
 
 	bool operator==(const Polynomial<Element>& other) const;
 
@@ -104,6 +88,24 @@ public:
 
 	[[nodiscard]] Element& operator[](size_t index);
 	[[nodiscard]] const Element& operator[](size_t index) const;
+
+private:
+    template <Numberable Number>
+    [[nodiscard]] static constexpr Number round(Number number, uint16_t precision) noexcept;
+
+    [[nodiscard]] static int64_t create_random_number(int64_t begin, int64_t end) noexcept;
+
+    [[nodiscard]] PolynomialRoot solve_quadratic_equation(uint16_t precision = 6) const;
+
+    [[nodiscard]] PolynomialRoot solve_greater_power(double guess, uint16_t max_iteration, uint16_t precision) const;
+
+    [[nodiscard]] NewtonOutput solve_by_newton(double guess, uint16_t max_iteration, uint16_t precision) const;
+
+    void simplify_by_horner(NewtonOutput info);
+
+    static constexpr double NOT_FOUND = std::numeric_limits<double>::min_exponent10;
+    // smallest to biggest degree
+    Coefficient coefficients;
 };
 
 template <typename Element, typename OtherElement>
