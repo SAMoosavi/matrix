@@ -13,12 +13,6 @@ Polynomial<Element>::Polynomial(const Coefficient& coefficients) : coefficients(
 }
 
 template <Polynomialable Element>
-inline bool Polynomial<Element>::operator==(const Polynomial<Element> &other) const
-{
-	return coefficients == other.coefficients;
-}
-
-template <Polynomialable Element>
 template <typename Float>
     requires std::floating_point<Float>
 constexpr bool Polynomial<Element>::compare_with_precision(Float number1, Float number2, uint16_t precision) noexcept

@@ -15,7 +15,6 @@ private:
 	using NewtonOutput = std::pair<double, bool>;
 	using PolynomialRoot = std::vector<double>;
 
-
 public:
 	Polynomial() = default  ;
 
@@ -27,7 +26,7 @@ public:
     Polynomial& operator=(const Polynomial& another) = default;
     Polynomial& operator=(Polynomial&& another) noexcept = default;
 
-	bool operator==(const Polynomial<Element>& other) const;
+	bool operator==(const Polynomial<Element>& other) const = default;
 
 	template <typename Float>
 	    requires std::floating_point<Float>

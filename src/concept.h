@@ -131,12 +131,15 @@ concept IsMatrixable = requires(Matrix m) {
 };
 
 template <typename Coefficientable>
-concept Polynomialable = requires(Coefficientable c) {
+concept Polynomialable = requires(Coefficientable first_coefficient, Coefficientable second_coefficient) {
 	requires Elementable<Coefficientable>;
 	requires MultiplableDifferentType<Coefficientable, int>;
 	requires MultiplableDifferentType<Coefficientable, float>;
 	{
-		c < 0.0
+		first_coefficient < 0.0
+	} -> same_as<bool>;
+	{
+		first_coefficient == second_coefficient
 	} -> same_as<bool>;
 };
 
