@@ -47,13 +47,13 @@ protected:
 	{}
 };
 
-TEST_F(PolynomialSumWithPolynomial, Operation)
+TEST_F(PolynomialSumWithPolynomial, Sum)
 {
 	const Polynomial<int> result = first_polynomial + second_polynomial;
 	EXPECT_EQ(expected_result, result);
 }
 
-TEST_F(PolynomialSumWithPolynomial, OperationEqual)
+TEST_F(PolynomialSumWithPolynomial, SumEqual)
 {
 	Polynomial<int> result = first_polynomial;
 	result += second_polynomial;
@@ -67,13 +67,13 @@ protected:
 	{}
 };
 
-TEST_F(PolynomialSumWithElement, Operation)
+TEST_F(PolynomialSumWithElement, Sum)
 {
 	const Polynomial<int> result = primary_polynomial + element;
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-TEST_F(PolynomialSumWithElement, OperationEqual)
+TEST_F(PolynomialSumWithElement, SumEqual)
 {
 	Polynomial<int> polynomial = primary_polynomial;
 	polynomial += element;
@@ -97,13 +97,13 @@ protected:
 	{}
 };
 
-TEST_F(PolynomialSubmissionWithPolynomial, Operation)
+TEST_F(PolynomialSubmissionWithPolynomial, Submission)
 {
 	const Polynomial<int> result = first_polynomial - second_polynomial;
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-TEST_F(PolynomialSubmissionWithPolynomial, PolynomialSubmissionOperationEqualWithPolynomial)
+TEST_F(PolynomialSubmissionWithPolynomial, SubmissionEqual)
 {
 	Polynomial<int> polynomial = first_polynomial;
 	polynomial -= second_polynomial;
@@ -117,14 +117,14 @@ protected:
 	{}
 };
 
-TEST_F(PolynomialSubmissionWithElement, Operation)
+TEST_F(PolynomialSubmissionWithElement, Submission)
 {
 	const Polynomial<int> result = primary_polynomial - element;
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
 
-TEST_F(PolynomialSubmissionWithElement, OperationEqual)
+TEST_F(PolynomialSubmissionWithElement, SubmissionEqual)
 {
 	Polynomial<int> polynomial = primary_polynomial;
 	polynomial -= element;
@@ -137,13 +137,13 @@ protected:
 	{}
 };
 
-TEST_F(PolynomialMultipleWithPolynomial, Operation)
+TEST_F(PolynomialMultipleWithPolynomial, Multiple)
 {
 	const Polynomial<int> result = first_polynomial * second_polynomial;
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-TEST_F(PolynomialMultipleWithPolynomial, OperationEqual)
+TEST_F(PolynomialMultipleWithPolynomial, MultipleEqual)
 {
 	Polynomial<int> result = first_polynomial;
 	result *= second_polynomial;
@@ -156,14 +156,14 @@ protected:
 	{}
 };
 
-TEST_F(PolynomialMultipleWithElement, PolynomialMultipleWithElement)
+TEST_F(PolynomialMultipleWithElement, Multiple)
 {
 	const Polynomial<int> result = primary_polynomial * element;
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
 
-TEST_F(PolynomialMultipleWithElement, PolynomialMultipleOperationEqualWithElement)
+TEST_F(PolynomialMultipleWithElement, MultipleEqual)
 {
 	Polynomial<int> result = primary_polynomial;
 	result *= element;
@@ -184,13 +184,13 @@ protected:
 	}
 };
 
-TEST_F(PowerCoefficients, PolynomialPower)
+TEST_F(PowerCoefficients, Power)
 {
 	const Polynomial<int> result = Polynomial(base).power(degree);
 	EXPECT_EQ(fourth_power, result);
 }
 
-TEST_F(PowerCoefficients, PolynomialPowerOperationEqual)
+TEST_F(PowerCoefficients, PowerEqual)
 {
 	Polynomial<int> result(base);
 	result.power_equal(degree);
@@ -209,13 +209,13 @@ protected:
 	}
 };
 
-TEST_F(DerivativeCoefficients, PolynomialDerivative)
+TEST_F(DerivativeCoefficients, Derivate)
 {
 	const Polynomial<int> result = Polynomial(base).derivative();
 	EXPECT_EQ(derivative, result);
 }
 
-TEST_F(DerivativeCoefficients, PolynomialDerivativeEqual)
+TEST_F(DerivativeCoefficients, DerivateEqual)
 {
 	Polynomial<int> result(base);
 	result.derivative_equal();
