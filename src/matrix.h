@@ -18,7 +18,7 @@ public:
 
 	Matrix(size_t row, size_t col);
 
-	explicit Matrix(const std::initializer_list<std::initializer_list<Element>>& matrix);
+	Matrix(const std::initializer_list<std::initializer_list<Element>>& matrix);
 
 	template <template <Containerable> typename Container>
 	explicit Matrix(const Container<Container<Element>>& matrix);

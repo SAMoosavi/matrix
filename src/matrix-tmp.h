@@ -43,7 +43,7 @@ template <typename OtherElement>
 	requires SamableDifferentType<Element, OtherElement>
 Matrix<Element> Matrix<Element>::sum(const Matrix<OtherElement>& other) const
 {
-	if (row != other.row or col != other.col)
+	if (row != other.get_number_of_row() or col != other.get_number_of_col())
 		throw std::invalid_argument("Cannot sum spans of different sizes");
 
 	Matrix<Element> result(row, col);
@@ -108,7 +108,7 @@ template <typename OtherElement>
 	requires MultipleableDifferentTypeReturnFirstType<Element, OtherElement>
 Matrix<Element> Matrix<Element>::multiple(const Matrix<OtherElement>& other) const
 {
-	if (col != other.row)
+	if (col != other.get_number_of_row())
 //		throw std::invalid_argument(std::format("Must be number of col in first Matrix equal to row of second Matrix but {} not equal to {}", col, other.get_number_of_row()));
 		throw std::invalid_argument("");
 
@@ -116,7 +116,7 @@ Matrix<Element> Matrix<Element>::multiple(const Matrix<OtherElement>& other) con
 
 	for (size_t i = 0; i < row; ++i)
 		for (size_t k = 0; k < col; ++k)
-			for (size_t j = 0; j < other.col ++j)
+			for (size_t j = 0; j < other.get_number_of_col(); ++j)
 				result[i][j] += table[i][k] * other[k][j];
 
 	return result;
