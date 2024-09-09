@@ -6,7 +6,7 @@ using namespace ::testing;
 
 class MatrixFunctionality: public Test {};
 
-TEST_F(MatrixFunctionality, creat_matrix_with_size_should_creat_matrix_with_size_and_set_value_of_each_cell_zero)
+TEST_F(MatrixFunctionality, CreatMatrixWithSizeShouldCreatMatrixWithSizeAndSetValueOfEachCellZero)
 {
 	constexpr size_t NUMBER_OF_RAW = 4;
 	constexpr size_t NUMBER_OF_COL = 5;
@@ -18,7 +18,7 @@ TEST_F(MatrixFunctionality, creat_matrix_with_size_should_creat_matrix_with_size
 	EXPECT_EQ(matrix.get_table(), TABLE_OF_MATRIX);
 }
 
-TEST_F(MatrixFunctionality, creat_matrix_with_vector)
+TEST_F(MatrixFunctionality, CreatMatrixWithVector)
 {
 	const std::vector<std::vector<double>> INITIALIZE_DATA_OF_MATRIX = {
 			{1.2, 2.3, 3, 4},
@@ -30,7 +30,7 @@ TEST_F(MatrixFunctionality, creat_matrix_with_vector)
 	EXPECT_EQ(matrix.get_table(), INITIALIZE_DATA_OF_MATRIX);
 }
 
-TEST_F(MatrixFunctionality, creat_matrix_with_intializer_list)
+TEST_F(MatrixFunctionality, CreatMatrixWithIntializerList)
 {
 	const std::initializer_list<std::initializer_list<uint32_t>> INITIALIZE_LIST_OF_MATRIX = {
 			{1, 2, 3, 4},
@@ -46,12 +46,12 @@ TEST_F(MatrixFunctionality, creat_matrix_with_intializer_list)
 	EXPECT_THAT(matrix.get_table(), Eq(table_of_matrix));
 }
 
-TEST_F(MatrixFunctionality, creat_matrix_with_different_column_size_should_be_get_trow)
+TEST_F(MatrixFunctionality, CreatMatrixWithDifferentColumnSizeShouldBeGetTrow)
 {
 	EXPECT_THROW(Matrix<int>({{1, 2, 3}, {1, 4}, {5, 6, 7, 8}}), std::invalid_argument);
 }
 
-TEST_F(MatrixFunctionality, the_sum_function_suold_be_trow_when_first_and_second_matrix_is_not_same_column_number)
+TEST_F(MatrixFunctionality, TheSumFunctionSuoldBeTrowWhenFirstAndSecondMatrixIsNotSameColumnNumber)
 {
 	constexpr size_t ROW_NUMBER = 1;
 	constexpr size_t FIRST_COL_NUMBER = 1;
@@ -61,7 +61,7 @@ TEST_F(MatrixFunctionality, the_sum_function_suold_be_trow_when_first_and_second
 	EXPECT_THROW(FIRST_MATRIX.sum(SECOND_MATRIX), std::invalid_argument);
 }
 
-TEST_F(MatrixFunctionality, the_sum_function_suold_be_trow_when_first_and_second_matrix_is_not_same_row_number)
+TEST_F(MatrixFunctionality, TheSumFunctionSuoldBeTrowWhenFirstAndSecondMatrixIsNotSameRowNumber)
 {
 	constexpr size_t FIRST_ROW_NUMBER = 1;
 	constexpr size_t SECOND_ROW_NUMBER = 2;
@@ -71,7 +71,7 @@ TEST_F(MatrixFunctionality, the_sum_function_suold_be_trow_when_first_and_second
 	EXPECT_THROW(FIRST_MATRIX.sum(SECOND_MATRIX), std::invalid_argument);
 }
 
-TEST_F(MatrixFunctionality, the_submission_function_suold_be_trow_when_first_and_second_matrix_is_not_same_column_number)
+TEST_F(MatrixFunctionality, TheSubmissionFunctionSuoldBeTrowWhenFirstAndSecondMatrixIsNotSameColumnNumber)
 {
 	constexpr size_t ROW_NUMBER = 1;
 	constexpr size_t FIRST_COL_NUMBER = 1;
@@ -81,7 +81,7 @@ TEST_F(MatrixFunctionality, the_submission_function_suold_be_trow_when_first_and
 	EXPECT_THROW(FIRST_MATRIX.submission(SECOND_MATRIX), std::invalid_argument);
 }
 
-TEST_F(MatrixFunctionality, the_submission_function_suold_be_trow_when_first_and_second_matrix_is_not_same_row_number)
+TEST_F(MatrixFunctionality, TheSubmissionFunctionSuoldBeTrowWhenFirstAndSecondMatrixIsNotSameRowNumber)
 {
 	constexpr size_t FIRST_ROW_NUMBER = 1;
 	constexpr size_t SECOND_ROW_NUMBER = 2;
@@ -91,7 +91,7 @@ TEST_F(MatrixFunctionality, the_submission_function_suold_be_trow_when_first_and
 	EXPECT_THROW(FIRST_MATRIX.submission(SECOND_MATRIX), std::invalid_argument);
 }
 
-TEST_F(MatrixFunctionality, the_multiple_function_suold_be_trow_when_col_number_of_first_and_row_number_of_second_matrix_is_not_same)
+TEST_F(MatrixFunctionality, TheMultipleFunctionSuoldBeTrowWhenColNumberOfFirstAndRowNumberOfSecondMatrixIsNotSame)
 {
 	constexpr size_t FIRST_ROW_NUMBER = 1;
 	constexpr size_t FIRST_COL_NUMBER = 1;
@@ -102,7 +102,7 @@ TEST_F(MatrixFunctionality, the_multiple_function_suold_be_trow_when_col_number_
 	EXPECT_THROW(FIRST_MATRIX.multiple(SECOND_MATRIX), std::invalid_argument);
 }
 
-TEST_F(MatrixFunctionality, the_determinant_function_suold_be_trow_when_the_matrix_is_not_squrt)
+TEST_F(MatrixFunctionality, TheDeterminantFunctionSuoldBeTrowWhenTheMatrixIsNotSqurt)
 {
 	constexpr size_t ROW_NUMBER = 1;
 	constexpr size_t COL_NUMBER = 2;
@@ -114,7 +114,7 @@ using BaineryOperatorType = std::tuple<Matrix<int>, Matrix<int>, Matrix<int>>;
 
 class SumOfTwoMatrix: public ::testing::TestWithParam<BaineryOperatorType> {};
 
-TEST_P(SumOfTwoMatrix, the_sum_function_should_return_third_param_when_sum_first_and_second_params)
+TEST_P(SumOfTwoMatrix, TheSumFunctionShouldReturnThirdParamWhenSumFirstAndSecondParams)
 {
 	const Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
 	const Matrix<int> SECOND_MATRIX = std::get<1>(GetParam());
@@ -123,7 +123,7 @@ TEST_P(SumOfTwoMatrix, the_sum_function_should_return_third_param_when_sum_first
 	EXPECT_EQ(FIRST_MATRIX.sum(SECOND_MATRIX), THIRD_MATRIX);
 }
 
-TEST_P(SumOfTwoMatrix, the_sum_operator_should_return_third_param_when_sum_first_and_second_params)
+TEST_P(SumOfTwoMatrix, TheSumOperatorShouldReturnThirdParamWhenSumFirstAndSecondParams)
 {
 	const Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
 	const Matrix<int> SECOND_MATRIX = std::get<1>(GetParam());
@@ -132,7 +132,7 @@ TEST_P(SumOfTwoMatrix, the_sum_operator_should_return_third_param_when_sum_first
 	EXPECT_EQ(FIRST_MATRIX + SECOND_MATRIX, THIRD_MATRIX);
 }
 
-TEST_P(SumOfTwoMatrix, the_sum_equal_operator_should_set_first_matrix_equal_to_third_param_when_sum_first_and_second_params)
+TEST_P(SumOfTwoMatrix, TheSumEqualOperatorShouldSetFirstMatrixEqualToThirdParamWhenSumFirstAndSecondParams)
 {
 	Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
 	const Matrix<int> SECOND_MATRIX = std::get<1>(GetParam());
@@ -160,7 +160,7 @@ INSTANTIATE_TEST_SUITE_P(
 
 class SubmissionOfTwoMatrix: public ::testing::TestWithParam<BaineryOperatorType> {};
 
-TEST_P(SubmissionOfTwoMatrix, the_submission_function_should_return_third_param_when_submission_first_and_second_params)
+TEST_P(SubmissionOfTwoMatrix, TheSubmissionFunctionShouldReturnThirdParamWhenSubmissionFirstAndSecondParams)
 {
 	const Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
 	const Matrix<int> SECOND_MATRIX = std::get<1>(GetParam());
@@ -169,7 +169,7 @@ TEST_P(SubmissionOfTwoMatrix, the_submission_function_should_return_third_param_
 	EXPECT_EQ(FIRST_MATRIX.submission(SECOND_MATRIX), THIRD_MATRIX);
 }
 
-TEST_P(SubmissionOfTwoMatrix, the_submission_operator_should_return_third_param_when_submission_first_and_second_params)
+TEST_P(SubmissionOfTwoMatrix, TheSubmissionOperatorShouldReturnThirdParamWhenSubmissionFirstAndSecondParams)
 {
 	const Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
 	const Matrix<int> SECOND_MATRIX = std::get<1>(GetParam());
@@ -178,7 +178,7 @@ TEST_P(SubmissionOfTwoMatrix, the_submission_operator_should_return_third_param_
 	EXPECT_EQ(FIRST_MATRIX - SECOND_MATRIX, THIRD_MATRIX);
 }
 
-TEST_P(SubmissionOfTwoMatrix, the_submission_equal_operator_should_set_first_matrix_equal_to_third_param_when_submission_first_and_second_params)
+TEST_P(SubmissionOfTwoMatrix, TheSubmissionEqualOperatorShouldSetFirstMatrixEqualToThirdParamWhenSubmissionFirstAndSecondParams)
 {
 	Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
 	const Matrix<int> SECOND_MATRIX = std::get<1>(GetParam());
@@ -206,7 +206,7 @@ INSTANTIATE_TEST_SUITE_P(
 
 class MultipleOfTwoMatrix: public ::testing::TestWithParam<BaineryOperatorType> {};
 
-TEST_P(MultipleOfTwoMatrix, the_multiple_function_should_return_third_param_when_multiple_first_and_second_params)
+TEST_P(MultipleOfTwoMatrix, TheMultipleFunctionShouldReturnThirdParamWhenMultipleFirstAndSecondParams)
 {
 	const Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
 	const Matrix<int> SECOND_MATRIX = std::get<1>(GetParam());
@@ -215,7 +215,7 @@ TEST_P(MultipleOfTwoMatrix, the_multiple_function_should_return_third_param_when
 	EXPECT_EQ(FIRST_MATRIX.multiple(SECOND_MATRIX), THIRD_MATRIX);
 }
 
-TEST_P(MultipleOfTwoMatrix, the_multiple_operator_should_return_third_param_when_multiple_first_and_second_params)
+TEST_P(MultipleOfTwoMatrix, TheMultipleOperatorShouldReturnThirdParamWhenMultipleFirstAndSecondParams)
 {
 	const Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
 	const Matrix<int> SECOND_MATRIX = std::get<1>(GetParam());
@@ -224,7 +224,7 @@ TEST_P(MultipleOfTwoMatrix, the_multiple_operator_should_return_third_param_when
 	EXPECT_EQ(FIRST_MATRIX * SECOND_MATRIX, THIRD_MATRIX);
 }
 
-TEST_P(MultipleOfTwoMatrix, the_multiple_equal_operator_should_set_first_matrix_equal_to_third_param_when_multiple_first_and_second_params)
+TEST_P(MultipleOfTwoMatrix, TheMultipleEqualOperatorShouldSetFirstMatrixEqualToThirdParamWhenMultipleFirstAndSecondParams)
 {
 	Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
 	const Matrix<int> SECOND_MATRIX = std::get<1>(GetParam());
@@ -277,7 +277,7 @@ INSTANTIATE_TEST_SUITE_P(
 
 class OppositeOfMatrix: public ::testing::TestWithParam<std::tuple<Matrix<int>, Matrix<int>>> {};
 
-TEST_P(OppositeOfMatrix, the_opposite_operator_should_return_second_param_when_opposit_first_params)
+TEST_P(OppositeOfMatrix, TheOppositeOperatorShouldReturnSecondParamWhenOppositFirstParams)
 {
 	const Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
 	const Matrix<int> SECOND_MATRIX = std::get<1>(GetParam());
@@ -301,7 +301,7 @@ INSTANTIATE_TEST_SUITE_P(
 
 class DeterminantOfMatrix: public ::testing::TestWithParam<std::tuple<Matrix<int>, int>> {};
 
-TEST_P(DeterminantOfMatrix, the_determinant_should_return_second_param_when_determinant_first_params)
+TEST_P(DeterminantOfMatrix, TheDeterminantShouldReturnSecondParamWhenDeterminantFirstParams)
 {
 	const Matrix<int> FIRST_MATRIX = std::get<0>(GetParam());
 	const int DETERMINANT = std::get<1>(GetParam());

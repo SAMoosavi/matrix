@@ -14,7 +14,7 @@ private:
 	typedef std::vector<RowType> TableType;
 
 public:
-	Matrix();
+	Matrix() = default;
 
 	Matrix(size_t row, size_t col);
 
@@ -64,8 +64,8 @@ public:
 
 	Element determinant() const;
 
-	[[nodiscard]] std::string to_string() const noexcept;
-	[[nodiscard]] operator std::string() const noexcept;
+	[[nodiscard]] inline std::string to_string() const noexcept;
+	[[nodiscard]] inline operator std::string() const noexcept;
 
 private:
 	RowType& operator[](size_t idx);

@@ -1,13 +1,7 @@
 #ifndef MATRIX_MATRIX_TMP_H
 #define MATRIX_MATRIX_TMP_H
 
-//#include <format>
-
 #include "matrix.h"
-
-template <Elementable Element>
-Matrix<Element>::Matrix()
-	: row(0), col(0), table({{}}){}
 
 template <Elementable Element>
 Matrix<Element>::Matrix(size_t row, size_t col)
@@ -92,7 +86,7 @@ template <Elementable Element>
 template <typename OtherElement>
 Matrix<Element> Matrix<Element>::operator-(const Matrix<OtherElement>& other) const
 {
-	return submission(std::move(other));
+	return submission(other);
 }
 
 template <Elementable Element>
@@ -109,8 +103,7 @@ template <typename OtherElement>
 Matrix<Element> Matrix<Element>::multiple(const Matrix<OtherElement>& other) const
 {
 	if (col != other.get_number_of_row())
-//		throw std::invalid_argument(std::format("Must be number of col in first Matrix equal to row of second Matrix but {} not equal to {}", col, other.get_number_of_row()));
-		throw std::invalid_argument("");
+		throw std::invalid_argument("the number of rows must match the number of columns.");
 
 	Matrix<Element> result(row, col);
 
@@ -263,22 +256,33 @@ bool Matrix<Element>::operator==(const Matrix<OtherElement>& other) const
 template <Elementable Element>
 std::string Matrix<Element>::to_string() const noexcept
 {
-	std::string ans = "{\n";
-	for (const auto& a: table) {
-		ans += "\t{";
+	const std::string NEW_LINE = "\n";
+	const std::string TAB = "\t";
+	const std::string OPEN_ACCOLADE = "{";
+	const std::string CLOSE_ACCOLADE = "}";
+	const std::string COLON = ",";
+	const std::string SPACE = " ";
 
-		for (const auto& elem: a)
-			ans += std::to_string(elem) + ", ";
+	const std::string START_OF_TABLE = OPEN_ACCOLADE + NEW_LINE;
+	const std::string START_OF_ROW = TAB + OPEN_ACCOLADE;
+	const std::string SEPERATE_COLUMN = COLON + SPACE;
+	const std::string END_OF_ROW = CLOSE_ACCOLADE + COLON + NEW_LINE;
+	const std::string END_OF_TABLE = NEW_LINE + CLOSE_ACCOLADE;
+	
 
-		ans.pop_back();
-		ans.pop_back();
+	std::string result = START_OF_TABLE;
+	for (const auto& row_of_table: table) {
+		result += START_OF_ROW;
 
-		ans += "},\n";
+		for (const auto& elem: row_of_table)
+			result += std::to_string(elem) + SEPERATE_COLUMN;
+
+		result.erase(result.end() - 2);
+		result += END_OF_ROW;
 	}
-	ans.pop_back();
-	ans.pop_back();
-	ans += "\n}";
-	return ans;
+	result.erase(result.end() - 2);
+	result += END_OF_TABLE;
+	return result;
 }
 
 template <Elementable Element>
