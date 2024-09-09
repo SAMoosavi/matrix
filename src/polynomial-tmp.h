@@ -5,6 +5,8 @@
 
 #include "polynomial.h"
 
+#include "polynomial-helper.h"
+
 template <Polynomialable Element>
 Polynomial<Element>::Polynomial(const Coefficient& coefficients) : coefficients(coefficients)
 {
@@ -25,17 +27,6 @@ constexpr bool Polynomial<Element>::compare_with_precision(Float number1, Float 
 	Float epsilon = std::pow(10, -precision);
 
 	return diff < epsilon;
-}
-
-template <Polynomialable Element>
-int64_t Polynomial<Element>::create_random_number(int64_t begin, int64_t end) noexcept
-{
-	static std::random_device random;
-	static std::mt19937 gen(random());
-
-	std::uniform_int_distribution<int64_t> distribution(begin, end);
-
-	return distribution(gen);
 }
 
 template <Polynomialable Element>
@@ -60,14 +51,15 @@ Polynomial<Element>::NewtonOutput Polynomial<Element>::solve_by_newton(double gu
 			if (compare_with_precision(polynomial_answer, 0.0, precision / 2))
 				result.second = true;
 			else
-				current_answer = create_random_number(guess - guess * 0.1, guess + guess * 0.1);
+				current_answer = polynomial_helper::create_random_number(static_cast<int64_t>(guess - guess * 0.1),
+				                                                         static_cast<int64_t>(guess + guess * 0.1));
 		} else {
 			current_answer = previous_answer - (polynomial_answer / derived_answer);
 		}
 		++iteration;
 	}
 	if (compare_with_precision(set_value(current_answer), 0.0, precision / 2))
-		result.first = round(current_answer, precision);
+		result.first = polynomial_helper::round(current_answer, precision);
 	return result;
 }
 
@@ -96,8 +88,8 @@ auto Polynomial<Element>::solve_quadratic_equation(uint16_t precision) const -> 
 	Element delta = (one_power * one_power) - (4 * two_power * coefficient);
 
 	if (delta >= 0) {
-		result.emplace_back(round(((-1 * one_power) + sqrt(delta)) / (2 * two_power), precision));
-		result.emplace_back(round(((-1 * one_power) - sqrt(delta)) / (2 * two_power), precision));
+		result.emplace_back(polynomial_helper::round(((-1 * one_power) + sqrt(delta)) / (2 * two_power), precision));
+		result.emplace_back(polynomial_helper::round(((-1 * one_power) - sqrt(delta)) / (2 * two_power), precision));
 	}
 
 	return result;
@@ -113,7 +105,8 @@ Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve_greater_power(dou
 	while (temp_polynomial.coefficients.size() > 3) {
 		temp_newton = temp_polynomial.solve_by_newton(guess, max_iteration, precision);
 		if (temp_newton.first == NOT_FOUND)
-			guess = create_random_number(guess - guess * 0.1, guess + guess * 0.1);
+			guess = polynomial_helper::create_random_number(static_cast<int64_t>(guess - guess * 0.1),
+															static_cast<int64_t>(guess + guess * 0.1));
 		else {
 			temp_polynomial.simplify_by_horner(temp_newton);
 			result.emplace_back(temp_newton.first);
@@ -124,14 +117,6 @@ Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve_greater_power(dou
 	PolynomialRoot temp = temp_polynomial.solve(guess, max_iteration, precision);
 	result.insert(result.end(), temp.begin(), temp.end());
 	return result;
-}
-
-template <Polynomialable Element>
-template <Numberable Number>
-constexpr Number Polynomial<Element>::round(Number number, uint16_t precision) noexcept
-{
-	double const precision_number = std::pow(10.0, precision);
-	return static_cast<Number>(std::round(number * precision_number) / precision_number);
 }
 
 template <Polynomialable Element>

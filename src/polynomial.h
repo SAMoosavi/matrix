@@ -90,11 +90,6 @@ public:
 	[[nodiscard]] const Element& operator[](size_t index) const;
 
 private:
-    template <Numberable Number>
-    [[nodiscard]] static constexpr Number round(Number number, uint16_t precision) noexcept;
-
-    [[nodiscard]] static int64_t create_random_number(int64_t begin, int64_t end) noexcept;
-
     [[nodiscard]] PolynomialRoot solve_quadratic_equation(uint16_t precision = 6) const;
 
     [[nodiscard]] PolynomialRoot solve_greater_power(double guess, uint16_t max_iteration, uint16_t precision) const;

@@ -143,6 +143,9 @@ concept Polynomialable = requires(Coefficientable c) {
 template <typename Element>
 concept Numberable = is_arithmetic_v<Element>;
 
+template <typename Element>
+concept Integrable = is_integral_v<Element>;
+
 template <typename Element, typename OtherElement>
 concept AnotherElementMultiplable = requires() {
 	requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement> or
