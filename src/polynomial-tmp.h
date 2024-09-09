@@ -6,22 +6,7 @@
 #include "polynomial.h"
 
 template <Polynomialable Element>
-Polynomial<Element>::Polynomial() : Polynomial(Coefficient(0))
-{
-}
-
-template <Polynomialable Element>
 Polynomial<Element>::Polynomial(const Coefficient& coefficients) : coefficients(coefficients)
-{
-}
-
-template <Polynomialable Element>
-Polynomial<Element>::Polynomial(const Polynomial &other) : coefficients(other.coefficients)
-{
-}
-
-template <Polynomialable Element>
-Polynomial<Element>::Polynomial(Polynomial &&other) noexcept : coefficients(std::move(other.coefficients))
 {
 }
 

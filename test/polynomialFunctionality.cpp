@@ -197,29 +197,29 @@ TEST_F(PowerCoefficients, PolynomialPowerOperationEqual)
 	EXPECT_EQ(fourth_power, result);
 }
 
-class DerivateCoefficients: public ::testing::Test {
+class DerivativeCoefficients: public ::testing::Test {
 protected:
 	Coefficient base;
-	Polynomial<int> derivate;
+	Polynomial<int> derivative;
 
 	void SetUp() override
 	{
 		base = Coefficient{-9, 0, 5, 0, -3, 0, 10};
-		derivate = Polynomial(Coefficient{0, 10, 0, -12, 0, 60});
+		derivative = Polynomial(Coefficient{0, 10, 0, -12, 0, 60});
 	}
 };
 
-TEST_F(DerivateCoefficients, PolynomialDerivate)
+TEST_F(DerivativeCoefficients, PolynomialDerivative)
 {
 	const Polynomial<int> result = Polynomial(base).derivative();
-	EXPECT_EQ(derivate, result);
+	EXPECT_EQ(derivative, result);
 }
 
-TEST_F(DerivateCoefficients, PolynomialDerivateOperationEqual)
+TEST_F(DerivativeCoefficients, PolynomialDerivativeEqual)
 {
 	Polynomial<int> result(base);
 	result.derivative_equal();
-	EXPECT_EQ(derivate, result);
+	EXPECT_EQ(derivative, result);
 }
 
 class SetValueTest: public ::testing::Test {
