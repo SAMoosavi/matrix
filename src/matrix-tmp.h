@@ -312,6 +312,8 @@ Matrix<Element> Matrix<Element>::t() const noexcept
 template <Elementable Element>
 Matrix<Element> Matrix<Element>::inverse() const
 {
+	if(row != col)
+		throw std::invalid_argument("the matrix should be square!");
 	return Matrix<Element>();
 }
 
