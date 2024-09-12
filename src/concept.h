@@ -63,16 +63,8 @@ concept Symmetryable = requires(T t) {
 	} -> std::same_as<T>;
 	-t == t * -1;
 };
-template <typename T>
-concept Symmetryable = requires(T t) {
-	{
-		-t
-	} -> same_as<T>;
-	{
-		t * -1
-	} -> same_as<T>;
-	-t == t * -1;
-};
+
+
 template <typename T>
 concept AssignSumable = requires(T t) {
 	{
@@ -146,17 +138,17 @@ concept Polynomialable = requires(Coefficientable first_coefficient, Coefficient
 	requires MultiplableDifferentType<Coefficientable, float>;
 	{
 		first_coefficient < 0.0
-	} -> same_as<bool>;
+	} -> std::same_as<bool>;
 	{
 		first_coefficient == second_coefficient
-	} -> same_as<bool>;
+	} -> std::same_as<bool>;
 };
 
 template <typename Element>
-concept Numberable = is_arithmetic_v<Element>;
+concept Numberable = std::is_arithmetic_v<Element>;
 
 template <typename Element>
-concept Integrable = is_integral_v<Element>;
+concept Integrable = std::is_integral_v<Element>;
 
 template <typename Element, typename OtherElement>
 concept AnotherElementMultiplable = requires() {
