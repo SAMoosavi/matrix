@@ -10,7 +10,8 @@
 using namespace std;
 
 template <Elementable Element>
-class Matrix {
+class Matrix
+{
 private:
 	typedef vector<Element> RowType;
 	typedef vector<RowType> TableType;
@@ -69,9 +70,9 @@ private:
 	TableType table;
 };
 
-
 template <typename Element, typename OtherElement>
-	requires(not IsMatrixable<Element>) and (not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
+	requires(not IsMatrixable<Element>) and
+		(not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
 Matrix<Element> operator*(const OtherElement& number, const Matrix<Element>& matrix);
 
 #include "matrix-tmp.h"
