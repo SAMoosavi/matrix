@@ -308,4 +308,11 @@ Matrix<Element> Matrix<Element>::t() const noexcept
 	return Matrix<Element>(ans_table);
 }
 
+
+template <Elementable Element>
+Matrix<Element> Matrix<Element>::inverse() const
+{
+	return Matrix<Element>();
+}
+
 #endif
