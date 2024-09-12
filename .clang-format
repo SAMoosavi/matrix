@@ -58,36 +58,6 @@ IncludeCategories:
 - Regex: '<concurrentqueue/concurrentqueue.h>'
   Priority: 97
 
-- Regex: '(shetab-commons)/'
-  Priority: 100
-
-- Regex: '(ketab)/'
-  Priority: 110
-
-- Regex: '(sarand)/'
-  Priority: 120
-
-- Regex: '(toot)/'
-  Priority: 123
-
-- Regex: '(sarand)/'
-  Priority: 126
-
-- Regex: '(darvag)/'
-  Priority: 130
-
-- Regex: '(roshan)/'
-  Priority: 135
-
-- Regex: '(zojaj)/'
-  Priority: 140
-
-- Regex: '(map-parser)/'
-  Priority: 150
-
-- Regex: '(tcap-parser)/'
-  Priority: 160
-
 - Regex: '^([AZaz09])*\.h'
   Priority: 1000
 
@@ -115,7 +85,7 @@ SpacesBeforeTrailingComments: 8   # We use 2 spaces before trailing comments. Un
 BreakConstructorInitializers: BeforeComma
 ConstructorInitializerIndentWidth: 0
 ConstructorInitializerAllOnOneLineOrOnePerLine : false
-# PackConstructorInitializers: Never   # Enable after using clang-format version 14.
+PackConstructorInitializers: Never
 
 # Function style
 AllowAllParametersOfDeclarationOnNextLine: false
@@ -158,7 +128,5 @@ AllowShortLambdasOnASingleLine: All
 
 # Other styles
 FixNamespaceComments: false
-CommentPragmas: '^ #negaresh_command'
 
-# Known bug: UDPSession.cpp:17: inserts two extra spaces
 # Known bug: Aligns inheritance
