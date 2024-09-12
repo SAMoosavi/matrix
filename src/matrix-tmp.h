@@ -9,15 +9,22 @@
 
 template <Elementable Element>
 Matrix<Element>::Matrix(size_t row, size_t col)
-	: number_of_row(row), number_of_col(col), table(row, RowType(col, 0)){}
+: row(row)
+, col(col)
+, table(row, RowType(col, 0))
+{
+}
 
 template <Elementable Element>
 template <template <Containerable> typename Container>
 Matrix<Element>::Matrix(const Container<Container<Element>>& matrix)
-	: number_of_row(matrix.size()), number_of_col(matrix.begin()->size()), table(0)
+: row(matrix.size())
+, col(matrix.begin()->size())
+, table(0)
 {
-	for (const auto& row_of_matrix: matrix) {
-		if(row_of_matrix.size() != number_of_col)
+	for (const auto& row_of_matrix : matrix)
+	{
+		if (row_of_matrix.size() != col)
 			throw std::invalid_argument("Cannot creat matrix with different column size.");
 
 		table.emplace_back(row_of_matrix);
@@ -26,10 +33,13 @@ Matrix<Element>::Matrix(const Container<Container<Element>>& matrix)
 
 template <Elementable Element>
 Matrix<Element>::Matrix(const std::initializer_list<std::initializer_list<Element>>& matrix)
-	: number_of_row(matrix.size()), number_of_col(matrix.begin()->size()), table(0)
+: row(matrix.size())
+, col(matrix.begin()->size())
+, table(0)
 {
-	for (const auto& row_of_matrix: matrix) {
-		if(row_of_matrix.size() != number_of_col)
+	for (const auto& row_of_matrix : matrix)
+	{
+		if (row_of_matrix.size() != col)
 			throw std::invalid_argument("Cannot creat matrix with different column size.");
 
 		table.emplace_back(row_of_matrix);
@@ -72,8 +82,8 @@ Matrix<Element> Matrix<Element>::operator-() const
 {
 	Matrix tmp(*this);
 
-	for (RowType& row_of_tmp: tmp.table)
-		for (Element& element_of_tmp: row_of_tmp)
+	for (RowType& row_of_tmp : tmp.table)
+		for (Element& element_of_tmp : row_of_tmp)
 			element_of_tmp = -element_of_tmp;
 
 	return tmp;
@@ -125,8 +135,10 @@ template <typename OtherElement>
 Matrix<Element> Matrix<Element>::multiple(const OtherElement& other) const
 {
 	Matrix<Element> result = *this;
-	for (RowType& row_of_table: result.table) {
-		for (Element& element: row_of_table) {
+	for (RowType& row_of_table : result.table)
+	{
+		for (Element& element : row_of_table)
+		{
 			if constexpr (MultipleAssignableDifferentType<Element, OtherElement>)
 				element *= other;
 			else if constexpr (MultiplableDifferentTypeReturnFirstType<Element, OtherElement>)
@@ -154,7 +166,8 @@ Matrix<Element>& Matrix<Element>::operator*=(const OtherElement& other)
 }
 
 template <typename Element, typename OtherElement>
-	requires(not IsMatrixable<Element>) and (not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
+	requires(not IsMatrixable<Element>) and
+		(not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
 Matrix<Element> operator*(const OtherElement& number, const Matrix<Element>& matrix)
 {
 	return std::move(matrix * number);
@@ -186,23 +199,27 @@ Element Matrix<Element>::determinant() const
 
 	TableType tmp_table = table;
 	size_t number_of_swap = 0;
-	for (size_t col_index = 0; col_index < number_of_col; col_index++) {
+	for (size_t col_index = 0; col_index < col; col_index++)
+	{
 		size_t swap_row_index = col_index;
 		Element base_of_column = tmp_table[swap_row_index][col_index];
-		//		TODO: create concept for check exit Element == 0
-		while (base_of_column == 0 and swap_row_index < number_of_row) {
+		// TODO: create concept for check exit Element == 0
+		while (base_of_column == 0 and swap_row_index < row)
+		{
 			base_of_column = tmp_table[swap_row_index][col_index];
 			++swap_row_index;
 		}
 
 		if (base_of_column == 0)
 			return 0;
-		else if (swap_row_index != col_index) {
+		else if (swap_row_index != col_index)
+		{
 			std::swap(tmp_table[swap_row_index - 1], tmp_table[col_index]);
 			++number_of_swap;
 		}
 
-		for (size_t row_index = col_index + 1; row_index < number_of_row; row_index++) {
+		for (size_t row_index = col_index + 1; row_index < row; row_index++)
+		{
 			if (tmp_table[row_index][col_index] == 0)
 				continue;
 
@@ -247,8 +264,10 @@ bool Matrix<Element>::operator==(const Matrix<OtherElement>& other) const
 	if (this->number_of_col != other.number_of_col or this->number_of_row != other.number_of_row)
 		return false;
 
-	for (size_t i = 0; i < number_of_row; ++i) {
-		for (int j = 0; j < number_of_col; ++j) {
+	for (size_t i = 0; i < row; ++i)
+	{
+		for (int j = 0; j < col; ++j)
+		{
 			if (this->table[i][j] != other.table[i][j])
 				return false;
 		}
@@ -272,13 +291,13 @@ std::string Matrix<Element>::to_string() const noexcept
 	const std::string SEPERATE_COLUMN = COLON + SPACE;
 	const std::string END_OF_ROW = CLOSE_ACCOLADE + COLON + NEW_LINE;
 	const std::string END_OF_TABLE = NEW_LINE + CLOSE_ACCOLADE;
-	
 
 	std::string result = START_OF_TABLE;
-	for (const auto& row_of_table: table) {
+	for (const auto& row_of_table : table)
+	{
 		result += START_OF_ROW;
 
-		for (const auto& elem: row_of_table)
+		for (const auto& elem : row_of_table)
 			result += std::to_string(elem) + SEPERATE_COLUMN;
 
 		result.erase(result.end() - 2);

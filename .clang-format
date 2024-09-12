@@ -1,88 +1,132 @@
-# Generated from CLion C/C++ Code Style settings
 BasedOnStyle: Google
-AccessModifierOffset: -4
-AlignAfterOpenBracket: Align
-AlignConsecutiveAssignments: None
-AlignOperands: Align
-AllowAllArgumentsOnNextLine: false
-AllowAllConstructorInitializersOnNextLine: false
-AllowAllParametersOfDeclarationOnNextLine: false
-AllowShortBlocksOnASingleLine: Always
-AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: None
-AllowShortIfStatementsOnASingleLine: Never
-AllowShortLambdasOnASingleLine: All
-AllowShortLoopsOnASingleLine: false
-AlwaysBreakAfterReturnType: None
-AlwaysBreakTemplateDeclarations: Yes
-BreakBeforeBraces: Custom
-BraceWrapping:
-  AfterCaseLabel: false
-  AfterClass: false
-  AfterControlStatement: Never
-  AfterEnum: false
-  AfterFunction: true
-  AfterNamespace: true
-  AfterUnion: false
-  BeforeCatch: false
-  BeforeElse: false
-  IndentBraces: false
-  SplitEmptyFunction: true
-  SplitEmptyRecord: true
-BreakBeforeBinaryOperators: None
-BreakBeforeTernaryOperators: true
-BreakConstructorInitializers: BeforeColon
-BreakInheritanceList: BeforeColon
-ColumnLimit: 0
-CompactNamespaces: false
-ContinuationIndentWidth: 8
-IndentCaseLabels: true
-IndentPPDirectives: None
+Language: Cpp
 IndentWidth: 4
-KeepEmptyLinesAtTheStartOfBlocks: true
-MaxEmptyLinesToKeep: 2
-NamespaceIndentation: All
-ObjCSpaceAfterProperty: false
-ObjCSpaceBeforeProtocolList: true
+ColumnLimit: 120
+UseTab: Always
+TabWidth: 4
+AccessModifierOffset: -4
+
+IncludeCategories:
+- Regex: '<c([A-Za-z0-9_]*)>'
+  Priority: 1
+
+- Regex: '<([A-Za-z0-9_]*)>'
+  Priority: 2
+
+- Regex: '<([A-Za-z0-9]*\.h)>'
+  Priority: 3
+
+- Regex: '(netinet)/'
+  Priority: 10
+
+- Regex: '(boost)/'
+  Priority: 20
+
+- Regex: '(tbb)/'
+  Priority: 30
+
+- Regex: '(ext)/'
+  Priority: 40
+
+- Regex: '(modp.*.h)'
+  Priority: 45
+
+- Regex: '(linux)/'
+  Priority: 50
+
+- Regex: '(sys)/'
+  Priority: 60
+
+- Regex: '(botan)/'
+  Priority: 70
+
+- Regex: '(re2)/'
+  SortPriority: 73
+
+- Regex: '(gnutls)/'
+  Priority: 77
+
+- Regex: '(flags|flags)/'
+  Priority: 80
+
+- Regex: '(gtest|gmock)/'
+  Priority: 90
+
+- Regex: '(google)/'
+  Priority: 95
+
+- Regex: '<concurrentqueue/concurrentqueue.h>'
+  Priority: 97
+
+- Regex: '^([AZaz09])*\.h'
+  Priority: 1000
+
+# Alignment
+AlignAfterOpenBracket: DontAlign
+AlignConsecutiveAssignments: None
+AlignConsecutiveDeclarations: None
+AlignOperands: DontAlign
 PointerAlignment: Left
-ReflowComments: false
-SpaceAfterCStyleCast: true
-SpaceAfterLogicalNot: false
+
+# Spacing style
 SpaceAfterTemplateKeyword: true
 SpaceBeforeAssignmentOperators: true
-SpaceBeforeCpp11BracedList: false
-SpaceBeforeCtorInitializerColon: true
-SpaceBeforeInheritanceColon: false
-SpaceBeforeParens: ControlStatements
-SpaceBeforeRangeBasedForLoopColon: false
+SpaceBeforeInheritanceColon: true
+SpaceBeforeRangeBasedForLoopColon: true
 SpaceInEmptyParentheses: false
-SpacesBeforeTrailingComments: 0
 SpacesInAngles: false
 SpacesInCStyleCastParentheses: false
 SpacesInContainerLiterals: false
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
-ColumnLimit: 120
-UseTab: ForIndentation
-IndentWidth: 4
-TabWidth: 4
+SpacesBeforeTrailingComments: 8   # We use 2 spaces before trailing comments. Unfortunately, there is no option to put tab before comments we need to fix it.
 
+# Class style
+BreakConstructorInitializers: BeforeComma
+ConstructorInitializerIndentWidth: 0
+ConstructorInitializerAllOnOneLineOrOnePerLine : false
+PackConstructorInitializers: Never
 
-IncludeCategories:
-  - Regex: '<gtest\*>'
-    Priority: 1
+# Function style
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowAllArgumentsOnNextLine: false
+AllowShortFunctionsOnASingleLine: None
+IndentWrappedFunctionNames: true
 
-  - Regex: '<gmock\*>'
-    Priority: 2
+# Template style
+AlwaysBreakTemplateDeclarations: Yes
 
-  - Regex: '<c([A-Za-z0-9_]*)>'
-    Priority: 10
+# If style
+AllowShortIfStatementsOnASingleLine: Never
 
-  - Regex: '<([A-Za-z0-9_]*)>'
-    Priority: 20
+# Loop style
+AllowShortLoopsOnASingleLine: false
 
-  - Regex: '<([A-Za-z0-9]*)\.h>'
-    Priority: 30
+# Preprocessor style
+IndentPPDirectives: None
 
-  - Regex: '^([A-Za-z0-9]*\.h)'
-    Priority: 100
+# Block style
+AllowShortBlocksOnASingleLine: Never
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# Break style
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Allman
+BreakBeforeTernaryOperators: false
+BreakStringLiterals: true
+CompactNamespaces: false
+ContinuationIndentWidth: 8
+MaxEmptyLinesToKeep: 1
+AlwaysBreakBeforeMultilineStrings: false
+
+# Switch case
+IndentCaseBlocks: false
+IndentCaseLabels: true
+
+# Lambda
+AllowShortLambdasOnASingleLine: All
+
+# Other styles
+FixNamespaceComments: false
+
+# Known bug: Aligns inheritance

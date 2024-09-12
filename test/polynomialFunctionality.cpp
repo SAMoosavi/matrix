@@ -6,8 +6,9 @@
 #include <variant>
 #include <vector>
 
-#include "polynomial.h"
 #include <gtest/gtest.h>
+
+#include "polynomial.h"
 
 using namespace std;
 
@@ -15,36 +16,43 @@ using Coefficient = vector<int>;
 using Root = vector<double>;
 using SolveParameter = tuple<Coefficient, Root>;
 
-class SharedCoefficients: public ::testing::Test {
+class SharedCoefficients : public ::testing::Test
+{
 protected:
 	const Polynomial<int> first_polynomial;
 	const Polynomial<int> second_polynomial;
 	const Polynomial<int> expected_result;
 
-	SharedCoefficients(const Polynomial<int>& expected_result) :
-		first_polynomial({-1, 1}),
-		second_polynomial({1, -4, 6, -4, 1}),
-		expected_result(expected_result)
-	{}
+	SharedCoefficients(const Polynomial<int>& expected_result)
+	: first_polynomial({-1, 1})
+	, second_polynomial({1, -4, 6, -4, 1})
+	, expected_result(expected_result)
+	{
+	}
 };
 
-class SharedCoefficientAndElement: public ::testing::Test {
+class SharedCoefficientAndElement : public ::testing::Test
+{
 protected:
 	const Polynomial<int> primary_polynomial;
 	const int element;
 	const Polynomial<int> expected_result;
 
-	SharedCoefficientAndElement(const Polynomial<int>& expected_result) :
-		primary_polynomial({-1, 1}),
-		element(4),
-		expected_result(expected_result)
-	{}
+	SharedCoefficientAndElement(const Polynomial<int>& expected_result)
+	: primary_polynomial({-1, 1})
+	, element(4)
+	, expected_result(expected_result)
+	{
+	}
 };
 
-class PolynomialSumWithPolynomial: public SharedCoefficients {
+class PolynomialSumWithPolynomial : public SharedCoefficients
+{
 protected:
-	PolynomialSumWithPolynomial() : SharedCoefficients(Polynomial(Coefficient({0, -3, 6, -4, 1})))
-	{}
+	PolynomialSumWithPolynomial()
+	: SharedCoefficients(Polynomial(Coefficient({0, -3, 6, -4, 1})))
+	{
+	}
 };
 
 TEST_F(PolynomialSumWithPolynomial, Sum)
@@ -61,10 +69,13 @@ TEST_F(PolynomialSumWithPolynomial, SumEqual)
 	EXPECT_EQ(expected_result, result);
 }
 
-class PolynomialSumWithElement: public SharedCoefficientAndElement {
+class PolynomialSumWithElement : public SharedCoefficientAndElement
+{
 protected:
-	PolynomialSumWithElement() : SharedCoefficientAndElement(Polynomial(Coefficient({3, 1})))
-	{}
+	PolynomialSumWithElement()
+	: SharedCoefficientAndElement(Polynomial(Coefficient({3, 1})))
+	{
+	}
 };
 
 TEST_F(PolynomialSumWithElement, Sum)
@@ -80,10 +91,13 @@ TEST_F(PolynomialSumWithElement, SumEqual)
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
 }
 
-class PolynomialSymmetry: public SharedCoefficients {
+class PolynomialSymmetry : public SharedCoefficients
+{
 protected:
-	PolynomialSymmetry() : SharedCoefficients(Polynomial(Coefficient({-1, 4, -6, 4, -1})))
-	{}
+	PolynomialSymmetry()
+	: SharedCoefficients(Polynomial(Coefficient({-1, 4, -6, 4, -1})))
+	{
+	}
 };
 
 TEST_F(PolynomialSymmetry, PolynomialSymmetry)
@@ -91,10 +105,13 @@ TEST_F(PolynomialSymmetry, PolynomialSymmetry)
 	EXPECT_EQ(-second_polynomial, Polynomial(expected_result));
 }
 
-class PolynomialSubmissionWithPolynomial: public SharedCoefficients {
+class PolynomialSubmissionWithPolynomial : public SharedCoefficients
+{
 protected:
-	PolynomialSubmissionWithPolynomial() : SharedCoefficients(Polynomial(Coefficient({-2, 5, -6, 4, -1})))
-	{}
+	PolynomialSubmissionWithPolynomial()
+	: SharedCoefficients(Polynomial(Coefficient({-2, 5, -6, 4, -1})))
+	{
+	}
 };
 
 TEST_F(PolynomialSubmissionWithPolynomial, Submission)
@@ -111,10 +128,13 @@ TEST_F(PolynomialSubmissionWithPolynomial, SubmissionEqual)
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
 }
 
-class PolynomialSubmissionWithElement: public SharedCoefficientAndElement {
+class PolynomialSubmissionWithElement : public SharedCoefficientAndElement
+{
 protected:
-	PolynomialSubmissionWithElement() : SharedCoefficientAndElement(Polynomial(Coefficient({-5, 1})))
-	{}
+	PolynomialSubmissionWithElement()
+	: SharedCoefficientAndElement(Polynomial(Coefficient({-5, 1})))
+	{
+	}
 };
 
 TEST_F(PolynomialSubmissionWithElement, Submission)
@@ -123,7 +143,6 @@ TEST_F(PolynomialSubmissionWithElement, Submission)
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-
 TEST_F(PolynomialSubmissionWithElement, SubmissionEqual)
 {
 	Polynomial<int> polynomial = primary_polynomial;
@@ -131,10 +150,13 @@ TEST_F(PolynomialSubmissionWithElement, SubmissionEqual)
 	EXPECT_EQ(Polynomial(expected_result), polynomial);
 }
 
-class PolynomialMultipleWithPolynomial: public SharedCoefficients {
+class PolynomialMultipleWithPolynomial : public SharedCoefficients
+{
 protected:
-	PolynomialMultipleWithPolynomial() : SharedCoefficients(Polynomial(Coefficient({-1, 5, -10, 10, -5, 1})))
-	{}
+	PolynomialMultipleWithPolynomial()
+	: SharedCoefficients(Polynomial(Coefficient({-1, 5, -10, 10, -5, 1})))
+	{
+	}
 };
 
 TEST_F(PolynomialMultipleWithPolynomial, Multiple)
@@ -150,10 +172,13 @@ TEST_F(PolynomialMultipleWithPolynomial, MultipleEqual)
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-class PolynomialMultipleWithElement: public SharedCoefficientAndElement {
+class PolynomialMultipleWithElement : public SharedCoefficientAndElement
+{
 protected:
-	PolynomialMultipleWithElement() : SharedCoefficientAndElement(Polynomial(Coefficient({-4, 4})))
-	{}
+	PolynomialMultipleWithElement()
+	: SharedCoefficientAndElement(Polynomial(Coefficient({-4, 4})))
+	{
+	}
 };
 
 TEST_F(PolynomialMultipleWithElement, Multiple)
@@ -162,7 +187,6 @@ TEST_F(PolynomialMultipleWithElement, Multiple)
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-
 TEST_F(PolynomialMultipleWithElement, MultipleEqual)
 {
 	Polynomial<int> result = primary_polynomial;
@@ -170,7 +194,8 @@ TEST_F(PolynomialMultipleWithElement, MultipleEqual)
 	EXPECT_EQ(Polynomial(expected_result), result);
 }
 
-class PowerCoefficients: public ::testing::Test {
+class PowerCoefficients : public ::testing::Test
+{
 protected:
 	Coefficient base;
 	Polynomial<int> fourth_power;
@@ -197,7 +222,8 @@ TEST_F(PowerCoefficients, PowerEqual)
 	EXPECT_EQ(fourth_power, result);
 }
 
-class DerivativeCoefficients: public ::testing::Test {
+class DerivativeCoefficients : public ::testing::Test
+{
 protected:
 	Coefficient base;
 	Polynomial<int> derivative;
@@ -222,7 +248,8 @@ TEST_F(DerivativeCoefficients, DerivateEqual)
 	EXPECT_EQ(derivative, result);
 }
 
-class SetValueTest: public ::testing::Test {
+class SetValueTest : public ::testing::Test
+{
 protected:
 	Polynomial<int32_t> polynomial;
 
@@ -252,7 +279,9 @@ TEST_F(SetValueTest, Double)
 	EXPECT_EQ(result, output);
 }
 
-class PolynomialTest: public testing::TestWithParam<SolveParameter> {};
+class PolynomialTest : public testing::TestWithParam<SolveParameter>
+{
+};
 
 TEST_P(PolynomialTest, PolynomialSolveTest)
 {
@@ -267,19 +296,21 @@ TEST_P(PolynomialTest, PolynomialSolveTest)
 }
 
 INSTANTIATE_TEST_SUITE_P(SolveParameters, PolynomialTest,
-                         testing::Values(make_tuple(vector<int>{2, -3, 1}, vector<double>{1, 2}),
-                                         make_tuple(vector<int>{0, 2, -3, 1}, vector<double>{0, 1, 2}),
-                                         make_tuple(vector<int>{0, -6, 11, -6, 1}, vector<double>{0, 1, 2, 3})));
+		testing::Values(make_tuple(vector<int>{2, -3, 1}, vector<double>{1, 2}),
+				make_tuple(vector<int>{0, 2, -3, 1}, vector<double>{0, 1, 2}),
+				make_tuple(vector<int>{0, -6, 11, -6, 1}, vector<double>{0, 1, 2, 3})));
 
-class CoefficientTest: public ::testing::Test {
+class CoefficientTest : public ::testing::Test
+{
 protected:
 	const Coefficient coefficients;
 	const Polynomial<int32_t> polynomial;
 
-	CoefficientTest() :
-		coefficients({-1, 3, -3, 1}),
-		polynomial(coefficients)
-	{}
+	CoefficientTest()
+	: coefficients({-1, 3, -3, 1})
+	, polynomial(coefficients)
+	{
+	}
 };
 
 TEST_F(CoefficientTest, BracketOperator)

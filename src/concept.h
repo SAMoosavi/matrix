@@ -41,11 +41,9 @@ concept MultiplableDifferentTypeReturnSecondType = requires(T t, U u) {
 
 template <typename T, typename U>
 concept MultiplableDifferentType = requires(T, U) {
-	requires MultiplableDifferentTypeReturnSecondType<T, U> or
-					 MultiplableDifferentTypeReturnFirstType<T, U> or
-					 MultipleAssignableDifferentType<T, U>;
+	requires MultiplableDifferentTypeReturnSecondType<T, U> or MultiplableDifferentTypeReturnFirstType<T, U> or
+			MultipleAssignableDifferentType<T, U>;
 };
-
 
 template <typename T>
 concept Sumable = requires(T t) {
@@ -64,14 +62,12 @@ concept Symmetryable = requires(T t) {
 	-t == t * -1;
 };
 
-
 template <typename T>
 concept AssignSumable = requires(T t) {
 	{
 		t += t
 	} -> std::same_as<T&>;
 };
-
 
 template <typename T, typename U>
 concept SamAssignableDifferentType = requires(T t, U u) {
@@ -96,11 +92,9 @@ concept SumableDifferentTypeReturnSecondType = requires(T t, U u) {
 
 template <typename T, typename U>
 concept SumableDifferentType = requires(T, U) {
-	requires SumableDifferentTypeReturnSecondType<T, U> or
-					 SumableDifferentTypeReturnFirstType<T, U> or
-					 SamAssignableDifferentType<T, U>;
+	requires SumableDifferentTypeReturnSecondType<T, U> or SumableDifferentTypeReturnFirstType<T, U> or
+			SamAssignableDifferentType<T, U>;
 };
-
 
 template <typename Container, typename Element = typename Container::value_type>
 concept Containerable = requires(Container c, Element e) {
@@ -153,7 +147,7 @@ concept Integrable = std::is_integral_v<Element>;
 template <typename Element, typename OtherElement>
 concept AnotherElementMultiplable = requires() {
 	requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement> or
-					 (MultiplableDifferentTypeReturnSecondType<Element, OtherElement> and Polynomialable<OtherElement>);
+			(MultiplableDifferentTypeReturnSecondType<Element, OtherElement> and Polynomialable<OtherElement>);
 };
 
 #endif

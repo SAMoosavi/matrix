@@ -8,7 +8,6 @@
 
 using namespace std;
 
-
 template <Containerable Container, typename Element = typename Container::value_type>
 	requires Multiplicationable<Element> && AssignSumable<Element>
 constexpr Element multiplication(const Container& lhs, const Container& rhs)
@@ -46,16 +45,16 @@ constexpr Container operator+(const Container& lhs, const Container& rhs)
 	return sum(lhs, rhs);
 }
 
-
-class W {
+class W
+{
 public:
 	W()
-		: num(0)
+	: num(0)
 	{
 	}
 
 	W(int num)
-		: num(num)
+	: num(num)
 	{
 	}
 
@@ -69,7 +68,6 @@ public:
 	{
 		return W{num * other};
 	}
-
 
 	template <typename T>
 	W operator+(const T& other) const
@@ -123,16 +121,19 @@ std::ostream& operator<<(ostream& os, const W& w)
 	return os;
 }
 
-
 template <typename T>
 void print(const T& a)
 {
-	if constexpr (ranges::range<T>) {
-		for (const auto& aa: a) {
+	if constexpr (ranges::range<T>)
+	{
+		for (const auto& aa : a)
+		{
 			print(aa);
 		}
 		cout << endl;
-	} else {
+	}
+	else
+	{
 		cout << a << " ";
 	}
 }
@@ -142,9 +143,11 @@ bool is_vectors_equal(const vector<T>& vec1, const vector<T>& vec2)
 {
 	if (vec1.size() != vec2.size())
 		return false;
-	for (const auto& iterator1: vec1) {
+	for (const auto& iterator1 : vec1)
+	{
 		bool is_found = false;
-		for (const auto& iterator2: vec2) {
+		for (const auto& iterator2 : vec2)
+		{
 			if (Polynomial<T>::compare_with_precision(iterator1, iterator2, 6))
 				is_found = true;
 		}
@@ -212,7 +215,6 @@ int main()
 	polynomial *= Polynomial(coefficients2);
 	roots = polynomial.solve(100);
 	print(is_vectors_equal(expected_roots, roots));
-
 
 	return 0;
 }
