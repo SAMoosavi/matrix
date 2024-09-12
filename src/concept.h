@@ -62,7 +62,6 @@ concept Symmetryable = requires(T t) {
 	-t == t * -1;
 };
 
-
 template <typename T>
 concept AssignSumable = requires(T t) {
 	{

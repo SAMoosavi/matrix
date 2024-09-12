@@ -8,7 +8,8 @@
 #include "concept.h"
 
 template <Elementable Element>
-class Matrix {
+class Matrix
+{
 private:
 	typedef std::vector<Element> RowType;
 	typedef std::vector<RowType> TableType;
@@ -78,9 +79,9 @@ private:
 template <Elementable Element>
 std::ostream& operator<<(std::ostream& os, const Matrix<Element>& matrix);
 
-
 template <typename Element, typename OtherElement>
-	requires(not IsMatrixable<Element>) and (not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
+	requires(not IsMatrixable<Element>) and
+		(not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
 Matrix<Element> operator*(const OtherElement& number, const Matrix<Element>& matrix);
 
 #include "matrix-tmp.h"
