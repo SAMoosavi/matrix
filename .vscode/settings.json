@@ -90,4 +90,8 @@
 	],
 	"testMate.cpp.test.executables": "{RelWithDebInfo,Release,Debug}/**/*{Functionality,Performance}*",
 	"testMate.cpp.test.parallelExecutionLimit": 4,
+	"editor.rulers": [{
+		"color": "yellow",
+		"column": 120
+	}]
 }
