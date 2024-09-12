@@ -9,37 +9,38 @@
 #include "concept.h"
 
 template <Polynomialable Element>
-class Polynomial {
+class Polynomial
+{
 private:
 	using Coefficient = std::vector<Element>;
 	using NewtonOutput = std::pair<double, bool>;
 	using PolynomialRoot = std::vector<double>;
 
 public:
-	Polynomial() = default  ;
+	Polynomial() = default;
 
 	explicit Polynomial(const Coefficient& coefficients);
 
 	Polynomial(const Polynomial& other) = default;
 	Polynomial(Polynomial&& other) noexcept = default;
 
-    Polynomial& operator=(const Polynomial& another) = default;
-    Polynomial& operator=(Polynomial&& another) noexcept = default;
+	Polynomial& operator=(const Polynomial& another) = default;
+	Polynomial& operator=(Polynomial&& another) noexcept = default;
 
 	bool operator==(const Polynomial<Element>& other) const = default;
 
 	template <typename Float>
-	    requires std::floating_point<Float>
+		requires std::floating_point<Float>
 	[[nodiscard]] static constexpr bool compare_with_precision(Float number1, Float number2,
-	                                                           uint16_t precision) noexcept;
+			uint16_t precision) noexcept;
 
 	template <typename OtherElement>
-	    requires SumableDifferentType<Element, OtherElement>
+		requires SumableDifferentType<Element, OtherElement>
 	[[nodiscard]] Polynomial<Element> sum(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
 	[[nodiscard]] Polynomial<Element> operator+(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
-	    requires SumableDifferentType<Element, OtherElement>
+		requires SumableDifferentType<Element, OtherElement>
 	[[nodiscard]] Polynomial<Element> operator+(const OtherElement& other) const;
 	template <typename OtherElement>
 	Polynomial<Element>& operator+=(const Polynomial<OtherElement>& other);
@@ -52,17 +53,17 @@ public:
 	template <typename OtherElement>
 	[[nodiscard]] Polynomial<Element> operator-(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
-	    requires SumableDifferentType<Element, OtherElement>
+		requires SumableDifferentType<Element, OtherElement>
 	[[nodiscard]] Polynomial<Element> operator-(const OtherElement& other) const;
 	template <typename OtherElement>
 	Polynomial<Element>& operator-=(const Polynomial<OtherElement>& other);
 	Polynomial<Element>& operator-=(const Element& new_coefficient);
 
 	template <typename OtherElement>
-	    requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
+		requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
 	[[nodiscard]] Polynomial<Element> multiple(const Polynomial<OtherElement>& other) const;
 	template <typename OtherElement>
-	    requires MultiplableDifferentType<Element, OtherElement>
+		requires MultiplableDifferentType<Element, OtherElement>
 	[[nodiscard]] Polynomial<Element> operator*(const OtherElement& other) const;
 	template <typename OtherElement>
 	[[nodiscard]] Polynomial<Element> operator*(const Polynomial<OtherElement>& other) const;
@@ -89,28 +90,27 @@ public:
 	[[nodiscard]] const Element& operator[](size_t index) const;
 
 private:
-    [[nodiscard]] PolynomialRoot solve_quadratic_equation(uint16_t precision = 6) const;
+	[[nodiscard]] PolynomialRoot solve_quadratic_equation(uint16_t precision = 6) const;
 
-    [[nodiscard]] PolynomialRoot solve_greater_power(double guess, uint16_t max_iteration, uint16_t precision) const;
+	[[nodiscard]] PolynomialRoot solve_greater_power(double guess, uint16_t max_iteration, uint16_t precision) const;
 
-    [[nodiscard]] NewtonOutput solve_by_newton(double guess, uint16_t max_iteration, uint16_t precision) const;
+	[[nodiscard]] NewtonOutput solve_by_newton(double guess, uint16_t max_iteration, uint16_t precision) const;
 
-    void simplify_by_horner(NewtonOutput info);
+	void simplify_by_horner(NewtonOutput info);
 
-    static constexpr double NOT_FOUND = std::numeric_limits<double>::min_exponent10;
-    // smallest to biggest degree
-    Coefficient coefficients;
+	static constexpr double NOT_FOUND = std::numeric_limits<double>::min_exponent10;
+	// smallest to biggest degree
+	Coefficient coefficients;
 };
 
 template <typename Element, typename OtherElement>
-    requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
+	requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
 constexpr Polynomial<Element> operator*(const OtherElement& other, const Polynomial<Element>& polynomial);
 
 template <typename Element, typename OtherElement>
-    requires MultiplableDifferentTypeReturnSecondType<Element, OtherElement> and Polynomialable<OtherElement>
+	requires MultiplableDifferentTypeReturnSecondType<Element, OtherElement> and Polynomialable<OtherElement>
 constexpr Polynomial<OtherElement> operator*(const OtherElement& other, const Polynomial<Element>& polynomial);
 
 #include "polynomial-tmp.h"
-
 
 #endif

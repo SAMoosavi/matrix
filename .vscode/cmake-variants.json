@@ -1,0 +1,47 @@
+{
+    "buildType": {
+        "default": "Release",
+        "description": "The build type.",
+        "choices": {
+            "Release": {
+                "short": "Release",
+                "long": "Optimize for speed - exclude debug information.",
+                "buildType": "Release"
+            },
+            "RelWithDebInfo": {
+                "short": "RelWithDebInfo",
+                "long": "Optimize for speed - include debug information.",
+                "buildType": "RelWithDebInfo"
+            },
+            "debug": {
+                "short": "Debug",
+                "long": "Disable optimizations - include debug information.",
+                "buildType": "Debug"
+            }
+        }
+    },
+    "inline_as_cpp": {
+        "default": "yes",
+        "description": "build inl as cpp",
+        "choices": {
+            "yes": {
+                "short": "inl"
+            },
+            "no": {
+                "short": "inl as cpp"
+            }
+        }
+    },
+    "use_ccache": {
+        "default": "yes",
+        "description": "Use ccache",
+        "choices": {
+            "yes": {
+                "short": "ccache"
+            },
+            "no": {
+                "short": "No ccache"
+            }
+        }
+    }
+}

@@ -1,13 +1,12 @@
 #ifndef POLYNOMIAL_HELPER_TMP_H
 #define POLYNOMIAL_HELPER_TMP_H
 
-#include "polynomial-helper.h"
+#include <random>
 
-#include<random>
+#include "polynomial-helper.h"
 
 namespace polynomial_helper
 {
-
 
 template <Numberable Number>
 constexpr Number round(Number number, uint8_t precision) noexcept
@@ -24,7 +23,7 @@ Int create_random_number(Int begin, Int end) noexcept
 		begin -= 1;
 		end += 1;
 	}
-	
+
 	static std::random_device random;
 	static std::mt19937 gen(random());
 
@@ -33,8 +32,6 @@ Int create_random_number(Int begin, Int end) noexcept
 	return distribution(gen);
 }
 
-
-}// namespace polynomial_helper
-
+}		 // namespace polynomial_helper
 
 #endif
