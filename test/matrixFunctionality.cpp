@@ -122,6 +122,22 @@ TEST_F(MatrixFunctionality, TheTFunctionShouldReturnTransposeOfMatrix)
 	EXPECT_THAT(transpose_of_matrix, Eq(result));
 }
 
+TEST_F(MatrixFunctionality, TheInverseFunctionSouldReturnInverseOfFunction)
+{
+	const Matrix<double> matrix({{1, 2}, {4, 3}});
+	const Matrix<double> result({{-0.2, 0.8}, {0.4, -0.6}});
+	const Matrix<double> inverse_of_matrix = matrix.inverse();
+
+	EXPECT_THAT(inverse_of_matrix, Eq(result));
+}
+TEST_F(MatrixFunctionality, TheInverseFunctionWhenCalledOnANonSquareMatrixShouldThrow)
+{
+	constexpr size_t ROW_NUMBER = 1;
+	constexpr size_t COL_NUMBER = 2;
+	const Matrix<int> FIRST_MATRIX(ROW_NUMBER, COL_NUMBER);
+	EXPECT_THROW(FIRST_MATRIX.inverse(), std::invalid_argument);
+}
+
 using BaineryOperatorType = std::tuple<Matrix<int>, Matrix<int>, Matrix<int>>;
 
 class SumOfTwoMatrix: public ::testing::TestWithParam<BaineryOperatorType> {};
