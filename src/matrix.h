@@ -73,8 +73,8 @@ public:
 private:
 	RowType& operator[](size_t idx);
 
-	size_t row;
-	size_t col;
+	size_t number_of_row;
+	size_t number_of_col;
 	TableType table;
 };
 

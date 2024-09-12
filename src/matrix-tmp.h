@@ -5,15 +5,15 @@
 
 template <Elementable Element>
 Matrix<Element>::Matrix(size_t row, size_t col)
-	: row(row), col(col), table(row, RowType(col, 0)){}
+	: number_of_row(row), number_of_col(col), table(row, RowType(col, 0)){}
 
 template <Elementable Element>
 template <template <Containerable> typename Container>
 Matrix<Element>::Matrix(const Container<Container<Element>>& matrix)
-	: row(matrix.size()), col(matrix.begin()->size()), table(0)
+	: number_of_row(matrix.size()), number_of_col(matrix.begin()->size()), table(0)
 {
 	for (const auto& row_of_matrix: matrix) {
-		if(row_of_matrix.size() != col)
+		if(row_of_matrix.size() != number_of_col)
 			throw std::invalid_argument("Cannot creat matrix with different column size.");
 
 		table.emplace_back(row_of_matrix);
@@ -22,10 +22,10 @@ Matrix<Element>::Matrix(const Container<Container<Element>>& matrix)
 
 template <Elementable Element>
 Matrix<Element>::Matrix(const std::initializer_list<std::initializer_list<Element>>& matrix)
-	: row(matrix.size()), col(matrix.begin()->size()), table(0)
+	: number_of_row(matrix.size()), number_of_col(matrix.begin()->size()), table(0)
 {
 	for (const auto& row_of_matrix: matrix) {
-		if(row_of_matrix.size() != col)
+		if(row_of_matrix.size() != number_of_col)
 			throw std::invalid_argument("Cannot creat matrix with different column size.");
 
 		table.emplace_back(row_of_matrix);
@@ -37,12 +37,12 @@ template <typename OtherElement>
 	requires SumableDifferentType<Element, OtherElement>
 Matrix<Element> Matrix<Element>::sum(const Matrix<OtherElement>& other) const
 {
-	if (row != other.get_number_of_row() or col != other.get_number_of_col())
+	if (number_of_row != other.get_number_of_row() or number_of_col != other.get_number_of_col())
 		throw std::invalid_argument("Cannot sum spans of different sizes");
 
-	Matrix<Element> result(row, col);
-	for (size_t row_index = 0; row_index < row; ++row_index)
-		for (size_t col_index = 0; col_index < col; ++col_index)
+	Matrix<Element> result(number_of_row, number_of_col);
+	for (size_t row_index = 0; row_index < number_of_row; ++row_index)
+		for (size_t col_index = 0; col_index < number_of_col; ++col_index)
 			result[row_index][col_index] = table[row_index][col_index] + other[row_index][col_index];
 
 	return result;
@@ -102,13 +102,13 @@ template <typename OtherElement>
 	requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
 Matrix<Element> Matrix<Element>::multiple(const Matrix<OtherElement>& other) const
 {
-	if (col != other.get_number_of_row())
+	if (number_of_col != other.get_number_of_row())
 		throw std::invalid_argument("the number of rows must match the number of columns.");
 
-	Matrix<Element> result(row, col);
+	Matrix<Element> result(number_of_row, number_of_col);
 
-	for (size_t i = 0; i < row; ++i)
-		for (size_t k = 0; k < col; ++k)
+	for (size_t i = 0; i < number_of_row; ++i)
+		for (size_t k = 0; k < number_of_col; ++k)
 			for (size_t j = 0; j < other.get_number_of_col(); ++j)
 				result[i][j] += table[i][k] * other[k][j];
 
@@ -177,16 +177,16 @@ Element Matrix<Element>::at(size_t row_index, size_t col_index)
 template <Elementable Element>
 Element Matrix<Element>::determinant() const
 {
-	if (col != row)
-		throw std::invalid_argument("Matrix<Element>::determinant: column and row must be equal");
+	if (number_of_col != number_of_row)
+		throw std::invalid_argument("Matrix<Element>::determinant: column and number_of_row must be equal");
 
 	TableType tmp_table = table;
 	size_t number_of_swap = 0;
-	for (size_t col_index = 0; col_index < col; col_index++) {
+	for (size_t col_index = 0; col_index < number_of_col; col_index++) {
 		size_t swap_row_index = col_index;
 		Element base_of_column = tmp_table[swap_row_index][col_index];
 		//		TODO: create concept for check exit Element == 0
-		while (base_of_column == 0 and swap_row_index < row) {
+		while (base_of_column == 0 and swap_row_index < number_of_row) {
 			base_of_column = tmp_table[swap_row_index][col_index];
 			++swap_row_index;
 		}
@@ -198,18 +198,18 @@ Element Matrix<Element>::determinant() const
 			++number_of_swap;
 		}
 
-		for (size_t row_index = col_index + 1; row_index < row; row_index++) {
+		for (size_t row_index = col_index + 1; row_index < number_of_row; row_index++) {
 			if (tmp_table[row_index][col_index] == 0)
 				continue;
 
 			Element ratio = tmp_table[row_index][col_index] / base_of_column;
-			for (size_t i = col_index; i < col; i++)
+			for (size_t i = col_index; i < number_of_col; i++)
 				tmp_table[row_index][i] -= ratio * tmp_table[col_index][i];
 		}
 	}
 
 	Element det = 1;
-	for (size_t i = 0; i < row; i++)
+	for (size_t i = 0; i < number_of_row; i++)
 		det *= tmp_table[i][i];
 
 	if (number_of_swap % 2 == 0)
@@ -227,24 +227,24 @@ auto Matrix<Element>::get_table() const -> TableType
 template <Elementable Element>
 size_t Matrix<Element>::get_number_of_row() const
 {
-	return row;
+	return number_of_row;
 }
 
 template <Elementable Element>
 size_t Matrix<Element>::get_number_of_col() const
 {
-	return col;
+	return number_of_col;
 }
 
 template <Elementable Element>
 template <typename OtherElement>
 bool Matrix<Element>::operator==(const Matrix<OtherElement>& other) const
 {
-	if (this->col != other.col or this->row != other.row)
+	if (this->number_of_col != other.number_of_col or this->number_of_row != other.number_of_row)
 		return false;
 
-	for (size_t i = 0; i < row; ++i) {
-		for (int j = 0; j < col; ++j) {
+	for (size_t i = 0; i < number_of_row; ++i) {
+		for (int j = 0; j < number_of_col; ++j) {
 			if (this->table[i][j] != other.table[i][j])
 				return false;
 		}
@@ -301,9 +301,9 @@ std::ostream& operator<<(std::ostream& os, const Matrix<Element>& matrix)
 template <Elementable Element>
 Matrix<Element> Matrix<Element>::t() const noexcept
 {
-	TableType ans_table(col, RowType(row));
-	for (int i = 0; i < row; ++i)
-		for (int j = 0; j < col; ++j)
+	TableType ans_table(number_of_col, RowType(number_of_row));
+	for (int i = 0; i < number_of_row; ++i)
+		for (int j = 0; j < number_of_col; ++j)
 			ans_table[j][i] = table[i][j];
 	return Matrix<Element>(ans_table);
 }
@@ -312,7 +312,7 @@ Matrix<Element> Matrix<Element>::t() const noexcept
 template <Elementable Element>
 Matrix<Element> Matrix<Element>::inverse() const
 {
-	if(row != col)
+	if(number_of_row != number_of_col)
 		throw std::invalid_argument("the matrix should be square!");
 	return Matrix<Element>();
 }
