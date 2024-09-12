@@ -161,14 +161,14 @@ int main()
 			{3, 2, 2, 4},
 			{3, 2, 2, 4},
 	};
-	vector<vector<W>> b = {
+	Matrix<W> b = {
 			{1, 2, 2, 2},
 			{3, 2, 2, 4},
 			{3, 2, 2, 4},
 			{3, 2, 2, 4},
 	};
 	Matrix<W> v1(a);
-	Matrix<W> v2 = b;
+	const Matrix<W>& v2 = b;
 
 	// Matrix<W> po = v1 * v2;
 	// v1 *= v2;

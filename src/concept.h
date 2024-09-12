@@ -5,39 +5,38 @@
 #include <ranges>
 #include <vector>
 
-using namespace std;
 template <typename T>
 concept Multiplicationable = requires(T t) {
 	{
 		t* t
-	} -> same_as<T>;
+	} -> std::same_as<T>;
 };
 template <typename T>
 concept AssignMultiplicationable = requires(T t) {
 	{
 		t *= t
-	} -> same_as<T&>;
+	} -> std::same_as<T&>;
 };
 
 template <typename T, typename U>
 concept MultipleAssignableDifferentType = requires(T t, U u) {
 	{
 		t *= u
-	} -> same_as<T&>;
+	} -> std::same_as<T&>;
 };
 
 template <typename T, typename U>
 concept MultiplableDifferentTypeReturnFirstType = requires(T t, U u) {
 	{
 		t* u
-	} -> same_as<T>;
+	} -> std::same_as<T>;
 };
 
 template <typename T, typename U>
 concept MultiplableDifferentTypeReturnSecondType = requires(T t, U u) {
 	{
 		u* t
-	} -> same_as<T>;
+	} -> std::same_as<T>;
 };
 
 template <typename T, typename U>
@@ -52,23 +51,25 @@ template <typename T>
 concept Sumable = requires(T t) {
 	{
 		t + t
-	} -> same_as<T>;
+	} -> std::same_as<T>;
 };
 template <typename T>
 concept Symmetryable = requires(T t) {
 	{
 		-t
-	} -> same_as<T>;
+	} -> std::same_as<T>;
 	{
 		t * -1
-	} -> same_as<T>;
+	} -> std::same_as<T>;
 	-t == t * -1;
 };
+
+
 template <typename T>
 concept AssignSumable = requires(T t) {
 	{
 		t += t
-	} -> same_as<T&>;
+	} -> std::same_as<T&>;
 };
 
 
@@ -76,21 +77,21 @@ template <typename T, typename U>
 concept SamAssignableDifferentType = requires(T t, U u) {
 	{
 		t += u
-	} -> same_as<T&>;
+	} -> std::same_as<T&>;
 };
 
 template <typename T, typename U>
 concept SumableDifferentTypeReturnFirstType = requires(T t, U u) {
 	{
 		t + u
-	} -> same_as<T>;
+	} -> std::same_as<T>;
 };
 
 template <typename T, typename U>
 concept SumableDifferentTypeReturnSecondType = requires(T t, U u) {
 	{
 		u + t
-	} -> same_as<T>;
+	} -> std::same_as<T>;
 };
 
 template <typename T, typename U>
@@ -103,10 +104,10 @@ concept SumableDifferentType = requires(T, U) {
 
 template <typename Container, typename Element = typename Container::value_type>
 concept Containerable = requires(Container c, Element e) {
-	requires ranges::range<Container>;
+	requires std::ranges::range<Container>;
 	{
 		c.size()
-	} -> same_as<ranges::range_size_t<Container>>;
+	} -> std::same_as<std::ranges::range_size_t<Container>>;
 	typename Element;
 };
 
@@ -120,11 +121,11 @@ concept Elementable = requires(Element) {
 template <typename Matrix>
 concept IsMatrixable = requires(Matrix m) {
 	{
-		m.get_row()
-	} -> same_as<size_t>;
+		m.get_number_of_row()
+	} -> std::same_as<size_t>;
 	{
-		m.get_col()
-	} -> same_as<size_t>;
+		m.get_number_of_col()
+	} -> std::same_as<size_t>;
 	{
 		m.get_table()
 	};
@@ -137,17 +138,17 @@ concept Polynomialable = requires(Coefficientable first_coefficient, Coefficient
 	requires MultiplableDifferentType<Coefficientable, float>;
 	{
 		first_coefficient < 0.0
-	} -> same_as<bool>;
+	} -> std::same_as<bool>;
 	{
 		first_coefficient == second_coefficient
-	} -> same_as<bool>;
+	} -> std::same_as<bool>;
 };
 
 template <typename Element>
-concept Numberable = is_arithmetic_v<Element>;
+concept Numberable = std::is_arithmetic_v<Element>;
 
 template <typename Element>
-concept Integrable = is_integral_v<Element>;
+concept Integrable = std::is_integral_v<Element>;
 
 template <typename Element, typename OtherElement>
 concept AnotherElementMultiplable = requires() {
