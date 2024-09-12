@@ -125,10 +125,14 @@ TEST_F(MatrixFunctionality, TheTFunctionShouldReturnTransposeOfMatrix)
 TEST_F(MatrixFunctionality, TheInverseFunctionSouldReturnInverseOfFunction)
 {
 	const Matrix<double> matrix({{1, 2}, {4, 3}});
-	const Matrix<double> result({{-0.2, 0.8}, {0.4, -0.6}});
+	const std::vector<std::vector<double>> result({{-0.6, 0.4}, {0.8, -0.2}});
 	const Matrix<double> inverse_of_matrix = matrix.inverse();
 
-	EXPECT_THAT(inverse_of_matrix, Eq(result));
+	for(size_t i = 0; i < 2; ++i){
+		for(size_t j = 0; j < 2; ++j){
+			EXPECT_THAT(inverse_of_matrix[i][j], DoubleEq(result[i][j]));
+		}
+	}
 }
 
 TEST_F(MatrixFunctionality, TheInverseFunctionWhenCalledOnANonSquareMatrixShouldThrow)
