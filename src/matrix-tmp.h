@@ -298,4 +298,14 @@ std::ostream& operator<<(std::ostream& os, const Matrix<Element>& matrix)
 	return os;
 }
 
+template <Elementable Element>
+Matrix<Element> Matrix<Element>::t() const noexcept
+{
+	TableType ans_table(col, RowType(row));
+	for (int i = 0; i < row; ++i)
+		for (int j = 0; j < col; ++j)
+			ans_table[j][i] = table[i][j];
+	return Matrix<Element>(ans_table);
+}
+
 #endif

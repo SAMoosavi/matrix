@@ -64,6 +64,8 @@ public:
 
 	Element determinant() const;
 
+    Matrix<Element> t() const noexcept;
+
 	[[nodiscard]] inline std::string to_string() const noexcept;
 	[[nodiscard]] inline operator std::string() const noexcept;
 
