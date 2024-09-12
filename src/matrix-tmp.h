@@ -1,6 +1,10 @@
 #ifndef MATRIX_MATRIX_TMP_H
 #define MATRIX_MATRIX_TMP_H
 
+#include <cmath>
+
+#include <ranges>
+
 #include "matrix.h"
 
 template <Elementable Element>
@@ -314,7 +318,59 @@ Matrix<Element> Matrix<Element>::inverse() const
 {
 	if(number_of_row != number_of_col)
 		throw std::invalid_argument("the matrix should be square!");
-	return Matrix<Element>();
+
+	TableType gauss_table = table;
+	TableType inverse_table(number_of_row, RowType(number_of_col, Element()));
+	for (size_t i : std::views::iota(0LLU, number_of_col))
+		inverse_table[i][i] = Element(1);
+
+	for (size_t col_index : std::views::iota(0LLU,number_of_col)) {
+		// Select row
+		size_t non_zero_row_index;
+		bool can_find_non_zero_row = false;
+		for (size_t i: std::views::iota(col_index, number_of_row)) {
+			if (gauss_table[i][col_index] != 0) {
+				non_zero_row_index = i;
+				can_find_non_zero_row = true;
+				break;
+			}
+		}
+		if(!can_find_non_zero_row) {
+			throw std::invalid_argument("the matrix should not be the determinant equal to zero!");
+		}
+		std::swap(gauss_table.at(col_index), gauss_table.at(non_zero_row_index));
+		std::swap(inverse_table.at(col_index), inverse_table.at(non_zero_row_index));
+
+		const size_t SELECTED_ROW_INDEX = col_index;
+		const RowType& SELECTED_GAUSS_ROW = gauss_table[SELECTED_ROW_INDEX];
+		const RowType& SELECTED_INVERSE_ROW = inverse_table[SELECTED_ROW_INDEX];
+
+		// update other row
+		for (size_t row_index: std::views::iota(0LLU, number_of_col) | std::views::filter([col_index](size_t i) { return i != col_index; })) {
+			RowType& current_gauss_row = gauss_table[row_index];
+			RowType& current_inverse_row = inverse_table[row_index];
+			Element coefficient = -current_gauss_row[col_index] / SELECTED_GAUSS_ROW[col_index];
+
+			if(coefficient == 0)
+				continue;
+
+			for (size_t i: std::views::iota(0LLU, number_of_col)) {
+				current_gauss_row[i] += coefficient * SELECTED_GAUSS_ROW[i];
+				current_inverse_row[i] += coefficient * SELECTED_INVERSE_ROW[i];
+			}
+		}
+
+		// update selected row
+		RowType& selected_gauss_row = gauss_table[SELECTED_ROW_INDEX];
+		RowType& selected_inverse_row = inverse_table[SELECTED_ROW_INDEX];
+		Element coefficient = 1 / selected_gauss_row[col_index];
+		for (size_t i: std::views::iota(0LLU, number_of_col)) {
+			selected_gauss_row[i] *= coefficient;
+			selected_inverse_row[i] *= coefficient;
+		}
+	}
+
+	return Matrix<Element>(inverse_table);
 }
 
 #endif
