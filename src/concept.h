@@ -27,23 +27,23 @@ concept MultipleAssignableDifferentType = requires(T t, U u) {
 };
 
 template <typename T, typename U>
-concept MultipleableDifferentTypeReturnFirstType = requires(T t, U u) {
+concept MultiplableDifferentTypeReturnFirstType = requires(T t, U u) {
 	{
 		t* u
 	} -> same_as<T>;
 };
 
 template <typename T, typename U>
-concept MultipleableDifferentTypeReturnSecondType = requires(T t, U u) {
+concept MultiplableDifferentTypeReturnSecondType = requires(T t, U u) {
 	{
 		u* t
 	} -> same_as<T>;
 };
 
 template <typename T, typename U>
-concept MultipleableDifferentType = requires(T, U) {
-	requires MultipleableDifferentTypeReturnSecondType<T, U> or
-					 MultipleableDifferentTypeReturnFirstType<T, U> or
+concept MultiplableDifferentType = requires(T, U) {
+	requires MultiplableDifferentTypeReturnSecondType<T, U> or
+					 MultiplableDifferentTypeReturnFirstType<T, U> or
 					 MultipleAssignableDifferentType<T, U>;
 };
 
@@ -53,6 +53,16 @@ concept Sumable = requires(T t) {
 	{
 		t + t
 	} -> same_as<T>;
+};
+template <typename T>
+concept Symmetryable = requires(T t) {
+	{
+		-t
+	} -> same_as<T>;
+	{
+		t * -1
+	} -> same_as<T>;
+	-t == t * -1;
 };
 template <typename T>
 concept AssignSumable = requires(T t) {
@@ -70,23 +80,23 @@ concept SamAssignableDifferentType = requires(T t, U u) {
 };
 
 template <typename T, typename U>
-concept SamableDifferentTypeReturnFirstType = requires(T t, U u) {
+concept SumableDifferentTypeReturnFirstType = requires(T t, U u) {
 	{
 		t + u
 	} -> same_as<T>;
 };
 
 template <typename T, typename U>
-concept SamableDifferentTypeReturnSecondType = requires(T t, U u) {
+concept SumableDifferentTypeReturnSecondType = requires(T t, U u) {
 	{
 		u + t
 	} -> same_as<T>;
 };
 
 template <typename T, typename U>
-concept SamableDifferentType = requires(T, U) {
-	requires SamableDifferentTypeReturnSecondType<T, U> or
-					 SamableDifferentTypeReturnFirstType<T, U> or
+concept SumableDifferentType = requires(T, U) {
+	requires SumableDifferentTypeReturnSecondType<T, U> or
+					 SumableDifferentTypeReturnFirstType<T, U> or
 					 SamAssignableDifferentType<T, U>;
 };
 
@@ -104,19 +114,45 @@ template <typename Element>
 concept Elementable = requires(Element) {
 	requires Multiplicationable<Element>;
 	requires Sumable<Element>;
+	requires Symmetryable<Element>;
 };
 
 template <typename Matrix>
 concept IsMatrixable = requires(Matrix m) {
 	{
 		m.get_row()
-	} -> std::same_as<size_t>;
+	} -> same_as<size_t>;
 	{
 		m.get_col()
-	} -> std::same_as<size_t>;
+	} -> same_as<size_t>;
 	{
 		m.get_table()
 	};
+};
+
+template <typename Coefficientable>
+concept Polynomialable = requires(Coefficientable first_coefficient, Coefficientable second_coefficient) {
+	requires Elementable<Coefficientable>;
+	requires MultiplableDifferentType<Coefficientable, int>;
+	requires MultiplableDifferentType<Coefficientable, float>;
+	{
+		first_coefficient < 0.0
+	} -> same_as<bool>;
+	{
+		first_coefficient == second_coefficient
+	} -> same_as<bool>;
+};
+
+template <typename Element>
+concept Numberable = is_arithmetic_v<Element>;
+
+template <typename Element>
+concept Integrable = is_integral_v<Element>;
+
+template <typename Element, typename OtherElement>
+concept AnotherElementMultiplable = requires() {
+	requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement> or
+					 (MultiplableDifferentTypeReturnSecondType<Element, OtherElement> and Polynomialable<OtherElement>);
 };
 
 #endif
