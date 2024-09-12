@@ -24,3 +24,5 @@ set(TEMP_HEADERS
 
 # Add the executable
 add_executable(Matrix ${SOURCES} ${HEADERS} ${INLINE_HEADERS} ${TEMP_HEADERS})
+
+# enable_testing()
