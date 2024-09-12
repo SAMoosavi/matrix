@@ -358,3 +358,51 @@ INSTANTIATE_TEST_SUITE_P(
 				std::make_tuple(Matrix<int>({{1}}), 1)
 		)
 );
+
+class InverseOfMatrix: public ::testing::TestWithParam<std::tuple<Matrix<double>, Matrix<double>>> {};
+
+TEST_P(InverseOfMatrix, TheInverseOperatorShouldReturnSecondParamWhenInverseFirstParams)
+{
+	const Matrix<double> FIRST_MATRIX = std::get<0>(GetParam());
+	const Matrix<double> SECOND_MATRIX = std::get<1>(GetParam());
+	const Matrix<double> inverse_of_matrix = FIRST_MATRIX.inverse();
+
+	for (size_t i = 0; i < FIRST_MATRIX.get_number_of_row(); ++i) {
+		for (size_t j = 0; j < FIRST_MATRIX.get_number_of_col(); ++j) {
+			EXPECT_THAT(inverse_of_matrix[i][j], DoubleEq(SECOND_MATRIX[i][j]));
+		}
+	}
+}
+
+INSTANTIATE_TEST_SUITE_P(
+        InverseData,
+        InverseOfMatrix,
+        Values(
+                std::make_tuple(
+                        Matrix<double>({{1, 2, 3}, {4, 5, 5}, {6, 7, 8}}),
+                        Matrix<double>({{-1, -1, 1}, {0.4, 2, -1.4}, {0.4, -1, 0.6}})
+				),
+                std::make_tuple(
+                        Matrix<double>({
+									{1, 2, 3, 4, 5, 6, 7, 8},
+									{2, 3, 4, 5, 6, 7, 8, 9},
+									{3, 4, 5, 6, 7, 8, 9, 10},
+									{4, 5, 6, 7, 8, 9, 10, 11},
+									{5, 6, 7, 8, 9, 10, 11, 12},
+									{6, 7, 8, 9, 10, 11, 12, 13},
+									{7, 8, 9, 10, 11, 12, 13, 14},
+									{8, 9, 10, 11, 12, 13, 14, 15}}
+						),
+                        Matrix<double>({
+									{ 5.32894737, -4.31578947,  2.26315789, -0.81578947,  0.31578947, -0.05263158,  0.02631579, -0.00526316},
+									{-4.31578947,  3.26315789, -1.63157895,  0.63157895, -0.26315789,  0.05263158, -0.02631579,  0.00526316},
+									{ 2.26315789, -1.63157895,  0.78947368, -0.26315789,  0.10526316, -0.02105263,  0.01052632, -0.00210526},
+									{-0.81578947,  0.63157895, -0.26315789,  0.07894737, -0.03157895,  0.00526316, -0.00263158,  0.00052632},
+									{ 0.31578947, -0.26315789,  0.10526316, -0.03157895,  0.01315789, -0.00263158,  0.00131579, -0.00026316},
+									{-0.05263158,  0.05263158, -0.02105263,  0.00526316, -0.00263158,  0.00052632, -0.00026316,  0.00005263},
+									{ 0.02631579, -0.02631579,  0.01052632, -0.00263158,  0.00131579, -0.00026316,  0.00013158, -0.00002632},
+									{-0.00526316,  0.00526316, -0.00210526,  0.00052632, -0.00026316,  0.00005263, -0.00002632,  0.00000526}}
+					   )
+				)
+		)
+);
