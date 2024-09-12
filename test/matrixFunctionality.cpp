@@ -130,12 +130,20 @@ TEST_F(MatrixFunctionality, TheInverseFunctionSouldReturnInverseOfFunction)
 
 	EXPECT_THAT(inverse_of_matrix, Eq(result));
 }
+
 TEST_F(MatrixFunctionality, TheInverseFunctionWhenCalledOnANonSquareMatrixShouldThrow)
 {
 	constexpr size_t ROW_NUMBER = 1;
 	constexpr size_t COL_NUMBER = 2;
-	const Matrix<int> FIRST_MATRIX(ROW_NUMBER, COL_NUMBER);
-	EXPECT_THROW(FIRST_MATRIX.inverse(), std::invalid_argument);
+	const Matrix<int> matrix(ROW_NUMBER, COL_NUMBER);
+	EXPECT_THROW(matrix.inverse(), std::invalid_argument);
+}
+
+TEST_F(MatrixFunctionality, TheInverseFunctionWhenCalledOnAMatrixWithZeroDeterminantShouldThrow)
+{
+	const Matrix<int> matrix({{1, 2}, {2, 4}});
+	ASSERT_EQ(matrix.determinant(), 0);
+	EXPECT_THROW(matrix.inverse(), std::invalid_argument);
 }
 
 using BaineryOperatorType = std::tuple<Matrix<int>, Matrix<int>, Matrix<int>>;
