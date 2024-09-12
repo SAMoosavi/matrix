@@ -34,7 +34,7 @@ Matrix<Element>::Matrix(const std::initializer_list<std::initializer_list<Elemen
 
 template <Elementable Element>
 template <typename OtherElement>
-	requires SamableDifferentType<Element, OtherElement>
+	requires SumableDifferentType<Element, OtherElement>
 Matrix<Element> Matrix<Element>::sum(const Matrix<OtherElement>& other) const
 {
 	if (row != other.get_number_of_row() or col != other.get_number_of_col())
@@ -99,7 +99,7 @@ Matrix<Element>& Matrix<Element>::operator-=(const Matrix<OtherElement>& other)
 
 template <Elementable Element>
 template <typename OtherElement>
-	requires MultipleableDifferentTypeReturnFirstType<Element, OtherElement>
+	requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
 Matrix<Element> Matrix<Element>::multiple(const Matrix<OtherElement>& other) const
 {
 	if (col != other.get_number_of_row())
@@ -117,7 +117,7 @@ Matrix<Element> Matrix<Element>::multiple(const Matrix<OtherElement>& other) con
 
 template <Elementable Element>
 template <typename OtherElement>
-	requires(not IsMatrixable<OtherElement>) and MultipleableDifferentType<Element, OtherElement>
+	requires(not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
 Matrix<Element> Matrix<Element>::multiple(const OtherElement& other) const
 {
 	Matrix<Element> result = *this;
@@ -125,9 +125,9 @@ Matrix<Element> Matrix<Element>::multiple(const OtherElement& other) const
 		for (Element& element: row_of_table) {
 			if constexpr (MultipleAssignableDifferentType<Element, OtherElement>)
 				element *= other;
-			else if constexpr (MultipleableDifferentTypeReturnFirstType<Element, OtherElement>)
+			else if constexpr (MultiplableDifferentTypeReturnFirstType<Element, OtherElement>)
 				element = element * other;
-			else if constexpr (MultipleableDifferentTypeReturnSecondType<Element, OtherElement>)
+			else if constexpr (MultiplableDifferentTypeReturnSecondType<Element, OtherElement>)
 				element = other * element;
 		}
 	}
@@ -150,7 +150,7 @@ Matrix<Element>& Matrix<Element>::operator*=(const OtherElement& other)
 }
 
 template <typename Element, typename OtherElement>
-	requires(not IsMatrixable<Element>) and (not IsMatrixable<OtherElement>) and MultipleableDifferentType<Element, OtherElement>
+	requires(not IsMatrixable<Element>) and (not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
 Matrix<Element> operator*(const OtherElement& number, const Matrix<Element>& matrix)
 {
 	return std::move(matrix * number);
@@ -185,7 +185,7 @@ Element Matrix<Element>::determinant() const
 	for (size_t col_index = 0; col_index < col; col_index++) {
 		size_t swap_row_index = col_index;
 		Element base_of_column = tmp_table[swap_row_index][col_index];
-//		TODO: create concept for check exit Element == 0
+		//		TODO: create concept for check exit Element == 0
 		while (base_of_column == 0 and swap_row_index < row) {
 			base_of_column = tmp_table[swap_row_index][col_index];
 			++swap_row_index;

@@ -28,7 +28,7 @@ public:
 	[[nodiscard]] size_t get_number_of_col() const;
 
 	template <typename OtherElement>
-		requires SamableDifferentType<Element, OtherElement>
+		requires SumableDifferentType<Element, OtherElement>
 	Matrix<Element> sum(const Matrix<OtherElement>& other) const;
 	template <typename OtherElement>
 	Matrix<Element> operator+(const Matrix<OtherElement>& other) const;
@@ -45,10 +45,10 @@ public:
 	Matrix<Element>& operator-=(const Matrix<OtherElement>& other);
 
 	template <typename OtherElement>
-		requires MultipleableDifferentTypeReturnFirstType<Element, OtherElement>
+		requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
 	Matrix<Element> multiple(const Matrix<OtherElement>& other) const;
 	template <typename OtherElement>
-		requires(not IsMatrixable<OtherElement>) and MultipleableDifferentType<Element, OtherElement>
+		requires(not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
 	Matrix<Element> multiple(const OtherElement& other) const;
 	template <typename OtherElement>
 	Matrix<Element> operator*(const OtherElement& other) const;
@@ -80,7 +80,7 @@ std::ostream& operator<<(std::ostream& os, const Matrix<Element>& matrix);
 
 
 template <typename Element, typename OtherElement>
-	requires(not IsMatrixable<Element>) and (not IsMatrixable<OtherElement>) and MultipleableDifferentType<Element, OtherElement>
+	requires(not IsMatrixable<Element>) and (not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
 Matrix<Element> operator*(const OtherElement& number, const Matrix<Element>& matrix);
 
 #include "matrix-tmp.h"
