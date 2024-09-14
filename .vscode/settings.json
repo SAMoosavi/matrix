@@ -93,5 +93,12 @@
 	"editor.rulers": [{
 		"color": "yellow",
 		"column": 120
-	}]
+	}
+],
+"cSpell.words": [
+	"Multiplable",
+	"Multiplicationable",
+	"Polynomialable",
+	"Sumable"
+]
 }

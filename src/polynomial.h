@@ -24,6 +24,8 @@ public:
 	Polynomial(const Polynomial& other) = default;
 	Polynomial(Polynomial&& other) noexcept = default;
 
+	~Polynomial() = default;
+
 	Polynomial& operator=(const Polynomial& another) = default;
 	Polynomial& operator=(Polynomial&& another) noexcept = default;
 
