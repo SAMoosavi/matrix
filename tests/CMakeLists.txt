@@ -17,8 +17,8 @@ foreach (TEST_FILE ${TEST_FILES})
     target_link_libraries(${TEST_NAME} gtest_main gmock_main)
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
     # add_test(NAME ${TEST_NAME} COMMAND ${CMAKE_CTEST_COMMAND}
-    #     --build-and-test "${CMAKE_SOURCE_DIR}/test/${TEST_FILE}"
-    #                         "${CMAKE_BINARY_DIR}/test/${TEST_NAME}"
+    #     --build-and-test "${CMAKE_SOURCE_DIR}/tests/${TEST_FILE}"
+    #                         "${CMAKE_BINARY_DIR}/tests/${TEST_NAME}"
     #     --build-target "${CMAKE_SOURCE_DIR}/test"
     #     --build-generator ${CMAKE_GENERATOR}
     #     --build-makeprogram ${CMAKE_MAKE_PROGRAM}
