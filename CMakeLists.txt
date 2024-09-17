@@ -16,7 +16,10 @@ include_directories(include)
 add_subdirectory(src)
 
 # Add test directory
-# add_subdirectory(tests)
+add_subdirectory(tests)
+
+# Add libs directory
+add_subdirectory(libs)
 
 if(NOT CMAKE_BUILD_TYPE)
 set(CMAKE_BUILD_TYPE Release)

@@ -1,8 +1,5 @@
-# Include GoogleTest's CMakeLists.txt from the submodule
-add_subdirectory(googletest)
 
-include_directories(${gtest_SOURCE_DIR}/include ${gmock_SOURCE_DIR}/include)
-include_directories(../src)
+# include_directories(../src)
 
 # List all test source files
 set(TEST_FILES
