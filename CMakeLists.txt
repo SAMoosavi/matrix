@@ -4,10 +4,10 @@ project(Matrix VERSION 1.0)
 include(CTest)
 
 # Add interface library
-add_library(MatrixInterface INTERFACE)
+add_library(matirx_interface INTERFACE)
 
 # Set cpp standard
-target_compile_features(MatrixInterface INTERFACE cxx_std_20)
+target_compile_features(matirx_interface INTERFACE cxx_std_20)
 
 # Add include directory to all subdirectories
 include_directories(include)
@@ -22,18 +22,18 @@ add_subdirectory(tests)
 add_subdirectory(libs)
 
 if(NOT CMAKE_BUILD_TYPE)
-set(CMAKE_BUILD_TYPE Release)
+    set(CMAKE_BUILD_TYPE Release)
 endif()
 
 # Add compiler flags
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_compile_options(MatrixInterface INTERFACE
+    target_compile_options(matirx_interface INTERFACE
         -Wall
         -Wextra
         -pedantic
     )
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-target_compile_options(MatrixInterface INTERFACE
+target_compile_options(matirx_interface INTERFACE
         /W4
     )
 endif()
