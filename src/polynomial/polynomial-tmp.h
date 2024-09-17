@@ -3,12 +3,11 @@
 
 #include <random>
 
+#include "polynomial-helper.h"
 #include "polynomial.h"
 
-#include "polynomial-helper.h"
-
 template <Polynomialable Element>
-Polynomial<Element>::Polynomial(const Coefficient& coefficients) : coefficients(coefficients)
+Polynomial<Element>::Polynomial(const Coefficient &coefficients) : coefficients(coefficients)
 {
 }
 
@@ -100,7 +99,7 @@ Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve_greater_power(dou
 		temp_newton = temp_polynomial.solve_by_newton(guess, max_iteration, precision);
 		if (temp_newton.first == NOT_FOUND)
 			guess = polynomial_helper::create_random_number(static_cast<int64_t>(guess - guess * 0.1),
-															static_cast<int64_t>(guess + guess * 0.1));
+			                                                static_cast<int64_t>(guess + guess * 0.1));
 		else {
 			temp_polynomial.simplify_by_horner(temp_newton);
 			result.emplace_back(temp_newton.first);
@@ -119,8 +118,7 @@ template <typename OtherElement>
 Polynomial<Element> Polynomial<Element>::sum(const Polynomial<OtherElement> &other) const
 {
 	Coefficient coefficient_of_result = coefficients;
-	for (size_t i = 0; i < other.coefficients.size(); i++)
-	{
+	for (size_t i = 0; i < other.coefficients.size(); i++) {
 		if (i < coefficient_of_result.size())
 			coefficient_of_result[i] += other.coefficients[i];
 		else

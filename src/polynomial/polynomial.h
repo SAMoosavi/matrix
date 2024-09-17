@@ -16,15 +16,15 @@ private:
 	using PolynomialRoot = std::vector<double>;
 
 public:
-	Polynomial() = default  ;
+	Polynomial() = default;
 
 	explicit Polynomial(const Coefficient& coefficients);
 
 	Polynomial(const Polynomial& other) = default;
 	Polynomial(Polynomial&& other) noexcept = default;
 
-    Polynomial& operator=(const Polynomial& another) = default;
-    Polynomial& operator=(Polynomial&& another) noexcept = default;
+	Polynomial& operator=(const Polynomial& another) = default;
+	Polynomial& operator=(Polynomial&& another) noexcept = default;
 
 	bool operator==(const Polynomial<Element>& other) const = default;
 
@@ -89,17 +89,17 @@ public:
 	[[nodiscard]] const Element& operator[](size_t index) const;
 
 private:
-    [[nodiscard]] PolynomialRoot solve_quadratic_equation(uint16_t precision = 6) const;
+	[[nodiscard]] PolynomialRoot solve_quadratic_equation(uint16_t precision = 6) const;
 
-    [[nodiscard]] PolynomialRoot solve_greater_power(double guess, uint16_t max_iteration, uint16_t precision) const;
+	[[nodiscard]] PolynomialRoot solve_greater_power(double guess, uint16_t max_iteration, uint16_t precision) const;
 
-    [[nodiscard]] NewtonOutput solve_by_newton(double guess, uint16_t max_iteration, uint16_t precision) const;
+	[[nodiscard]] NewtonOutput solve_by_newton(double guess, uint16_t max_iteration, uint16_t precision) const;
 
-    void simplify_by_horner(NewtonOutput info);
+	void simplify_by_horner(NewtonOutput info);
 
-    static constexpr double NOT_FOUND = std::numeric_limits<double>::min_exponent10;
-    // smallest to biggest degree
-    Coefficient coefficients;
+	static constexpr double NOT_FOUND = std::numeric_limits<double>::min_exponent10;
+	// smallest to biggest degree
+	Coefficient coefficients;
 };
 
 template <typename Element, typename OtherElement>

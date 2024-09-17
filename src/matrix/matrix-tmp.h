@@ -4,16 +4,21 @@
 #include "matrix.h"
 
 template <Elementable Element>
-Matrix<Element>::Matrix(size_t row, size_t col)
-	: row(row), col(col), table(row, RowType(col, 0)){}
+Matrix<Element>::Matrix(size_t row, size_t col) : row(row),
+                                                  col(col),
+                                                  table(row, RowType(col, 0))
+{
+}
 
 template <Elementable Element>
 template <template <Containerable> typename Container>
 Matrix<Element>::Matrix(const Container<Container<Element>>& matrix)
-	: row(matrix.size()), col(matrix.begin()->size()), table(0)
+    : row(matrix.size()),
+      col(matrix.begin()->size()),
+      table(0)
 {
 	for (const auto& row_of_matrix: matrix) {
-		if(row_of_matrix.size() != col)
+		if (row_of_matrix.size() != col)
 			throw std::invalid_argument("Cannot creat matrix with different column size.");
 
 		table.emplace_back(row_of_matrix);
@@ -22,10 +27,12 @@ Matrix<Element>::Matrix(const Container<Container<Element>>& matrix)
 
 template <Elementable Element>
 Matrix<Element>::Matrix(const std::initializer_list<std::initializer_list<Element>>& matrix)
-	: row(matrix.size()), col(matrix.begin()->size()), table(0)
+    : row(matrix.size()),
+      col(matrix.begin()->size()),
+      table(0)
 {
 	for (const auto& row_of_matrix: matrix) {
-		if(row_of_matrix.size() != col)
+		if (row_of_matrix.size() != col)
 			throw std::invalid_argument("Cannot creat matrix with different column size.");
 
 		table.emplace_back(row_of_matrix);
@@ -34,7 +41,7 @@ Matrix<Element>::Matrix(const std::initializer_list<std::initializer_list<Elemen
 
 template <Elementable Element>
 template <typename OtherElement>
-	requires SumableDifferentType<Element, OtherElement>
+    requires SumableDifferentType<Element, OtherElement>
 Matrix<Element> Matrix<Element>::sum(const Matrix<OtherElement>& other) const
 {
 	if (row != other.get_number_of_row() or col != other.get_number_of_col())
@@ -99,7 +106,7 @@ Matrix<Element>& Matrix<Element>::operator-=(const Matrix<OtherElement>& other)
 
 template <Elementable Element>
 template <typename OtherElement>
-	requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
+    requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
 Matrix<Element> Matrix<Element>::multiple(const Matrix<OtherElement>& other) const
 {
 	if (col != other.get_number_of_row())
@@ -117,7 +124,7 @@ Matrix<Element> Matrix<Element>::multiple(const Matrix<OtherElement>& other) con
 
 template <Elementable Element>
 template <typename OtherElement>
-	requires(not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
+    requires(not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
 Matrix<Element> Matrix<Element>::multiple(const OtherElement& other) const
 {
 	Matrix<Element> result = *this;
@@ -150,7 +157,8 @@ Matrix<Element>& Matrix<Element>::operator*=(const OtherElement& other)
 }
 
 template <typename Element, typename OtherElement>
-	requires(not IsMatrixable<Element>) and (not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
+    requires(not IsMatrixable<Element>) and
+            (not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
 Matrix<Element> operator*(const OtherElement& number, const Matrix<Element>& matrix)
 {
 	return std::move(matrix * number);
@@ -268,7 +276,7 @@ std::string Matrix<Element>::to_string() const noexcept
 	const std::string SEPERATE_COLUMN = COLON + SPACE;
 	const std::string END_OF_ROW = CLOSE_ACCOLADE + COLON + NEW_LINE;
 	const std::string END_OF_TABLE = NEW_LINE + CLOSE_ACCOLADE;
-	
+
 
 	std::string result = START_OF_TABLE;
 	for (const auto& row_of_table: table) {

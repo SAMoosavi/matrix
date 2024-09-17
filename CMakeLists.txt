@@ -9,6 +9,9 @@ add_library(MatrixInterface INTERFACE)
 # Set cpp standard
 target_compile_features(MatrixInterface INTERFACE cxx_std_20)
 
+# Add include directory to all subdirectories
+include_directories(include)
+
 # Add source directory
 add_subdirectory(src)
 

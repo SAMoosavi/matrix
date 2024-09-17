@@ -8,6 +8,10 @@
 
 using namespace std;
 
+#ifdef __GNUC__// For GCC and Clang
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
 
 template <Containerable Container, typename Element = typename Container::value_type>
 	requires Multiplicationable<Element> && AssignSumable<Element>
@@ -190,7 +194,6 @@ int main()
 	// Matrix<W> v7 = 10 * v2;
 	// print(v7.get_table());
 
-	using Coefficient = vector<int>;
 	using Root = vector<double>;
 
 	vector<int> temp = {0, 3, -4, 1};
@@ -216,3 +219,7 @@ int main()
 
 	return 0;
 }
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
