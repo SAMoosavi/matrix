@@ -13,4 +13,15 @@ target_link_libraries(Matrix PRIVATE matirx_interface)
 target_link_libraries(Matrix PRIVATE matrix_common)
 target_link_libraries(Matrix PRIVATE polynomial)
 
-enable_testing()
+# Add matrix library
+add_library(matrix INTERFACE IMPORTED)
+
+target_include_directories(matrix INTERFACE
+        ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(matrix INTERFACE
+        matirx_interface
+        matrix_common
+        polynomial
+)

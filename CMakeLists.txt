@@ -3,6 +3,8 @@ project(Matrix VERSION 1.0)
 
 include(CTest)
 
+enable_testing()
+
 # Add interface library
 add_library(matirx_interface INTERFACE)
 
