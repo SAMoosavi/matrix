@@ -31,6 +31,7 @@ public:
 
 	bool operator==(const Polynomial<Element>& other) const = default;
 
+	// TODO: Add to helper
 	template <typename Float>
 		requires std::floating_point<Float>
 	[[nodiscard]] static constexpr bool compare_with_precision(Float number1, Float number2,
@@ -92,6 +93,9 @@ public:
 	[[nodiscard]] const Element& operator[](size_t index) const;
 
 private:
+	[[nodiscard]] constexpr Polynomial<Element> sum_smaller_degree_with_greater(Coefficient greater_degree_coefficients,
+			const Coefficient& smaller_degree_coefficients) const noexcept;
+
 	[[nodiscard]] PolynomialRoot solve_quadratic_equation(uint16_t precision = 6) const;
 
 	[[nodiscard]] PolynomialRoot solve_greater_power(double guess, uint16_t max_iteration, uint16_t precision) const;
@@ -101,7 +105,7 @@ private:
 	void simplify_by_horner(NewtonOutput info);
 
 	static constexpr double NOT_FOUND = std::numeric_limits<double>::min_exponent10;
-	// smallest to biggest degree
+	// Biggest to smallest` degree
 	Coefficient coefficients;
 };
 

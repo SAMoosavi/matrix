@@ -24,7 +24,7 @@ protected:
 	const Polynomial<int> expected_result;
 
 	SharedCoefficients(const Polynomial<int>& expected_result)
-	: first_polynomial({-1, 1})
+	: first_polynomial({1, -1})
 	, second_polynomial({1, -4, 6, -4, 1})
 	, expected_result(expected_result)
 	{
@@ -39,7 +39,7 @@ protected:
 	const Polynomial<int> expected_result;
 
 	SharedCoefficientAndElement(const Polynomial<int>& expected_result)
-	: primary_polynomial({-1, 1})
+	: primary_polynomial({1, -1})
 	, element(4)
 	, expected_result(expected_result)
 	{
@@ -50,7 +50,7 @@ class PolynomialSumWithPolynomial : public SharedCoefficients
 {
 protected:
 	PolynomialSumWithPolynomial()
-	: SharedCoefficients(Polynomial(Coefficient({0, -3, 6, -4, 1})))
+	: SharedCoefficients(Polynomial(Coefficient({1, -4, 6, -3, 0})))
 	{
 	}
 };
@@ -73,7 +73,7 @@ class PolynomialSumWithElement : public SharedCoefficientAndElement
 {
 protected:
 	PolynomialSumWithElement()
-	: SharedCoefficientAndElement(Polynomial(Coefficient({3, 1})))
+	: SharedCoefficientAndElement(Polynomial(Coefficient({1, 3})))
 	{
 	}
 };
@@ -109,7 +109,7 @@ class PolynomialSubmissionWithPolynomial : public SharedCoefficients
 {
 protected:
 	PolynomialSubmissionWithPolynomial()
-	: SharedCoefficients(Polynomial(Coefficient({-2, 5, -6, 4, -1})))
+	: SharedCoefficients(Polynomial(Coefficient({-1, 4, -6, 5, -2})))
 	{
 	}
 };
@@ -132,7 +132,7 @@ class PolynomialSubmissionWithElement : public SharedCoefficientAndElement
 {
 protected:
 	PolynomialSubmissionWithElement()
-	: SharedCoefficientAndElement(Polynomial(Coefficient({-5, 1})))
+	: SharedCoefficientAndElement(Polynomial(Coefficient({1, -5})))
 	{
 	}
 };
@@ -154,7 +154,7 @@ class PolynomialMultipleWithPolynomial : public SharedCoefficients
 {
 protected:
 	PolynomialMultipleWithPolynomial()
-	: SharedCoefficients(Polynomial(Coefficient({-1, 5, -10, 10, -5, 1})))
+	: SharedCoefficients(Polynomial(Coefficient({1, -5, 10, -10, 5, -1})))
 	{
 	}
 };
@@ -176,7 +176,7 @@ class PolynomialMultipleWithElement : public SharedCoefficientAndElement
 {
 protected:
 	PolynomialMultipleWithElement()
-	: SharedCoefficientAndElement(Polynomial(Coefficient({-4, 4})))
+	: SharedCoefficientAndElement(Polynomial(Coefficient({4, -4})))
 	{
 	}
 };
@@ -203,7 +203,7 @@ protected:
 
 	void SetUp() override
 	{
-		base = Coefficient{-1, 1};
+		base = Coefficient{1, -1};
 		fourth_power = Polynomial(Coefficient{1, -4, 6, -4, 1});
 		degree = 4;
 	}
@@ -230,8 +230,8 @@ protected:
 
 	void SetUp() override
 	{
-		base = Coefficient{-9, 0, 5, 0, -3, 0, 10};
-		derivative = Polynomial(Coefficient{0, 10, 0, -12, 0, 60});
+		base = Coefficient{10, 0, -3, 0, 5, 0, -9};
+		derivative = Polynomial(Coefficient{60, 0, -12, 0, 10, 0});
 	}
 };
 
@@ -255,7 +255,7 @@ protected:
 
 	void SetUp() override
 	{
-		polynomial = Polynomial(Coefficient{-1, 3, -3, 1});
+		polynomial = Polynomial(Coefficient{1, -3, 3, -1});
 	}
 };
 
@@ -296,9 +296,9 @@ TEST_P(PolynomialTest, PolynomialSolveTest)
 }
 
 INSTANTIATE_TEST_SUITE_P(SolveParameters, PolynomialTest,
-		testing::Values(make_tuple(vector<int>{2, -3, 1}, vector<double>{1, 2}),
-				make_tuple(vector<int>{0, 2, -3, 1}, vector<double>{0, 1, 2}),
-				make_tuple(vector<int>{0, -6, 11, -6, 1}, vector<double>{0, 1, 2, 3})));
+		testing::Values(make_tuple(vector<int>{1, -3, 2}, vector<double>{1, 2}),
+				make_tuple(vector<int>{1, -3, 2, 0}, vector<double>{0, 1, 2}),
+				make_tuple(vector<int>{1, -6, 11, -6, 0}, vector<double>{0, 1, 2, 3})));
 
 class CoefficientTest : public ::testing::Test
 {
@@ -307,7 +307,7 @@ protected:
 	const Polynomial<int32_t> polynomial;
 
 	CoefficientTest()
-	: coefficients({-1, 3, -3, 1})
+	: coefficients({1, -3, 3, -1})
 	, polynomial(coefficients)
 	{
 	}

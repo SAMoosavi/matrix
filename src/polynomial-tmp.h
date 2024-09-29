@@ -2,6 +2,7 @@
 #define MATRIX_POLYNOMIAL_TEMP_H
 
 #include <random>
+#include <algorithm>
 
 #include "polynomial-helper.h"
 #include "polynomial.h"
@@ -64,24 +65,48 @@ Polynomial<Element>::NewtonOutput Polynomial<Element>::solve_by_newton(double gu
 template <Polynomialable Element>
 void Polynomial<Element>::simplify_by_horner(NewtonOutput info)
 {
-	Element temp = *coefficients.rbegin();
-	for (auto it = (coefficients.rbegin() + 1); it != coefficients.rend(); ++it)
+	Element temp = *coefficients.begin();
+	// for (auto& coeff : coefficients)
+	// {
+	// 	Element current_coefficient = coeff;
+	// 	temp = temp * info.first + current_coefficient;
+	// 	coeff = temp;
+	// }
+	
+	for (auto it = coefficients.begin() + 1; it != coefficients.end(); ++it)
 	{
 		Element current_coefficient = *it;
 		temp = temp * info.first + current_coefficient;
 		*it = temp;
 	}
 
-	coefficients.erase(coefficients.begin());
+	// coefficients.erase(coefficients.begin());
+	coefficients.pop_back();
+}
+
+template <Polynomialable Element>
+constexpr Polynomial<Element> Polynomial<Element>::sum_smaller_degree_with_greater(
+		Coefficient greater_degree_coefficients, const Coefficient &smaller_degree_coefficients) const noexcept
+{
+	size_t difference_of_sizes = greater_degree_coefficients.size() - smaller_degree_coefficients.size();
+
+	for (size_t i = smaller_degree_coefficients.size() - 1; i > 0; i--)
+		greater_degree_coefficients[i + difference_of_sizes] =
+				greater_degree_coefficients[i + difference_of_sizes] + smaller_degree_coefficients[i];
+
+	greater_degree_coefficients[difference_of_sizes] =
+			greater_degree_coefficients[difference_of_sizes] + smaller_degree_coefficients.front();
+
+	return Polynomial(greater_degree_coefficients);
 }
 
 template <Polynomialable Element>
 auto Polynomial<Element>::solve_quadratic_equation(uint16_t precision) const -> PolynomialRoot
 {
 	PolynomialRoot result;
-	Element coefficient = coefficients[0];
-	Element one_power = coefficients[1];
-	Element two_power = coefficients[2];
+	Element coefficient = at(coefficients.size() - 1);
+	Element one_power = at(coefficients.size() - 2);
+	Element two_power = at(coefficients.size() - 3);
 
 	// need tp support sqrt
 	Element delta = (one_power * one_power) - (4 * two_power * coefficient);
@@ -126,15 +151,10 @@ template <typename OtherElement>
 	requires SumableDifferentType<Element, OtherElement>
 Polynomial<Element> Polynomial<Element>::sum(const Polynomial<OtherElement> &other) const
 {
-	Coefficient coefficient_of_result = coefficients;
-	for (size_t i = 0; i < other.coefficients.size(); i++)
-	{
-		if (i < coefficient_of_result.size())
-			coefficient_of_result[i] += other.coefficients[i];
-		else
-			coefficient_of_result.emplace_back(Element() + other.coefficients[i]);
-	}
-	return Polynomial(coefficient_of_result);
+	return coefficients.size() > other.coefficients.size() ? 
+		sum_smaller_degree_with_greater(coefficients, other.coefficients) 
+		:
+		sum_smaller_degree_with_greater(other.coefficients, coefficients);
 }
 
 template <Polynomialable Element>
@@ -150,7 +170,8 @@ template <typename OtherElement>
 Polynomial<Element> Polynomial<Element>::operator+(const OtherElement &other) const
 {
 	Polynomial new_polynomial(*this);
-	new_polynomial.coefficients[0] += other;
+	Element &zero_degree_coefficient = new_polynomial.at(coefficients.size() - 1);
+	zero_degree_coefficient += other;
 	return new_polynomial;
 }
 
@@ -165,7 +186,8 @@ Polynomial<Element> &Polynomial<Element>::operator+=(const Polynomial<OtherEleme
 template <Polynomialable Element>
 Polynomial<Element> &Polynomial<Element>::operator+=(const Element &new_coefficient)
 {
-	coefficients[0] += new_coefficient;
+	Element &zero_degree_coefficient = at(coefficients.size() - 1);
+	zero_degree_coefficient += new_coefficient;
 	return *this;
 }
 
@@ -174,7 +196,7 @@ Polynomial<Element> Polynomial<Element>::operator-() const
 {
 	Polynomial new_polynomial(*this);
 	for (auto &coeff : new_polynomial.coefficients)
-		coeff = -coeff;
+		coeff = coeff * -1;
 	return new_polynomial;
 }
 
@@ -198,7 +220,8 @@ template <typename OtherElement>
 Polynomial<Element> Polynomial<Element>::operator-(const OtherElement &other) const
 {
 	Polynomial new_polynomial(*this);
-	new_polynomial[0] -= other;
+	Element &zero_degree_coefficient = new_polynomial.at(coefficients.size() - 1);
+	zero_degree_coefficient -= other;
 	return new_polynomial;
 }
 
@@ -263,9 +286,14 @@ Number Polynomial<Element>::set_value(Number value) const
 {
 	Number result{};
 	Number variable_nth_power = 1;
-	for (const auto &coeff : coefficients)
+	// std::for_each(coefficients.rbegin(), coefficients.rend(), [&variable_nth_power, &result](Element& coeff)
+	// {
+	// 	result += variable_nth_power * coeff;
+	// 	variable_nth_power *= value;
+	// });
+	for (auto it = coefficients.rbegin(); it != coefficients.rend(); ++it)
 	{
-		result += variable_nth_power * coeff;
+		result += (*it) * variable_nth_power;
 		variable_nth_power *= value;
 	}
 	return result;
@@ -281,10 +309,11 @@ Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve(double guess, uin
 		case 0:
 			break;
 		case 1:
-			result.emplace_back(coefficients[0]);
+			result.emplace_back(coefficients.back());
 			break;
 		case 2:
-			result.emplace_back((-coefficients[0]) / coefficients[1]);
+			// TODO: if Element was uint16_t it will be undefined behavior
+			result.emplace_back((coefficients[1] * -1) / coefficients[0]);
 			break;
 		case 3:
 			result = solve_quadratic_equation();
@@ -300,7 +329,8 @@ Polynomial<Element>::PolynomialRoot Polynomial<Element>::solve(double guess, uin
 template <Polynomialable Element>
 Polynomial<Element> &Polynomial<Element>::operator-=(const Element &new_coefficient)
 {
-	coefficients[0] -= new_coefficient;
+	Element &zero_degree_coefficient = at(coefficients.size() - 1);
+	zero_degree_coefficient = zero_degree_coefficient - new_coefficient;
 	return *this;
 }
 
@@ -327,11 +357,14 @@ Polynomial<Element> &Polynomial<Element>::power_equal(uint64_t number)
 template <Polynomialable Element>
 Polynomial<Element> Polynomial<Element>::derivative() const
 {
-	Polynomial result(*this);
-	result.coefficients.erase(result.coefficients.begin());
-	for (size_t i = 0; i < result.coefficients.size(); ++i)
-		result.coefficients[i] *= i + 1;
-	return result;
+	Coefficient derived_coefficients(coefficients.begin(), coefficients.end() - 1);
+	size_t power_degree = derived_coefficients.size();
+	std::for_each(derived_coefficients.begin(), derived_coefficients.end(), [&power_degree](Element& coeff)
+	{
+		coeff *= power_degree;
+		--power_degree;
+	});
+	return Polynomial(derived_coefficients);
 }
 
 template <Polynomialable Element>
