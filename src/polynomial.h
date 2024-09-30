@@ -75,6 +75,19 @@ public:
 	template <typename OtherElement>
 	Polynomial<Element>& operator*=(const Polynomial<OtherElement>& other);
 
+	template <typename OtherElement>
+		requires DivisionableDifferentTypeReturnFirstType<Element, OtherElement>
+	[[nodiscard]] constexpr Polynomial<Element> divide(const Polynomial<OtherElement>& other) const;
+	template <typename OtherElement>
+		requires DivisionableDifferentType<Element, OtherElement>
+	[[nodiscard]] constexpr Polynomial<Element> operator/(const OtherElement& other) const;
+	template <typename OtherElement>
+	[[nodiscard]] constexpr Polynomial<Element> operator/(const Polynomial<OtherElement>& other) const;
+	template <typename OtherElement>
+	constexpr Polynomial<Element>& operator/=(const OtherElement& other);
+	template <typename OtherElement>
+	constexpr Polynomial<Element>& operator/=(const Polynomial<OtherElement>& other);
+
 	[[nodiscard]] Polynomial<Element> power(uint64_t number) const;
 	Polynomial<Element>& power_equal(uint64_t number);
 
@@ -103,6 +116,9 @@ private:
 	[[nodiscard]] NewtonOutput solve_by_newton(double guess, uint16_t max_iteration, uint16_t precision) const;
 
 	void simplify_by_horner(NewtonOutput info);
+
+	template <typename OtherElement>
+	[[nodiscard]] constexpr bool is_divide_valid(const Polynomial<OtherElement>& other) const;
 
 	static constexpr double NOT_FOUND = std::numeric_limits<double>::min_exponent10;
 	// Biggest to smallest` degree

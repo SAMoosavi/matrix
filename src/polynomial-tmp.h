@@ -3,6 +3,7 @@
 
 #include <random>
 #include <algorithm>
+#include <ranges>
 
 #include "polynomial-helper.h"
 #include "polynomial.h"
@@ -65,22 +66,14 @@ Polynomial<Element>::NewtonOutput Polynomial<Element>::solve_by_newton(double gu
 template <Polynomialable Element>
 void Polynomial<Element>::simplify_by_horner(NewtonOutput info)
 {
-	Element temp = *coefficients.begin();
-	// for (auto& coeff : coefficients)
-	// {
-	// 	Element current_coefficient = coeff;
-	// 	temp = temp * info.first + current_coefficient;
-	// 	coeff = temp;
-	// }
-	
-	for (auto it = coefficients.begin() + 1; it != coefficients.end(); ++it)
+	Element current_coefficient = *coefficients.begin();
+
+	for (auto coeff = coefficients.begin() + 1; coeff != coefficients.end(); ++coeff)
 	{
-		Element current_coefficient = *it;
-		temp = temp * info.first + current_coefficient;
-		*it = temp;
+		current_coefficient = current_coefficient * info.first + *coeff;
+		*coeff = current_coefficient;
 	}
 
-	// coefficients.erase(coefficients.begin());
 	coefficients.pop_back();
 }
 
@@ -281,22 +274,86 @@ Polynomial<Element> &Polynomial<Element>::operator*=(const Polynomial<OtherEleme
 }
 
 template <Polynomialable Element>
+template <typename OtherElement>
+	requires DivisionableDifferentTypeReturnFirstType<Element, OtherElement>
+constexpr Polynomial<Element> Polynomial<Element>::divide(const Polynomial<OtherElement> &other) const
+{
+	if (!is_divide_valid(other))
+		return *this;
+
+	Coefficient copy_of_this_polynomial_coefficients(coefficients);
+	Coefficient coefficients_of_result{copy_of_this_polynomial_coefficients.front() / other.coefficients.front()};
+	while (copy_of_this_polynomial_coefficients.size() >= other.coefficients.size())
+	{
+		for (size_t i = 0; i < other.coefficients.size(); i++)
+			copy_of_this_polynomial_coefficients[i] = copy_of_this_polynomial_coefficients[i] -
+					(other.coefficients[i] * coefficients_of_result.back());
+
+		copy_of_this_polynomial_coefficients.pop_front();
+		coefficients_of_result.emplace_back(copy_of_this_polynomial_coefficients.front() / other.coefficients.front());
+	}
+
+	return Polynomial(coefficients_of_result);
+}
+
+template <Polynomialable Element>
+template <typename OtherElement>
+	requires DivisionableDifferentType<Element, OtherElement>
+constexpr Polynomial<Element> Polynomial<Element>::operator/(const OtherElement &other) const
+{
+	Coefficient divided_coefficients(coefficients);
+	for (auto &coeff : divided_coefficients)
+		coeff = coeff / other;
+	
+	return Polynomial(divided_coefficients);
+}
+
+template <Polynomialable Element>
+template <typename OtherElement>
+constexpr Polynomial<Element> Polynomial<Element>::operator/(const Polynomial<OtherElement> &other) const
+{
+	return divide(other);
+}
+
+template <Polynomialable Element>
+template <typename OtherElement>
+constexpr Polynomial<Element> &Polynomial<Element>::operator/=(const OtherElement &other)
+{
+	*this = *this / other;
+	return *this;
+}
+
+template <Polynomialable Element>
+template <typename OtherElement>
+inline constexpr Polynomial<Element> &Polynomial<Element>::operator/=(const Polynomial<OtherElement> &other)
+{
+	*this = divide(other);
+	return *this;
+}
+
+template <Polynomialable Element>
 template <Numberable Number>
 Number Polynomial<Element>::set_value(Number value) const
 {
 	Number result{};
 	Number variable_nth_power = 1;
-	// std::for_each(coefficients.rbegin(), coefficients.rend(), [&variable_nth_power, &result](Element& coeff)
-	// {
-	// 	result += variable_nth_power * coeff;
-	// 	variable_nth_power *= value;
-	// });
 	for (auto it = coefficients.rbegin(); it != coefficients.rend(); ++it)
 	{
 		result += (*it) * variable_nth_power;
 		variable_nth_power *= value;
 	}
 	return result;
+}
+
+template <Polynomialable Element>
+template <typename OtherElement>
+constexpr bool Polynomial<Element>::is_divide_valid(const Polynomial<OtherElement> &other) const
+{
+	if (coefficients.size() < other.coefficients.size())
+		return false;
+
+	if (other.coefficients.empty())
+		throw std::invalid_argument("divide on empty polynomial is not valid.");
 }
 
 template <Polynomialable Element>

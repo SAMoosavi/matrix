@@ -45,6 +45,33 @@ concept MultiplableDifferentType = requires(T, U) {
 			MultipleAssignableDifferentType<T, U>;
 };
 
+template <typename T, typename U>
+concept DivisionAssignableDifferentType = requires(T t, U u) {
+	{
+		t /= u
+	} -> std::same_as<T&>;
+};
+
+template <typename T, typename U>
+concept DivisionableDifferentTypeReturnFirstType = requires(T t, U u) {
+	{
+		t/ u
+	} -> std::same_as<T>;
+};
+
+template <typename T, typename U>
+concept DivisionableDifferentTypeReturnSecondType = requires(T t, U u) {
+	{
+		u/ t
+	} -> std::same_as<T>;
+};
+
+template <typename T, typename U>
+concept DivisionableDifferentType = requires(T, U) {
+	requires DivisionableDifferentTypeReturnSecondType<T, U> or DivisionableDifferentTypeReturnFirstType<T, U> or
+			MultipleAssignableDifferentType<T, U>;
+};
+
 template <typename T>
 concept Sumable = requires(T t) {
 	{
