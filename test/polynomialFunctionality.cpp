@@ -39,7 +39,7 @@ protected:
 	const Polynomial<int> expected_result;
 
 	SharedCoefficientAndElement(const Polynomial<int>& expected_result)
-	: primary_polynomial({1, -1})
+	: primary_polynomial({4, -4})
 	, element(4)
 	, expected_result(expected_result)
 	{
@@ -73,7 +73,7 @@ class PolynomialSumWithElement : public SharedCoefficientAndElement
 {
 protected:
 	PolynomialSumWithElement()
-	: SharedCoefficientAndElement(Polynomial(Coefficient({1, 3})))
+	: SharedCoefficientAndElement(Polynomial(Coefficient({4, 0})))
 	{
 	}
 };
@@ -81,14 +81,14 @@ protected:
 TEST_F(PolynomialSumWithElement, Sum)
 {
 	const Polynomial<int> result = primary_polynomial + element;
-	EXPECT_EQ(Polynomial(expected_result), result);
+	EXPECT_EQ(expected_result, result);
 }
 
 TEST_F(PolynomialSumWithElement, SumEqual)
 {
 	Polynomial<int> polynomial = primary_polynomial;
 	polynomial += element;
-	EXPECT_EQ(Polynomial(expected_result), polynomial);
+	EXPECT_EQ(expected_result, polynomial);
 }
 
 class PolynomialSymmetry : public SharedCoefficients
@@ -102,7 +102,7 @@ protected:
 
 TEST_F(PolynomialSymmetry, PolynomialSymmetry)
 {
-	EXPECT_EQ(-second_polynomial, Polynomial(expected_result));
+	EXPECT_EQ(-second_polynomial, expected_result);
 }
 
 class PolynomialSubmissionWithPolynomial : public SharedCoefficients
@@ -117,7 +117,7 @@ protected:
 TEST_F(PolynomialSubmissionWithPolynomial, Submission)
 {
 	const Polynomial<int> result = first_polynomial - second_polynomial;
-	EXPECT_EQ(Polynomial(expected_result), result);
+	EXPECT_EQ(expected_result, result);
 }
 
 TEST_F(PolynomialSubmissionWithPolynomial, SubmissionEqual)
@@ -125,14 +125,14 @@ TEST_F(PolynomialSubmissionWithPolynomial, SubmissionEqual)
 	Polynomial<int> polynomial = first_polynomial;
 	polynomial -= second_polynomial;
 
-	EXPECT_EQ(Polynomial(expected_result), polynomial);
+	EXPECT_EQ(expected_result, polynomial);
 }
 
 class PolynomialSubmissionWithElement : public SharedCoefficientAndElement
 {
 protected:
 	PolynomialSubmissionWithElement()
-	: SharedCoefficientAndElement(Polynomial(Coefficient({1, -5})))
+	: SharedCoefficientAndElement(Polynomial(Coefficient({4, -8})))
 	{
 	}
 };
@@ -140,14 +140,14 @@ protected:
 TEST_F(PolynomialSubmissionWithElement, Submission)
 {
 	const Polynomial<int> result = primary_polynomial - element;
-	EXPECT_EQ(Polynomial(expected_result), result);
+	EXPECT_EQ(expected_result, result);
 }
 
 TEST_F(PolynomialSubmissionWithElement, SubmissionEqual)
 {
 	Polynomial<int> polynomial = primary_polynomial;
 	polynomial -= element;
-	EXPECT_EQ(Polynomial(expected_result), polynomial);
+	EXPECT_EQ(expected_result, polynomial);
 }
 
 class PolynomialMultipleWithPolynomial : public SharedCoefficients
@@ -162,21 +162,21 @@ protected:
 TEST_F(PolynomialMultipleWithPolynomial, Multiple)
 {
 	const Polynomial<int> result = first_polynomial * second_polynomial;
-	EXPECT_EQ(Polynomial(expected_result), result);
+	EXPECT_EQ(expected_result, result);
 }
 
 TEST_F(PolynomialMultipleWithPolynomial, MultipleEqual)
 {
 	Polynomial<int> result = first_polynomial;
 	result *= second_polynomial;
-	EXPECT_EQ(Polynomial(expected_result), result);
+	EXPECT_EQ(expected_result, result);
 }
 
 class PolynomialMultipleWithElement : public SharedCoefficientAndElement
 {
 protected:
 	PolynomialMultipleWithElement()
-	: SharedCoefficientAndElement(Polynomial(Coefficient({4, -4})))
+	: SharedCoefficientAndElement(Polynomial(Coefficient({16, -16})))
 	{
 	}
 };
@@ -184,14 +184,58 @@ protected:
 TEST_F(PolynomialMultipleWithElement, Multiple)
 {
 	const Polynomial<int> result = primary_polynomial * element;
-	EXPECT_EQ(Polynomial(expected_result), result);
+	EXPECT_EQ(expected_result, result);
 }
 
 TEST_F(PolynomialMultipleWithElement, MultipleEqual)
 {
 	Polynomial<int> result = primary_polynomial;
 	result *= element;
-	EXPECT_EQ(Polynomial(expected_result), result);
+	EXPECT_EQ(expected_result, result);
+}
+
+class PolynomialDivideWithPolynomial : public SharedCoefficients
+{
+protected:
+	PolynomialDivideWithPolynomial()
+	: SharedCoefficients(Polynomial(Coefficient({1, -3, 3, -1})))
+	{
+	}
+};
+
+TEST_F(PolynomialDivideWithPolynomial, Divide)
+{
+	const Polynomial<int> result = second_polynomial / first_polynomial;
+	EXPECT_EQ(expected_result, result);
+}
+
+TEST_F(PolynomialDivideWithPolynomial, DivideEqual)
+{
+	Polynomial<int> result = second_polynomial;
+	result /= first_polynomial;
+	EXPECT_EQ(expected_result, result);
+}
+
+class PolynomialDivideWithElement : public SharedCoefficientAndElement
+{
+protected:
+	PolynomialDivideWithElement()
+	: SharedCoefficientAndElement(Polynomial(Coefficient({1, -1})))
+	{
+	}
+};
+
+TEST_F(PolynomialDivideWithElement, Divide)
+{
+	const Polynomial<int> result = primary_polynomial / element;
+	EXPECT_EQ(expected_result, result);
+}
+
+TEST_F(PolynomialDivideWithElement, DivideEqual)
+{
+	Polynomial<int> result = primary_polynomial;
+	result /= element;
+	EXPECT_EQ(expected_result, result);
 }
 
 class PowerCoefficients : public ::testing::Test

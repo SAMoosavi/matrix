@@ -282,15 +282,15 @@ constexpr Polynomial<Element> Polynomial<Element>::divide(const Polynomial<Other
 		return *this;
 
 	Coefficient copy_of_this_polynomial_coefficients(coefficients);
-	Coefficient coefficients_of_result{copy_of_this_polynomial_coefficients.front() / other.coefficients.front()};
+	Coefficient coefficients_of_result;
 	while (copy_of_this_polynomial_coefficients.size() >= other.coefficients.size())
 	{
+		coefficients_of_result.emplace_back(copy_of_this_polynomial_coefficients.front() / other.coefficients.front());
 		for (size_t i = 0; i < other.coefficients.size(); i++)
 			copy_of_this_polynomial_coefficients[i] = copy_of_this_polynomial_coefficients[i] -
 					(other.coefficients[i] * coefficients_of_result.back());
 
-		copy_of_this_polynomial_coefficients.pop_front();
-		coefficients_of_result.emplace_back(copy_of_this_polynomial_coefficients.front() / other.coefficients.front());
+		copy_of_this_polynomial_coefficients.erase(copy_of_this_polynomial_coefficients.begin());
 	}
 
 	return Polynomial(coefficients_of_result);
@@ -354,6 +354,8 @@ constexpr bool Polynomial<Element>::is_divide_valid(const Polynomial<OtherElemen
 
 	if (other.coefficients.empty())
 		throw std::invalid_argument("divide on empty polynomial is not valid.");
+
+	return true;
 }
 
 template <Polynomialable Element>
