@@ -148,7 +148,7 @@ bool is_vectors_equal(const vector<T>& vec1, const vector<T>& vec2)
 		bool is_found = false;
 		for (const auto& iterator2 : vec2)
 		{
-			if (Polynomial<T>::compare_with_precision(iterator1, iterator2, 6))
+			if (polynomial_helper::compare_with_precision(iterator1, iterator2, 6))
 				is_found = true;
 		}
 		if (!is_found)

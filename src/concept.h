@@ -4,6 +4,8 @@
 #include <iostream>
 #include <ranges>
 #include <vector>
+#include <concepts>
+#include <type_traits>
 
 template <typename T>
 concept Multiplicationable = requires(T t) {
@@ -45,6 +47,13 @@ concept MultiplableDifferentType = requires(T, U) {
 			MultipleAssignableDifferentType<T, U>;
 };
 
+template <typename T>
+concept Divisionable = requires(T t) {
+	{
+		t* t
+	} -> std::same_as<T>;
+};
+
 template <typename T, typename U>
 concept DivisionAssignableDifferentType = requires(T t, U u) {
 	{
@@ -69,7 +78,7 @@ concept DivisionableDifferentTypeReturnSecondType = requires(T t, U u) {
 template <typename T, typename U>
 concept DivisionableDifferentType = requires(T, U) {
 	requires DivisionableDifferentTypeReturnSecondType<T, U> or DivisionableDifferentTypeReturnFirstType<T, U> or
-			MultipleAssignableDifferentType<T, U>;
+			DivisionAssignableDifferentType<T, U>;
 };
 
 template <typename T>
@@ -135,6 +144,7 @@ concept Containerable = requires(Container c, Element e) {
 template <typename Element>
 concept Elementable = requires(Element) {
 	requires Multiplicationable<Element>;
+	requires Divisionable<Element>;
 	requires Sumable<Element>;
 	requires Symmetryable<Element>;
 };

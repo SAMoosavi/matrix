@@ -18,7 +18,8 @@ endif()
 
 # Add compiler flags
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    add_compile_options(-Wall -Wextra -pedantic)
+    add_compile_options(-Wall -Wextra -pedantic -Woverflow -Wsign-conversion -fsanitize=undefined
+                        -fconcepts-diagnostics-depth=3)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    add_compile_options(/W4)
+    add_compile_options(/W4 /sdl)
 endif()
