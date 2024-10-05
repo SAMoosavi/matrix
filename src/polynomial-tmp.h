@@ -58,11 +58,12 @@ constexpr void Polynomial<Element>::simplify_by_horner(NewtonOutput info)
 {
 	Element current_coefficient = *coefficients.begin();
 
-	for (auto coeff = coefficients.begin() + 1; coeff != coefficients.end(); ++coeff)
-	{
-		current_coefficient = current_coefficient * info.first + *coeff;
-		*coeff = current_coefficient;
-	}
+	std::ranges::for_each(coefficients.begin() + 1, coefficients.end(),
+			[&info , & current_coefficient](Element &coeff)
+			{
+				current_coefficient = current_coefficient * info.first + coeff;
+				coeff = current_coefficient;
+			});
 
 	coefficients.pop_back();
 }
@@ -87,9 +88,10 @@ template <Polynomialable Element>
 constexpr auto Polynomial<Element>::solve_quadratic_equation(uint16_t precision) const -> PolynomialRoot
 {
 	PolynomialRoot result;
-	Element coefficient = at(coefficients.size() - 1);
-	Element one_power = at(coefficients.size() - 2);
-	Element two_power = at(coefficients.size() - 3);
+	const size_t last_index = coefficients.size() - 1;
+	Element coefficient = at(last_index);
+	Element one_power = at(last_index - 1);
+	Element two_power = at(last_index - 2);
 
 	// need tp support sqrt
 	Element delta = (one_power * one_power) - (4 * two_power * coefficient);
@@ -177,8 +179,7 @@ template <Polynomialable Element>
 constexpr Polynomial<Element> Polynomial<Element>::operator-() const
 {
 	Polynomial new_polynomial(*this);
-	for (auto &coeff : new_polynomial.coefficients)
-		coeff = coeff * -1;
+	std::ranges::for_each(new_polynomial.coefficients, [](Element &coeff) { coeff = coeff * -1; });
 	return new_polynomial;
 }
 
@@ -326,11 +327,11 @@ constexpr Number Polynomial<Element>::set_value(Number value) const
 {
 	Number result{};
 	Number variable_nth_power = 1;
-	for (auto it = coefficients.rbegin(); it != coefficients.rend(); ++it)
+	std::ranges::for_each(coefficients.crbegin(), coefficients.crend(), [&value, &result, &variable_nth_power](const Element& coeff)
 	{
-		result += (*it) * variable_nth_power;
+		result += coeff * variable_nth_power;
 		variable_nth_power *= value;
-	}
+	});
 	return result;
 }
 

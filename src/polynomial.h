@@ -116,7 +116,7 @@ private:
 	[[nodiscard]] constexpr bool is_divide_valid(const Polynomial<OtherElement>& other) const;
 
 	static constexpr double NOT_FOUND = std::numeric_limits<double>::min_exponent10;
-	// Biggest to smallest` degree
+	// Biggest to smallest degree
 	Coefficient coefficients;
 };
 
