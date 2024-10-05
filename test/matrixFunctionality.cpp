@@ -111,7 +111,7 @@ TEST_F(MatrixFunctionality, TheTFunctionShouldReturnTransposeOfMatrix)
 {
 	const Matrix<int> matrix({{1, 2, 3, 4}, {1, 2, 3, 4}});
 	const Matrix<int> result({{1, 1}, {2, 2}, {3, 3}, {4, 4}});
-	const Matrix<int> transpose_of_matrix = matrix.t();
+	const Matrix<int> transpose_of_matrix = matrix.transpose();
 
 	EXPECT_THAT(transpose_of_matrix.get_table(), Eq(result.get_table()));
 	EXPECT_THAT(transpose_of_matrix.get_number_of_col(), Eq(2));

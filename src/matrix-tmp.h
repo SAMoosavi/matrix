@@ -322,7 +322,7 @@ std::ostream& operator<<(std::ostream& os, const Matrix<Element>& matrix)
 }
 
 template <Elementable Element>
-Matrix<Element> Matrix<Element>::t() const noexcept
+Matrix<Element> Matrix<Element>::transpose() const noexcept
 {
 	TableType ans_table(number_of_col, RowType(number_of_row));
 	for (int i = 0; i < number_of_row; ++i)

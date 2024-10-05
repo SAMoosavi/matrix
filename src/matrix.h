@@ -65,7 +65,7 @@ public:
 
 	Element determinant() const;
 
-	Matrix<Element> t() const noexcept;
+	Matrix<Element> transpose() const noexcept;
 	Matrix<Element> inverse() const;
 
 	[[nodiscard]] inline std::string to_string() const noexcept;
