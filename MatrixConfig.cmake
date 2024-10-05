@@ -1,3 +1,4 @@
+# Adding gtest to project
 include(FetchContent)
 
 FetchContent_Declare(
@@ -9,6 +10,6 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-add_library(goolgletest_interface INTERFACE)
+# add_library(goolgletest_interface INTERFACE)
 
-target_link_libraries(goolgletest_interface INTERFACE gtest_main gmock_main)
+# target_link_libraries(goolgletest_interface INTERFACE gtest_main gmock_main)
