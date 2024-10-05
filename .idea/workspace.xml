@@ -1,25 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
-  </component>
-  <component name="CMakePresetLoader"><![CDATA[{
-  "useNewFormat": true
-}]]></component>
-  <component name="CMakeReloadState">
-    <option name="reloaded" value="true" />
-  </component>
-  <component name="CMakeRunConfigurationManager">
-    <generated>
-      <config projectName="Project" targetName="gtest_main" />
-      <config projectName="Project" targetName="polynomialFunctionality" />
-      <config projectName="Project" targetName="gtest" />
-      <config projectName="Project" targetName="matrixFunctionality" />
-      <config projectName="Project" targetName="gmock" />
-      <config projectName="Project" targetName="gmock_main" />
-      <config projectName="Project" targetName="Matrix" />
-    </generated>
-  </component>
   <component name="CMakeSettings">
     <configurations>
       <configuration PROFILE_NAME="Debug-gcc" ENABLED="true" CONFIG_NAME="Debug" GENERATION_OPTIONS="-G Ninja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache;" BUILD_OPTIONS="-j 4" />
@@ -27,89 +7,5 @@
       <configuration PROFILE_NAME="Release-clang-inline-as-cpp" ENABLED="false" CONFIG_NAME="Release" GENERATION_OPTIONS="-G Ninja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCOMPILER=CLANG -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DINLINE_AS_CPP:BOOL=TRUE;" BUILD_OPTIONS="-j 4" />
       <configuration PROFILE_NAME="Debug-clang" ENABLED="false" CONFIG_NAME="Debug" GENERATION_OPTIONS="-G Ninja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCOMPILER=CLANG -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++;" BUILD_OPTIONS="-j 4" />
     </configurations>
-  </component>
-  <component name="ChangeListManager">
-    <list default="true" id="7027d4cf-f426-43fc-8f95-4e3cbbdb47b5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/Matrix.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.vscode/c_cpp_properties.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.vscode/cmake-variants.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.vscode/tasks.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.clang-format" beforeDir="false" afterPath="$PROJECT_DIR$/.clang-format" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/launch.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/settings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/concept.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/concept.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/functionaly.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/functionaly.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix-tmp.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix-tmp.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/matrix.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/matrix.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/polynomial-helper-tmp.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/polynomial-helper-tmp.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/polynomial-helper.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/polynomial-helper.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/polynomial-tmp.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/polynomial-tmp.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/polynomial.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/polynomial.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/matrixFunctionality.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/matrixFunctionality.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/polynomialFunctionality.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/polynomialFunctionality.cpp" afterDir="false" />
-    </list>
-    <option name="SHOW_DIALOG" value="false" />
-    <option name="HIGHLIGHT_CONFLICTS" value="true" />
-    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
-    <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="ClangdSettings">
-    <option name="formatViaClangd" value="false" />
-  </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug-gcc" />
-  <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="write-with-cpp20" />
-      </map>
-    </option>
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="ROOT_SYNC" value="DONT_SYNC" />
-  </component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/SAMoosavi/Matrix.git",
-    "accountId": "299fde82-33a6-4db4-bcba-ca80a64d4ead"
-  }
-}]]></component>
-  <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showLibraryContents" value="true" />
-  </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "cf.advertisement.text.has.clang-format": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
-  }
-}]]></component>
-  <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="7027d4cf-f426-43fc-8f95-4e3cbbdb47b5" name="Changes" comment="" />
-      <created>1726169763473</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1726169763473</updated>
-      <workItem from="1726169766297" duration="225000" />
-    </task>
-    <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
   </component>
 </project>
