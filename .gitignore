@@ -3,4 +3,6 @@ build
 Debug
 Release
 .cache
+.idea
+.vscode
 compile_commands.json
