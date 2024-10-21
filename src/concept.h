@@ -149,7 +149,14 @@ concept Elementable = requires(Element e) {
 	requires Divisionable<Element>;
 	requires Sumable<Element>;
 	requires Symmetryable<Element>;
-	{ std::to_string(e) } -> std::same_as<std::string>;
+};
+
+template <typename Element>
+concept IsMatrixableElement = requires(Element e) {
+	requires Elementable<Element>;
+	{
+		std::to_string(e)
+	} -> std::same_as<std::string>;
 };
 
 template <typename Matrix>
