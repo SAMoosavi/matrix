@@ -120,7 +120,7 @@
   "C_Cpp.codeAnalysis.clangTidy.codeAction.formatFixes": true,
   "C_Cpp.codeAnalysis.runAutomatically": true,
   "C_Cpp.default.cppStandard": "c++20",
-  "C_Cpp.intelliSenseEngine": "default",
+  "C_Cpp.intelliSenseEngine": "disabled",
   "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
     "fuchsia-default-arguments-calls",
     "modernize-use-trailing-return-type",
