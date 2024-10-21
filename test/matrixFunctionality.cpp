@@ -107,6 +107,46 @@ TEST_F(MatrixFunctionality, TheDeterminantFunctionSuoldBeTrowWhenTheMatrixIsNotS
 	EXPECT_THROW(MATRIX.determinant(), std::invalid_argument);
 }
 
+TEST_F(MatrixFunctionality, TheTFunctionShouldReturnTransposeOfMatrix)
+{
+	const Matrix<int> matrix({{1, 2, 3, 4}, {1, 2, 3, 4}});
+	const Matrix<int> result({{1, 1}, {2, 2}, {3, 3}, {4, 4}});
+	const Matrix<int> transpose_of_matrix = matrix.transpose();
+
+	EXPECT_THAT(transpose_of_matrix.get_table(), Eq(result.get_table()));
+	EXPECT_THAT(transpose_of_matrix.get_number_of_col(), Eq(2));
+	EXPECT_THAT(transpose_of_matrix.get_number_of_row(), Eq(4));
+	EXPECT_THAT(transpose_of_matrix, Eq(result));
+}
+
+TEST_F(MatrixFunctionality, TheInverseFunctionSouldReturnInverseOfFunction)
+{
+	const Matrix<double> matrix({{1, 2}, {4, 3}});
+	const std::vector<std::vector<double>> result({{-0.6, 0.4}, {0.8, -0.2}});
+	const Matrix<double> inverse_of_matrix = matrix.inverse();
+
+	for(size_t i = 0; i < 2; ++i){
+		for(size_t j = 0; j < 2; ++j){
+			EXPECT_THAT(inverse_of_matrix[i][j], DoubleEq(result[i][j]));
+		}
+	}
+}
+
+TEST_F(MatrixFunctionality, TheInverseFunctionWhenCalledOnANonSquareMatrixShouldThrow)
+{
+	constexpr size_t ROW_NUMBER = 1;
+	constexpr size_t COL_NUMBER = 2;
+	const Matrix<int> matrix(ROW_NUMBER, COL_NUMBER);
+	EXPECT_THROW(matrix.inverse(), std::invalid_argument);
+}
+
+TEST_F(MatrixFunctionality, TheInverseFunctionWhenCalledOnAMatrixWithZeroDeterminantShouldThrow)
+{
+	const Matrix<int> matrix({{1, 2}, {2, 4}});
+	ASSERT_EQ(matrix.determinant(), 0);
+	EXPECT_THROW(matrix.inverse(), std::invalid_argument);
+}
+
 using BaineryOperatorType = std::tuple<Matrix<int>, Matrix<int>, Matrix<int>>;
 
 class SumOfTwoMatrix : public ::testing::TestWithParam<BaineryOperatorType>
@@ -141,10 +181,19 @@ TEST_P(SumOfTwoMatrix, TheSumEqualOperatorShouldSetFirstMatrixEqualToThirdParamW
 }
 
 INSTANTIATE_TEST_SUITE_P(SumData, SumOfTwoMatrix,
-		Values(std::make_tuple(Matrix<int>({{1, 2, 3}, {1, 2, 3}}), Matrix<int>({{6, 5, 4}, {6, 5, 4}}),
-					   Matrix<int>({{7, 7, 7}, {7, 7, 7}})),
-				std::make_tuple(Matrix<int>({{1, 2, 3, 4, 5, 6, 7}}), Matrix<int>({{7, 6, 5, 4, 3, 2, 1}}),
-						Matrix<int>({{8, 8, 8, 8, 8, 8, 8}}))));
+		Values(
+				std::make_tuple(
+					   Matrix<int>({{1, 2, 3}, {1, 2, 3}}),
+					   Matrix<int>({{6, 5, 4}, {6, 5, 4}}),
+					   Matrix<int>({{7, 7, 7}, {7, 7, 7}})
+				),
+				std::make_tuple(
+						Matrix<int>({{1, 2, 3, 4, 5, 6, 7}}),
+						Matrix<int>({{7, 6, 5, 4, 3, 2, 1}}),
+						Matrix<int>({{8, 8, 8, 8, 8, 8, 8}})
+				)
+		)
+);
 
 class SubmissionOfTwoMatrix : public ::testing::TestWithParam<BaineryOperatorType>
 {
@@ -179,10 +228,19 @@ TEST_P(SubmissionOfTwoMatrix,
 }
 
 INSTANTIATE_TEST_SUITE_P(SubmissionData, SubmissionOfTwoMatrix,
-		Values(std::make_tuple(Matrix<int>({{1, 2, 3}, {1, 2, 3}}), Matrix<int>({{6, 5, 4}, {6, 5, 4}}),
-					   Matrix<int>({{-5, -3, -1}, {-5, -3, -1}})),
-				std::make_tuple(Matrix<int>({{1, 2, 3, 4, 5, 6, 7}}), Matrix<int>({{7, 6, 5, 4, 3, 2, 1}}),
-						Matrix<int>({{-6, -4, -2, 0, 2, 4, 6}}))));
+		Values(
+				std::make_tuple(
+					   Matrix<int>({{1, 2, 3}, {1, 2, 3}}),
+					   Matrix<int>({{6, 5, 4}, {6, 5, 4}}),
+					   Matrix<int>({{-5, -3, -1}, {-5, -3, -1}})
+				),
+				std::make_tuple(
+						Matrix<int>({{1, 2, 3, 4, 5, 6, 7}}),
+						Matrix<int>({{7, 6, 5, 4, 3, 2, 1}}),
+						Matrix<int>({{-6, -4, -2, 0, 2, 4, 6}})
+				)
+		)
+);
 
 class MultipleOfTwoMatrix : public ::testing::TestWithParam<BaineryOperatorType>
 {
@@ -217,18 +275,44 @@ TEST_P(MultipleOfTwoMatrix,
 }
 
 INSTANTIATE_TEST_SUITE_P(MultipleData, MultipleOfTwoMatrix,
-		Values(std::make_tuple(Matrix<int>({{1, 2}, {1, 2}}), Matrix<int>({{1, 2}, {1, 2}}),
-					   Matrix<int>({{3, 6}, {3, 6}})),
-				std::make_tuple(Matrix<int>({{1, 2, 3, 4, 5, 6, 7}}), Matrix<int>({{7}, {6}, {5}, {4}, {3}, {2}, {1}}),
-						Matrix<int>({{84, 0, 0, 0, 0, 0, 0}})),
-				std::make_tuple(Matrix<int>({{1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7},
-										{1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7}}),
-						Matrix<int>({{7, 2, 3, 4, 5, 6, 9, 7}, {6, 2, 3, 4, 5, 6, 9, 7}, {5, 2, 3, 4, 5, 6, 9, 7},
-								{4, 2, 3, 4, 5, 6, 9, 7}, {3, 2, 3, 4, 5, 6, 9, 7}, {2, 2, 3, 4, 5, 6, 9, 7},
-								{1, 2, 3, 4, 5, 6, 9, 7}}),
-						Matrix<int>({{84, 56, 84, 112, 140, 168, 252}, {84, 56, 84, 112, 140, 168, 252},
-								{84, 56, 84, 112, 140, 168, 252}, {84, 56, 84, 112, 140, 168, 252},
-								{84, 56, 84, 112, 140, 168, 252}}))));
+		Values(
+				std::make_tuple(
+						Matrix<int>({{1, 2}, {1, 2}}),
+						Matrix<int>({{1, 2}, {1, 2}}),
+						Matrix<int>({{3, 6}, {3, 6}})
+				),
+				std::make_tuple(
+						Matrix<int>({{1, 2, 3, 4, 5, 6, 7}}),
+						Matrix<int>({{7}, {6}, {5}, {4}, {3}, {2}, {1}}),
+						Matrix<int>({{84, 0, 0, 0, 0, 0, 0}})
+				),
+				std::make_tuple(
+						Matrix<int>({
+								{1, 2, 3, 4, 5, 6, 7},
+								{1, 2, 3, 4, 5, 6, 7},
+								{1, 2, 3, 4, 5, 6, 7},
+								{1, 2, 3, 4, 5, 6, 7},
+								{1, 2, 3, 4, 5, 6, 7}
+						}),
+						Matrix<int>({
+								{7, 2, 3, 4, 5, 6, 9, 7},
+								{6, 2, 3, 4, 5, 6, 9, 7},
+								{5, 2, 3, 4, 5, 6, 9, 7},
+								{4, 2, 3, 4, 5, 6, 9, 7},
+								{3, 2, 3, 4, 5, 6, 9, 7},
+								{2, 2, 3, 4, 5, 6, 9, 7},
+								{1, 2, 3, 4, 5, 6, 9, 7}
+						}),
+						Matrix<int>({
+								{84, 56, 84, 112, 140, 168, 252},
+								{84, 56, 84, 112, 140, 168, 252},
+								{84, 56, 84, 112, 140, 168, 252},
+								{84, 56, 84, 112, 140, 168, 252},
+								{84, 56, 84, 112, 140, 168, 252}
+						})
+				)
+		)
+);
 
 class OppositeOfMatrix : public ::testing::TestWithParam<std::tuple<Matrix<int>, Matrix<int>>>
 {
@@ -242,8 +326,11 @@ TEST_P(OppositeOfMatrix, TheOppositeOperatorShouldReturnSecondParamWhenOppositFi
 }
 
 INSTANTIATE_TEST_SUITE_P(OppositeData, OppositeOfMatrix,
-		Values(std::make_tuple(Matrix<int>({{1, 2, 3}, {1, 2, 3}}), Matrix<int>({{-1, -2, -3}, {-1, -2, -3}})),
-				std::make_tuple(Matrix<int>({{1, 2, 3, 4, 5, 6, 7}}), Matrix<int>({{-1, -2, -3, -4, -5, -6, -7}}))));
+		Values(
+				std::make_tuple(Matrix<int>({{1, 2, 3}, {1, 2, 3}}),Matrix<int>({{-1, -2, -3}, {-1, -2, -3}})),
+				std::make_tuple(Matrix<int>({{1, 2, 3, 4, 5, 6, 7}}),Matrix<int>({{-1, -2, -3, -4, -5, -6, -7}}))
+		)
+);
 
 class DeterminantOfMatrix : public ::testing::TestWithParam<std::tuple<Matrix<int>, int>>
 {
@@ -257,7 +344,58 @@ TEST_P(DeterminantOfMatrix, TheDeterminantShouldReturnSecondParamWhenDeterminant
 }
 
 INSTANTIATE_TEST_SUITE_P(DeterminantData, DeterminantOfMatrix,
-		Values(std::make_tuple(Matrix<int>({{1, 2}, {0, 2}}), 2),
+		Values(
+				std::make_tuple(Matrix<int>({{1, 2}, {0, 2}}), 2),
 				std::make_tuple(Matrix<int>({{1, 2, 3}, {0, 2, 3}, {1, 2, 0}}), -6),
 				std::make_tuple(Matrix<int>({{1, 2, 3, 4}, {0, 2, 3, 5}, {1, 2, 0, 5}, {1, 2, 8, 5}}), -12),
-				std::make_tuple(Matrix<int>({{1}}), 1)));
+				std::make_tuple(Matrix<int>({{1}}), 1)
+		)
+);
+
+class InverseOfMatrix: public ::testing::TestWithParam<std::tuple<Matrix<double>, Matrix<double>>> {};
+
+TEST_P(InverseOfMatrix, TheInverseOperatorShouldReturnSecondParamWhenInverseFirstParams)
+{
+	const Matrix<double> FIRST_MATRIX = std::get<0>(GetParam());
+	const Matrix<double> SECOND_MATRIX = std::get<1>(GetParam());
+	const Matrix<double> inverse_of_matrix = FIRST_MATRIX.inverse();
+
+	for (size_t i = 0; i < FIRST_MATRIX.get_number_of_row(); ++i) {
+		for (size_t j = 0; j < FIRST_MATRIX.get_number_of_col(); ++j) {
+			EXPECT_THAT(inverse_of_matrix[i][j], DoubleEq(SECOND_MATRIX[i][j]));
+		}
+	}
+}
+
+INSTANTIATE_TEST_SUITE_P(
+        InverseData,
+        InverseOfMatrix,
+        Values(
+                std::make_tuple(
+                        Matrix<double>({{1, 2, 3}, {4, 5, 5}, {6, 7, 8}}),
+                        Matrix<double>({{-1, -1, 1}, {0.4, 2, -1.4}, {0.4, -1, 0.6}})
+				),
+                std::make_tuple(
+                        Matrix<double>({
+								{1, 2, 3, 4, 5, 6, 7, 8},
+								{2, 3, 4, 5, 6, 7, 8, 9},
+								{3, 4, 5, 6, 7, 8, 9, 10},
+								{4, 5, 6, 7, 8, 9, 10, 11},
+								{5, 6, 7, 8, 9, 10, 11, 12},
+								{6, 7, 8, 9, 10, 11, 12, 13},
+								{7, 8, 9, 10, 11, 12, 13, 14},
+								{8, 9, 10, 11, 12, 13, 14, 15}
+						}),
+                        Matrix<double>({
+								{ 5.32894737, -4.31578947,  2.26315789, -0.81578947,  0.31578947, -0.05263158,  0.02631579, -0.00526316},
+								{-4.31578947,  3.26315789, -1.63157895,  0.63157895, -0.26315789,  0.05263158, -0.02631579,  0.00526316},
+								{ 2.26315789, -1.63157895,  0.78947368, -0.26315789,  0.10526316, -0.02105263,  0.01052632, -0.00210526},
+								{-0.81578947,  0.63157895, -0.26315789,  0.07894737, -0.03157895,  0.00526316, -0.00263158,  0.00052632},
+								{ 0.31578947, -0.26315789,  0.10526316, -0.03157895,  0.01315789, -0.00263158,  0.00131579, -0.00026316},
+								{-0.05263158,  0.05263158, -0.02105263,  0.00526316, -0.00263158,  0.00052632, -0.00026316,  0.00005263},
+								{ 0.02631579, -0.02631579,  0.01052632, -0.00263158,  0.00131579, -0.00026316,  0.00013158, -0.00002632},
+								{-0.00526316,  0.00526316, -0.00210526,  0.00052632, -0.00026316,  0.00005263, -0.00002632,  0.00000526}}
+					   )
+				)
+		)
+);

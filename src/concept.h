@@ -4,6 +4,7 @@
 #include <iostream>
 #include <ranges>
 #include <vector>
+#include <string>
 
 template <typename T>
 concept Multiplicationable = requires(T t) {
@@ -106,10 +107,11 @@ concept Containerable = requires(Container c, Element e) {
 };
 
 template <typename Element>
-concept Elementable = requires(Element) {
+concept Elementable = requires(Element e) {
 	requires Multiplicationable<Element>;
 	requires Sumable<Element>;
 	requires Symmetryable<Element>;
+	{ std::to_string(e) } -> std::same_as<std::string>;
 };
 
 template <typename Matrix>
