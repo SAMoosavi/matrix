@@ -1,11 +1,13 @@
 #ifndef MATRIX_CONCEPT_H
 #define MATRIX_CONCEPT_H
 
+#include <concepts>
+
 #include <iostream>
 #include <ranges>
-#include <vector>
-#include <concepts>
+#include <string>
 #include <type_traits>
+#include <vector>
 
 template <typename T>
 concept Multiplicationable = requires(T t) {
@@ -142,11 +144,12 @@ concept Containerable = requires(Container c, Element e) {
 };
 
 template <typename Element>
-concept Elementable = requires(Element) {
+concept Elementable = requires(Element e) {
 	requires Multiplicationable<Element>;
 	requires Divisionable<Element>;
 	requires Sumable<Element>;
 	requires Symmetryable<Element>;
+	{ std::to_string(e) } -> std::same_as<std::string>;
 };
 
 template <typename Matrix>

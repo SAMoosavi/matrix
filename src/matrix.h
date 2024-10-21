@@ -65,14 +65,17 @@ public:
 
 	Element determinant() const;
 
+	Matrix<Element> transpose() const noexcept;
+	Matrix<Element> inverse() const;
+
 	[[nodiscard]] inline std::string to_string() const noexcept;
 	[[nodiscard]] inline operator std::string() const noexcept;
 
 private:
 	RowType& operator[](size_t idx);
 
-	size_t row;
-	size_t col;
+	size_t number_of_row;
+	size_t number_of_col;
 	TableType table;
 };
 
