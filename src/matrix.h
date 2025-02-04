@@ -1,7 +1,6 @@
 #ifndef MATRIX_MATRIX_H
 #define MATRIX_MATRIX_H
 
-#include <iostream>
 #include <ranges>
 #include <vector>
 
@@ -30,31 +29,31 @@ public:
 
 	template <typename OtherElement>
 		requires SumableDifferentType<Element, OtherElement>
-	Matrix<Element> sum(const Matrix<OtherElement>& other) const;
+	Matrix sum(const Matrix<OtherElement>& other) const;
 	template <typename OtherElement>
-	Matrix<Element> operator+(const Matrix<OtherElement>& other) const;
+	Matrix operator+(const Matrix<OtherElement>& other) const;
 	template <typename OtherElement>
-	Matrix<Element>& operator+=(const Matrix<OtherElement>& other);
+	Matrix& operator+=(const Matrix<OtherElement>& other);
 
-	Matrix<Element> operator-() const;
+	Matrix operator-() const;
 
 	template <typename OtherElement>
-	Matrix<Element> submission(const Matrix<OtherElement>& other) const;
+	Matrix submission(const Matrix<OtherElement>& other) const;
 	template <typename OtherElement>
-	Matrix<Element> operator-(const Matrix<OtherElement>& other) const;
+	Matrix operator-(const Matrix<OtherElement>& other) const;
 	template <typename OtherElement>
-	Matrix<Element>& operator-=(const Matrix<OtherElement>& other);
+	Matrix& operator-=(const Matrix<OtherElement>& other);
 
 	template <typename OtherElement>
 		requires MultiplableDifferentTypeReturnFirstType<Element, OtherElement>
-	Matrix<Element> multiple(const Matrix<OtherElement>& other) const;
+	Matrix multiple(const Matrix<OtherElement>& other) const;
 	template <typename OtherElement>
 		requires(not IsMatrixable<OtherElement>) and MultiplableDifferentType<Element, OtherElement>
-	Matrix<Element> multiple(const OtherElement& other) const;
+	Matrix multiple(const OtherElement& other) const;
 	template <typename OtherElement>
-	Matrix<Element> operator*(const OtherElement& other) const;
+	Matrix operator*(const OtherElement& other) const;
 	template <typename OtherElement>
-	Matrix<Element>& operator*=(const OtherElement& other);
+	Matrix& operator*=(const OtherElement& other);
 
 	template <typename OtherElement>
 	bool operator==(const Matrix<OtherElement>& other) const;
@@ -65,11 +64,12 @@ public:
 
 	Element determinant() const;
 
-	Matrix<Element> transpose() const noexcept;
-	Matrix<Element> inverse() const;
+	Matrix transpose() const noexcept;
+	Matrix inverse() const;
+	Element tr() const;
 
-	[[nodiscard]] inline std::string to_string() const noexcept;
-	[[nodiscard]] inline operator std::string() const noexcept;
+	[[nodiscard]] std::string to_string() const noexcept;
+	[[nodiscard]] explicit operator std::string() const noexcept;
 
 private:
 	RowType& operator[](size_t idx);

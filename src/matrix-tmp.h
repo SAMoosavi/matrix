@@ -1,11 +1,7 @@
 #ifndef MATRIX_MATRIX_TMP_H
 #define MATRIX_MATRIX_TMP_H
 
-#include <cmath>
-
 #include <ranges>
-
-#include "matrix.h"
 
 template <Elementable Element>
 Matrix<Element>::Matrix(size_t row, size_t col)
@@ -397,6 +393,19 @@ Matrix<Element> Matrix<Element>::inverse() const
 	}
 
 	return Matrix<Element>(inverse_table);
+}
+
+template <Elementable Element>
+Element Matrix<Element>::tr() const
+{
+	if (number_of_col != number_of_row)
+		throw std::invalid_argument("Matrix<Element>::tr: column and number_of_row must be equal");
+
+	Element result = Element(0);
+	for (size_t i : std::views::iota(0LLU, number_of_col))
+		result += table[i][i];
+
+	return result;
 }
 
 #endif
