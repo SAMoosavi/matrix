@@ -1,0 +1,132 @@
+BasedOnStyle: Google
+Language: Cpp
+IndentWidth: 4
+ColumnLimit: 120
+UseTab: Always
+TabWidth: 4
+AccessModifierOffset: -4
+
+IncludeCategories:
+- Regex: '<c([A-Za-z0-9_]*)>'
+  Priority: 1
+
+- Regex: '<([A-Za-z0-9_]*)>'
+  Priority: 2
+
+- Regex: '<([A-Za-z0-9]*\.h)>'
+  Priority: 3
+
+- Regex: '(netinet)/'
+  Priority: 10
+
+- Regex: '(boost)/'
+  Priority: 20
+
+- Regex: '(tbb)/'
+  Priority: 30
+
+- Regex: '(ext)/'
+  Priority: 40
+
+- Regex: '(modp.*.h)'
+  Priority: 45
+
+- Regex: '(linux)/'
+  Priority: 50
+
+- Regex: '(sys)/'
+  Priority: 60
+
+- Regex: '(botan)/'
+  Priority: 70
+
+- Regex: '(re2)/'
+  SortPriority: 73
+
+- Regex: '(gnutls)/'
+  Priority: 77
+
+- Regex: '(flags|flags)/'
+  Priority: 80
+
+- Regex: '(gtest|gmock)/'
+  Priority: 90
+
+- Regex: '(google)/'
+  Priority: 95
+
+- Regex: '<concurrentqueue/concurrentqueue.h>'
+  Priority: 97
+
+- Regex: '^([AZaz09])*\.h'
+  Priority: 1000
+
+# Alignment
+AlignAfterOpenBracket: DontAlign
+AlignConsecutiveAssignments: None
+AlignConsecutiveDeclarations: None
+AlignOperands: DontAlign
+PointerAlignment: Left
+
+# Spacing style
+SpaceAfterTemplateKeyword: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceInEmptyParentheses: false
+SpacesInAngles: false
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+SpacesBeforeTrailingComments: 8   # We use 2 spaces before trailing comments. Unfortunately, there is no option to put tab before comments we need to fix it.
+
+# Class style
+BreakConstructorInitializers: BeforeComma
+ConstructorInitializerIndentWidth: 0
+ConstructorInitializerAllOnOneLineOrOnePerLine : false
+PackConstructorInitializers: Never
+
+# Function style
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowAllArgumentsOnNextLine: false
+AllowShortFunctionsOnASingleLine: None
+IndentWrappedFunctionNames: true
+
+# Template style
+AlwaysBreakTemplateDeclarations: Yes
+
+# If style
+AllowShortIfStatementsOnASingleLine: Never
+
+# Loop style
+AllowShortLoopsOnASingleLine: false
+
+# Preprocessor style
+IndentPPDirectives: None
+
+# Block style
+AllowShortBlocksOnASingleLine: Never
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# Break style
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Allman
+BreakBeforeTernaryOperators: false
+BreakStringLiterals: true
+CompactNamespaces: false
+ContinuationIndentWidth: 8
+MaxEmptyLinesToKeep: 1
+AlwaysBreakBeforeMultilineStrings: false
+
+# Switch case
+IndentCaseBlocks: false
+IndentCaseLabels: true
+
+# Lambda
+AllowShortLambdasOnASingleLine: All
+
+# Other styles
+FixNamespaceComments: false
+
+# Known bug: Aligns inheritance
