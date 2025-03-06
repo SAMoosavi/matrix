@@ -3,7 +3,6 @@
 
 #include <ranges>
 #include <vector>
-#include <algorithm>
 
 template <Elementable Element>
 Matrix<Element> Matrix<Element>::create_i_matrix(size_t size)
@@ -434,27 +433,26 @@ Polynomial<Element> Matrix<Element>::characteristic_polynomial() const
 	Element a = B.tr();
 
 	std::vector<Element> characteristic_polynomial(number_of_col + 1);
-	if (number_of_col %2 == 0)
-		characteristic_polynomial[0] = -1;
+	if (number_of_col % 2 == 0)
+		characteristic_polynomial[number_of_col] = -1;
 	else
-		characteristic_polynomial[0] = 1;
+		characteristic_polynomial[number_of_col] = 1;
 
-	characteristic_polynomial[1] = a;
-	for (size_t i : std::views::iota(1LLU, number_of_col))
+	characteristic_polynomial[number_of_col - 1] = a;
+	for (size_t i : std::views::iota(2LLU, number_of_col + 1))
 	{
 		B = A * (B - a * I);
-		a = B.tr() / (i + 1);
-		characteristic_polynomial[i+1] = a;
+		a = B.tr() / i;
+		characteristic_polynomial[number_of_col - i] = a;
 	}
 
-	std::reverse(characteristic_polynomial.begin(), characteristic_polynomial.end());
 	return Polynomial(characteristic_polynomial);
 }
 
 template <Elementable Element>
 std::vector<Element> Matrix<Element>::eigenvalues() const
 {
-  Polynomial<Element> characteristic = this->characteristic_polynomial();
-  return characteristic.solve();
+	Polynomial<Element> characteristic = this->characteristic_polynomial();
+	return characteristic.solve();
 }
 #endif
