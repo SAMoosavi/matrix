@@ -75,7 +75,7 @@ public:
 	[[nodiscard]] explicit operator std::string() const noexcept;
 
 	Polynomial<Element> characteristic_polynomial() const;
-	//Vector<Element> eigenvalues() const noexpect;
+	std::vector<Element> eigenvalues() const;
 
 private:
 	RowType& operator[](size_t idx);
