@@ -4,8 +4,19 @@
 #include <cmath>
 
 #include <ranges>
+#include <vector>
 
 #include "matrix.h"
+
+template <Elementable Element>
+static Matrix<Element> create_i_matrix(size_t size)  {
+	Matrix<Element> result(size,size);
+	for(size_t i : std::views::iota(0LLU, size)) {
+		result[i][i] = 1;
+	}
+	return result;
+}
+
 
 template <Elementable Element>
 Matrix<Element>::Matrix(size_t row, size_t col)
@@ -397,6 +408,28 @@ Matrix<Element> Matrix<Element>::inverse() const
 	}
 
 	return Matrix<Element>(inverse_table);
+}
+
+template <Elementable Element>
+Polynomial<Element> Matrix<Element>::characteristic_polynomial() const
+{
+	if (number_of_row != number_of_col)
+		throw std::invalid_argument("the matrix should be square!");
+ 
+	constexpr Matrix<Element> I = Matrix<Element>::create_i_matrix(number_of_col);
+
+	constexpr Matrix<Element> A = *this;
+	Matrix<Element> B = A;
+	Element a = B.tr();
+
+	std::vector<Element> characteristic_polynomial(number_of_col);
+	characteristic_polynomial[0] = a;
+	for(size_t i : std::views::iota(1LLU,number_of_col)) {
+		B = A*(B-a*I);
+		a = B.tr()/(i+1);
+		characteristic_polynomial[i] = a;
+	}
+	return Polynomial(characteristic_polynomial);
 }
 
 #endif
