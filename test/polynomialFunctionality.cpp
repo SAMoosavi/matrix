@@ -279,26 +279,26 @@ TEST_F(SetValueTest, Double)
 	EXPECT_EQ(result, output);
 }
 
-class PolynomialTest : public testing::TestWithParam<SolveParameter>
+class PolynomialTest : public testing::TestWithParam<tuple<vector<double>, vector<double>>>
 {
 };
 
 TEST_P(PolynomialTest, PolynomialSolveTest)
 {
-	const Coefficient coefficients = std::get<0>(GetParam());
-	const Root expected_roots = std::get<1>(GetParam());
+	const vector<double> coefficients = std::get<0>(GetParam());
+	const vector<double> expected_roots = std::get<1>(GetParam());
 
-	const Polynomial<int> polynomial = Polynomial(coefficients);
-	Root roots = polynomial.solve(100);
+	const Polynomial<double> polynomial = Polynomial(coefficients);
+	vector<double> roots = polynomial.solve(100);
 	std::sort(roots.begin(), roots.end());
 
 	EXPECT_EQ(roots, expected_roots);
 }
 
 INSTANTIATE_TEST_SUITE_P(SolveParameters, PolynomialTest,
-		testing::Values(make_tuple(vector<int>{2, -3, 1}, vector<double>{1, 2}),
-				make_tuple(vector<int>{0, 2, -3, 1}, vector<double>{0, 1, 2}),
-				make_tuple(vector<int>{0, -6, 11, -6, 1}, vector<double>{0, 1, 2, 3})));
+		testing::Values(make_tuple(vector<double>{2, -3, 1}, vector<double>{1, 2}),
+				make_tuple(vector<double>{0, 2, -3, 1}, vector<double>{0, 1, 2}),
+				make_tuple(vector<double>{0, -6, 11, -6, 1}, vector<double>{0, 1, 2, 3})));
 
 class CoefficientTest : public ::testing::Test
 {

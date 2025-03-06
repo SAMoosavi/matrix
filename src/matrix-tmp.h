@@ -2,6 +2,18 @@
 #define MATRIX_MATRIX_TMP_H
 
 #include <ranges>
+#include <vector>
+
+template <Elementable Element>
+Matrix<Element> Matrix<Element>::create_i_matrix(size_t size)
+{
+	Matrix<Element> result(size, size);
+	for (size_t i : std::views::iota(0LLU, size))
+	{
+		result[i][i] = 1;
+	}
+	return result;
+}
 
 template <Elementable Element>
 Matrix<Element>::Matrix(size_t row, size_t col)
@@ -408,4 +420,39 @@ Element Matrix<Element>::tr() const
 	return result;
 }
 
+template <Elementable Element>
+Polynomial<Element> Matrix<Element>::characteristic_polynomial() const
+{
+	if (number_of_row != number_of_col)
+		throw std::invalid_argument("the matrix should be square!");
+
+	Matrix<Element> I = Matrix<Element>::create_i_matrix(number_of_col);
+
+	const Matrix<Element> A = *this;
+	Matrix<Element> B = A;
+	Element a = B.tr();
+
+	std::vector<Element> characteristic_polynomial(number_of_col + 1);
+	if (number_of_col % 2 == 0)
+		characteristic_polynomial[number_of_col] = -1;
+	else
+		characteristic_polynomial[number_of_col] = 1;
+
+	characteristic_polynomial[number_of_col - 1] = a;
+	for (size_t i : std::views::iota(2LLU, number_of_col + 1))
+	{
+		B = A * (B - a * I);
+		a = B.tr() / i;
+		characteristic_polynomial[number_of_col - i] = a;
+	}
+
+	return Polynomial(characteristic_polynomial);
+}
+
+template <Elementable Element>
+std::vector<Element> Matrix<Element>::eigenvalues() const
+{
+	Polynomial<Element> characteristic = this->characteristic_polynomial();
+	return characteristic.solve();
+}
 #endif

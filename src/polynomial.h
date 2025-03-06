@@ -14,7 +14,7 @@ class Polynomial
 private:
 	using Coefficient = std::vector<Element>;
 	using NewtonOutput = std::pair<double, bool>;
-	using PolynomialRoot = std::vector<double>;
+	using PolynomialRoot = std::vector<Element>;
 
 public:
 	Polynomial() = default;

@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "concept.h"
+#include "polynomial.h"
 
 template <Elementable Element>
 class Matrix
@@ -19,6 +20,8 @@ public:
 	Matrix(size_t row, size_t col);
 
 	Matrix(const std::initializer_list<std::initializer_list<Element>>& matrix);
+
+	static Matrix create_i_matrix(size_t size);
 
 	template <template <Containerable> typename Container>
 	explicit Matrix(const Container<Container<Element>>& matrix);
@@ -70,6 +73,9 @@ public:
 
 	[[nodiscard]] std::string to_string() const noexcept;
 	[[nodiscard]] explicit operator std::string() const noexcept;
+
+	Polynomial<Element> characteristic_polynomial() const;
+	std::vector<Element> eigenvalues() const;
 
 private:
 	RowType& operator[](size_t idx);
