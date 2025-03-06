@@ -399,3 +399,39 @@ INSTANTIATE_TEST_SUITE_P(
 				)
 		)
 );
+
+class TrOfMatrix: public ::testing::TestWithParam<std::tuple<Matrix<double>, double>> {};
+
+TEST_P(TrOfMatrix, TheTrOperatorShouldReturnSecondParamWhenTrFirstParams)
+{
+	const Matrix<double> MATRIX = std::get<0>(GetParam());
+	const double TR_OF_MATRIX = std::get<1>(GetParam());
+	const double tr_of_matrix = MATRIX.tr();
+
+	EXPECT_EQ(tr_of_matrix, TR_OF_MATRIX);
+
+}
+
+INSTANTIATE_TEST_SUITE_P(
+        TrData,
+        TrOfMatrix,
+        Values(
+                std::make_tuple(
+                        Matrix<double>({{1, 2, 3}, {4, 5, 5}, {6, 7, 8}}),
+                        14
+				),
+                std::make_tuple(
+                        Matrix<double>({
+								{1, 2, 3, 4, 5, 6, 7, 8},
+								{2, 3, 4, 5, 6, 7, 8, 9},
+								{3, 4, 5, 6, 7, 8, 9, 10},
+								{4, 5, 6, 7, 8, 9, 10, 11},
+								{5, 6, 7, 8, 9, 10, 11, 12},
+								{6, 7, 8, 9, 10, 11, 12, 13},
+								{7, 8, 9, 10, 11, 12, 13, 14},
+								{8, 9, 10, 11, 12, 13, 14, 15}
+						}),
+                        64
+				)
+		)
+);
